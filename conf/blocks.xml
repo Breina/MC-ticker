@@ -1,0 +1,190 @@
+<blocks name="default">
+
+	<category name="Generic">
+		<block id="42">
+			<name>Solid</name>
+		</block>
+		
+		<block id="20">
+			<name>Glass</name>
+		</block>
+		
+		<block id="89">
+			<name>Glowstone</name>
+		</block>
+		
+		<block id="44">
+			<name>Half slab</name>
+			
+			<icon orientation="front" />
+			<rotation mask="8" />
+		</block>
+	</category>
+	
+	<category name="Technical">
+	
+		<block id="55">
+			<name>Wire</name>
+		</block>
+		
+		<block id="76">
+			<name>Torch</name>
+			
+			<icon data="5" orientation="front" />
+			<rotation mask="5" min="1" />
+		</block>
+		
+		<block id="93">
+			<name>Repeater</name>
+			
+			<rotation mask="3" />
+			<click mask="12" />
+		</block>
+		
+		<block id="149">
+			<name>Comparator</name>
+			
+			<rotation mask="3" />
+			<click mask="4" />
+		</block>
+		
+		<block id="152">
+			<name>Redstone block</name>
+		</block>
+		
+		<block id="33">
+			<name>Piston</name>
+			
+			<icon data="2" />
+			<rotation mask="5" />
+		</block>
+		
+		<block id="29">
+			<name>Sticky piston</name>
+			
+			<icon data="2" />
+			<rotation mask="5" />
+		</block>
+		
+		<block id="23">
+			<name>Dispenser</name>
+			
+			<icon data="1" />
+			<rotation mask="7" />
+		</block>
+		
+		<block id="158">
+			<name>Dropper</name>
+			
+			<icon data="1" />
+			<rotation mask="7" />
+		</block>
+		
+		<block id="154">
+			<name>Hopper</name>
+			
+			<icon orientation="front" />
+			<rotation mask="7" />
+		</block>
+		
+		<block id="118">
+			<name>Cauldron</name>
+			
+			<icon data="2" orientation="front" />
+			<click mask="3" />
+		</block>
+	
+	</category>
+	
+	<category name="Inputs">
+		<block id="143">
+			<name>Wooden button</name>
+			
+			<icon data="5" />
+			<rotation mask="5" />
+			<click mask="8" />
+		</block>
+		
+		<block id="77">
+			<name>Stone button</name>
+			
+			<icon data="5" />
+			<rotation mask="5" />
+			<click mask="8" />
+		</block>
+		
+		<block id="69">
+			<name>Lever</name>
+			
+			<icon data="6" orientation="front" />
+			<rotation mask="7" />
+			<click mask="8" />
+		</block>
+	
+		<block id="72">
+			<name>Wooden pressure plate</name>
+			
+			<click mask="1" />
+		</block>
+		
+		<block id="70">
+			<name>Stone pressure plate</name>
+			
+			<click mask="1" />
+		</block>
+	</category>
+	
+	<category name="Outputs">
+		<block id="123">
+			<name>Lamp</name>
+		</block>
+		
+		<block id="107">
+			<name>Fence gate</name>
+			
+			<icon orientation="front" />
+			<rotation mask="3" />
+			<click mask="4" />
+		</block>
+	</category>
+	
+	<category name="Rails">
+	
+		<block id="66">
+			<name>Rail</name>
+		</block>
+	
+		<block id="27">
+			<name>Powered rail</name>
+		</block>
+		
+		<block id="28">
+			<name>Detector rail</name>
+		</block>
+		
+		<block id="157">
+			<name>Activator rail</name>
+		</block>
+		
+	</category>
+	
+	<category name="Misc">
+		<block id="138">
+			<name>Beacon</name>
+			
+			<icon orientation="front" />
+		</block>
+		
+		<block id="51">
+			<name>Fire</name>
+		</block>
+		
+				<block id="9">
+			<name>Water source</name>
+		</block>
+		
+		<block id="11">
+			<name>Lava source</name>
+		</block>
+	</category>
+</blocks>
