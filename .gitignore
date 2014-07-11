@@ -12,10 +12,6 @@ nbproject/private/
 *.swp
 *.out
 
-# simulator specific
-minecraft/*.*
-mcp/conf/*.*
-
 #Java
 *.class
 
