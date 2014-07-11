@@ -1,0 +1,6 @@
+Drop the files of the 'conf' folder of MCP here.
+
+Required files:
+	- fields.csv
+	- methods.csv
+	- joined.srg

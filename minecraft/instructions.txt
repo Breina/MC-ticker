@@ -1,0 +1,7 @@
+Copy files from your .minecraft folder in here.
+
+Required folder/file:
+	- libraries
+	- versions/<version>/<version>.jar
+
+The current version is within README.md because I'll forget to update this.
