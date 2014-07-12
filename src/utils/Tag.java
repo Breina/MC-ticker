@@ -19,7 +19,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Tag {
     private final Type type;
-    public Type listType = null;
+    private Type listType = null;
     private final String name;
     private Object value;
     
@@ -39,7 +39,8 @@ public class Tag {
         TAG_Byte_Array,
         TAG_String,
         TAG_List,
-        TAG_Compound
+        TAG_Compound,
+        TAG_Int_Array
     }
 
     /**
@@ -122,6 +123,10 @@ public class Tag {
             if (!(value instanceof Tag[]))
                 throw new IllegalArgumentException();
             break;
+ 		case TAG_Int_Array: 	 	
+            if (!(value instanceof int[])) 	 	
+                throw new IllegalArgumentException(); 	 	
+            break; 
         default:
             throw new IllegalArgumentException();
         }
@@ -195,6 +200,10 @@ public class Tag {
             if (!(value instanceof Tag[]))
                 throw new IllegalArgumentException();
             break;
+        case TAG_Int_Array: 
+        	if (!(value instanceof int[]))
+        		throw new IllegalArgumentException(); 
+        	break;
         default:
             throw new IllegalArgumentException();
         }
@@ -205,7 +214,7 @@ public class Tag {
     public Type getListType() {
         return listType;
     }
-    
+
     /**
      * Add a tag to a TAG_List or a TAG_Compound.
      */
@@ -230,9 +239,9 @@ public class Tag {
         if (type != Type.TAG_List && type != Type.TAG_Compound)
             throw new RuntimeException();
         Tag[] subtags = (Tag[]) value;
-//        if (subtags.length > 0)
-//            if (type == Type.TAG_List && tag.getType() != getListType())
-//                throw new IllegalArgumentException();
+        if (subtags.length > 0)
+            if (type == Type.TAG_List && tag.getType() != getListType())
+                throw new IllegalArgumentException();
         if (index > subtags.length)
             throw new IndexOutOfBoundsException();
         Tag[] newValue = new Tag[subtags.length + 1];
@@ -487,6 +496,12 @@ public class Tag {
                 }
             }
             break;
+        case TAG_Int_Array: 
+        	 int[] ia = (int[]) value; 
+        	 dos.writeInt(ia.length); 
+        	 for (int i=0;i<ia.length;i++) 
+        		 dos.writeInt(ia[i]); 
+        	 break;
         }
     }
 
@@ -521,6 +536,8 @@ public class Tag {
             return "TAG_List";
         case TAG_Compound:
             return "TAG_Compound";
+        case TAG_Int_Array:
+        	return "TAG_Int_Array";
         }
         return null;
     }
@@ -561,6 +578,9 @@ public class Tag {
             }
             indent(indent);
             System.out.println("}");
+        } else if (type == Type.TAG_Int_Array) { 
+        	int[] i = (int[]) t.getValue(); 
+        	System.out.println(": [" + i.length * 4 + " bytes]"); 
         } else {
             System.out.println(": " + t.getValue());
         }

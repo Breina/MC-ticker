@@ -25,8 +25,8 @@ weather and such), so in essence the GUI becomes the bottleneck.
 * Rek's Circuit Simulator: http://www.minecraftforum.net/forums/minecraft-discussion/redstone-discussion-and/342852-circuit-simulator-v0-81-rek
 
 If we inspect these examples of fine programming, we can notice 2 trends:
-* They're all called redstone simulators.
-* They view 2 layers of blocks at once.
+1. They're all called redstone simulators.
+2. They view 2 layers of blocks at once.
 	
 I'm not following either of these treds. Because this simulator will simulate
 everything, not just redstone. It would take a lot more work to provide
