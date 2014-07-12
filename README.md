@@ -85,8 +85,8 @@ placement, water washing stuff away).
 Installation
 ------------
 Requirements:
-	- MCP version 9.03 (update impending)
-	- Minecraft version 1.7.2
+	- MCP version 9.08
+	- Minecraft version 1.7.10
 
 Steps:	
 	1. Clone the source code from here

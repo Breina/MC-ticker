@@ -28,7 +28,7 @@ public class Constants {
 
 	public final static String MINECRAFTFOLDER = "/.minecraft";
 	public final static String LIBRARYFOLDER = "/libraries";
-	public final static String MINECRAFTJAR = "/versions/1.7.2/1.7.2.jar";
+	public final static String MINECRAFTJAR = "/versions/1.7.10/1.7.10.jar";
 
 	/**
 	 * The following 2 final arrays are 2D arrays, this is however an option. The second array element is
@@ -39,7 +39,7 @@ public class Constants {
 		{"getBlockMetadata", "Returns the block"}, {"getIdFromBlock"},
 		{"setBlock", "Sets the block ID and metadata at a given location"}, {"startSection"}, {"endSection"},
 		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"}, {"func_82738_a"},
-		{"getTotalWorldTime"}, {"load", "Read the actual data"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
+		{"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
 		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getIconString"}, {"getItemById"}, {"registerItems"},
 		{"getInventoryName"}, {"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
@@ -54,12 +54,14 @@ public class Constants {
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
-		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList"};
+		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
+		"NBTSizeTracker"};
 	
 	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
 	public final static String WORLD_GETBLOCK = "a";
 	public final static String WORLD_PROFILER = "C";
 	public final static String BOOTLOADER_REGISTER = "b";
+	public final static String NBTTAGCOMPOUND_LOAD = "a";			// {"load", "\"Read the actual data"}
 	
 	// All of these are properties of the World object
 	public final static String WORLDTYPE = "Simulation";

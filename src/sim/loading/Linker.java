@@ -65,6 +65,7 @@ public class Linker {
 	 * @return The method
 	 */
 	public Method method(String name, Class<?> clazz, Class<?>... parameterTypes) throws NoSuchMethodException, SecurityException {
+		
 		Method m = clazz.getDeclaredMethod(translator.getMethod(name), parameterTypes);
 		m.setAccessible(true);
 		return m;

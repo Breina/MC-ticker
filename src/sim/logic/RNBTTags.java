@@ -11,15 +11,18 @@ import java.lang.reflect.Method;
 
 import logging.Log;
 import sim.constants.Constants;
+import sim.loading.ClassTester;
 import sim.loading.Linker;
 import utils.CircularByteBuffer;
 import utils.Tag;
 
 public class RNBTTags implements ISimulated {
 	
-	private Class<?> NBTTagCompound, NBTTagList;
-	private Constructor<?> c_NBTTagCompound;
+	private Class<?> NBTTagCompound, NBTTagList, NBTSizeTracker;
+	private Constructor<?> c_NBTTagCompound, c_NBTSizeTracker;
 	private Method m_load, m_write;
+	
+	private final static long MAXSIZE = 512l;
 	
 	// DEBUG
 	private Method m_getTagList, m_getCompoundTagAt;
@@ -33,12 +36,17 @@ public class RNBTTags implements ISimulated {
 	
 	private void prepareNBTTagCompound(Linker linker) throws NoSuchMethodException, SecurityException {
 		
-		NBTTagCompound = linker.getClass("NBTTagCompound");
+		NBTTagCompound = linker.getClass("NBTTagCompound"); // dh
 		NBTTagList = linker.getClass("NBTTagList");
+		NBTSizeTracker = linker.getClass("NBTSizeTracker"); // ds
 		
 		c_NBTTagCompound = NBTTagCompound.getDeclaredConstructor();
+		c_NBTSizeTracker = NBTSizeTracker.getDeclaredConstructor(long.class);
 		
-		m_load = linker.method("load", NBTTagCompound, DataInput.class, int.class);
+//		m_load = linker.method("load", NBTTagCompound, DataInput.class, int.class, NBTSizeTracker);
+		m_load = NBTTagCompound.getDeclaredMethod(Constants.NBTTAGCOMPOUND_LOAD, DataInput.class, int.class, NBTSizeTracker);
+		m_load.setAccessible(true);
+		
 		m_write = linker.method("write", NBTTagCompound, DataOutput.class);
 		
 		// DEBUG
@@ -55,9 +63,10 @@ public class RNBTTags implements ISimulated {
 	
 	public Object getInstance(DataInput input, int complexity) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
+		Object nbtSizeTracker = c_NBTSizeTracker.newInstance(MAXSIZE);
 		Object instance = c_NBTTagCompound.newInstance();
 		
-		m_load.invoke(instance, new Object[]{input, complexity});
+		m_load.invoke(instance, new Object[]{input, complexity, nbtSizeTracker});
 		
 		return instance;
 	}

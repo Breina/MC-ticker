@@ -21,6 +21,7 @@ public class Translator {
 	}
 	
 	public void addMethod(String original, String obfuscated) {
+		
 		methods.put(original, obfuscated);
 	}
 	

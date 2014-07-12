@@ -1,6 +1,7 @@
 package sim.loading;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
@@ -14,13 +15,17 @@ public class ClassTester {
 		
 		System.out.println("\n\nTesting class " + c.getName());
 		
-		Method[] methods = c.getMethods();
-		Constructor<?>[] cons = c.getConstructors();
+		Field[] fields = c.getDeclaredFields();
+		Method[] methods = c.getDeclaredMethods();
+		Constructor<?>[] cons = c.getDeclaredConstructors();
+		
+		System.out.println("\nFields:");
+		for (Field f : fields)
+			System.out.println(f.toGenericString());
 		
 		System.out.println("\nConstructors:");
-		
 		for (Constructor<?> con : cons)
-			System.out.println(con.toString());
+			System.out.println(con.toGenericString());
 		
 		System.out.println("\nMethods:");
 		for (Method m : methods)
