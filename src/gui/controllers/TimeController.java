@@ -39,8 +39,6 @@ public class TimeController implements Runnable {
 		
 		timeLine = new ArrayList<>();
 		foundHashes = new HashSet<>();
-		
-		init();
 	}
 	
 	public void init() {
@@ -51,8 +49,24 @@ public class TimeController implements Runnable {
 //		thread = new Thread(this);
 //		thread.start();
 		
-		prepareTimeLine(100);
-		setPlaystate(PlayState.PAUSED);
+		try {
+			Tag schematic = getSchemFromSim();
+			
+			worldData.loadSchematic(schematic);
+			controller.updateWithNewData();
+			
+			foundHashes.clear();
+			timeLine.clear();
+			
+			foundHashes.add(schematic.hashCode());
+			timeLine.add(schematic);
+			
+			prepareTimeLine(100);
+			setPlaystate(PlayState.PAUSED);
+			
+		} catch (NoSuchAlgorithmException | SchematicException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void prepareTimeLine(int max) {
@@ -63,15 +77,6 @@ public class TimeController implements Runnable {
 				endFound = true;
 				return;
 			}
-	}
-	
-	private Tag getSchemFromSim() throws NoSuchAlgorithmException, IOException {
-		
-		CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-		Sim.getController().saveWorld(worldData.getName(), cbb.getOutputStream());
-//		worldData.loadSchematic(cbb.getInputStream());
-		
-		return Tag.readFrom(cbb.getInputStream());
 	}
 	
 	private boolean tick() {
@@ -90,11 +95,20 @@ public class TimeController implements Runnable {
 				return true;
 			}
 			
-		} catch (NoSuchAlgorithmException | IOException e) {
+		} catch (NoSuchAlgorithmException | IOException | SchematicException e) {
 			Log.e("Failed to get schematic from the simulator: " + e.getMessage());
 		}
 		
 		return false;
+	}
+	
+	private Tag getSchemFromSim() throws NoSuchAlgorithmException, IOException, SchematicException {
+		
+		CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
+		Sim.getController().saveWorld(worldData.getName(), cbb.getOutputStream());
+//		worldData.loadSchematic(cbb.getInputStream());
+		
+		return Tag.readFrom(cbb.getInputStream());
 	}
 	
 	public void setPlaystate(PlayState playState) {

@@ -214,6 +214,7 @@ public class EditorPanel extends JLayeredPane {
 	}
 	
 	public void updateWithNewData() {
+		
 		repaintBlocks();
 		repaint();
 	}

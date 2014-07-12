@@ -78,12 +78,12 @@ public class WorldData {
 	}
 	
 	public void loadSchematic(Tag input) throws SchematicException, IOException {
-		if (!schematic.findNextTagByName("Materials", null).getValue().equals("Alpha"))
+		if (!input.findNextTagByName("Materials", null).getValue().equals("Alpha"))
 			throw new SchematicException("The schematic is encoded for Minecraft classic, which is not supported.");
 
-		xSize = (short) schematic.findTagByName("Width").getValue();
-		ySize = (short) schematic.findTagByName("Height").getValue();
-		zSize = (short) schematic.findTagByName("Length").getValue();
+		xSize = (short) input.findTagByName("Width").getValue();
+		ySize = (short) input.findTagByName("Height").getValue();
+		zSize = (short) input.findTagByName("Length").getValue();
 
 		final long size = xSize * ySize * zSize;
 
@@ -91,8 +91,8 @@ public class WorldData {
 			throw new SchematicException("The schematic is too big to handle. Width: " + xSize + ", Height: " + ySize + ","
 					+ "Length: " + zSize);
 
-		byte[] ids = (byte[]) schematic.findTagByName("Blocks").getValue();
-		byte[] data = (byte[]) schematic.findTagByName("Data").getValue();
+		byte[] ids = (byte[]) input.findTagByName("Blocks").getValue();
+		byte[] data = (byte[]) input.findTagByName("Data").getValue();
 
 		if (size != ids.length || size != data.length)
 			throw new SchematicException("The schematic data does not match the dimensions specified.");

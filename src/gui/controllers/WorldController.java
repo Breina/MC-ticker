@@ -20,6 +20,7 @@ import java.util.List;
 import logging.Log;
 import sim.controller.Sim;
 import utils.CircularByteBuffer;
+import utils.Tag;
 
 /**
  * Controlls everything about one world
@@ -111,17 +112,9 @@ public class WorldController {
 		
 		worldData.setBlock(x, y, z, block);
 		
-		// TODO am I sure about this?
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Sim.getController().setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
+		Sim.getController().setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
 				
-				timeController.init();
-				
-				updateWithNewData();
-			}
-		}).start();
+		timeController.init();
 		
 	}
 	
