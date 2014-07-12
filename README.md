@@ -20,14 +20,9 @@ feature complete. The difference is that by using minecraft itself, all
 behaviors are simualated (block and entity bahaviors, not bothering with
 weather and such), so in essence the GUI becomes the bottleneck.
 
-Baezon's redstone simulator:
-http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1260528-baezons-redstone-simulator-v2-2
-
-Mordritch's JavaScript Redstone Simulator
-http://mordritch.com/mc_rss/
-
-Rek's Circuit Simulator
-http://www.minecraftforum.net/forums/minecraft-discussion/redstone-discussion-and/342852-circuit-simulator-v0-81-rek
+* Baezon's redstone simulator: http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1260528-baezons-redstone-simulator-v2-2
+* Mordritch's JavaScript Redstone Simulator: http://mordritch.com/mc_rss/
+* Rek's Circuit Simulator: http://www.minecraftforum.net/forums/minecraft-discussion/redstone-discussion-and/342852-circuit-simulator-v0-81-rek
 
 If we inspect these examples of fine programming, we can notice 2 trends:
 * They're all called redstone simulators.
@@ -88,7 +83,8 @@ Requirements:
 * MCP version 9.08
 * Minecraft version 1.7.10
 
-Steps:	
+Steps:
+	
 1. Clone the source code from here
 2. Copy your MCP/conf folder to the 'mcp' directory. Tile files used are:
     * fields.csv
@@ -102,17 +98,8 @@ That's it! You should now be able to compile and run.
 
 Links
 -----
-Where I've been updating my progress so far:
-http://forum.openredstone.org/showthread.php?tid=1606
-
-The best redstone community:
-http://openredstone.org/
-
-Lots of nice icons:
-http://p.yusukekamiyamane.com/
-
-His Circular Byte Buffer proved very useful:
-http://ostermiller.org/utils/src/CircularByteBuffer.java.html
-
-Their Tag class to parse and write schematics:
-http://minecraft.gamepedia.com/Development_resources/Example_NBT_Class
+* Where I've been updating my progress so far: http://forum.openredstone.org/showthread.php?tid=1606
+* The best redstone community: http://openredstone.org/
+* Lots of nice icons: http://p.yusukekamiyamane.com/
+* His Circular Byte Buffer proved very useful: http://ostermiller.org/utils/src/CircularByteBuffer.java.html
+* Their Tag class to parse and write schematics: http://minecraft.gamepedia.com/Development_resources/Example_NBT_Class
