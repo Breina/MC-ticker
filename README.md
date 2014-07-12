@@ -30,8 +30,8 @@ Rek's Circuit Simulator
 http://www.minecraftforum.net/forums/minecraft-discussion/redstone-discussion-and/342852-circuit-simulator-v0-81-rek
 
 If we inspect these examples of fine programming, we can notice 2 trends:
-	- They're all called redstone simulators.
-	- They view 2 layers of blocks at once.
+* They're all called redstone simulators.
+* They view 2 layers of blocks at once.
 	
 I'm not following either of these treds. Because this simulator will simulate
 everything, not just redstone. It would take a lot more work to provide
@@ -85,18 +85,18 @@ placement, water washing stuff away).
 Installation
 ------------
 Requirements:
-	- MCP version 9.08
-	- Minecraft version 1.7.10
+* MCP version 9.08
+* Minecraft version 1.7.10
 
 Steps:	
-	1. Clone the source code from here
-	2. Copy your MCP/conf folder to the 'mcp' directory. Tile files used are:
-		- fields.csv
-		- methods.csv
-		- joined.srg
-	3. Copy the contents of your .minecraft folder into 'minecraft'. Using:
-		- libraries
-		- versions
+1. Clone the source code from here
+2. Copy your MCP/conf folder to the 'mcp' directory. Tile files used are:
+    * fields.csv
+    * methods.csv
+    * joined.srg
+3. Copy the contents of your .minecraft folder into 'minecraft'. Using:
+    * libraries
+    * versions
 		
 That's it! You should now be able to compile and run.
 
