@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import logging.Log;
+import sim.constants.Constants;
 import utils.Tag;
 
 
@@ -71,13 +72,23 @@ public class WorldData {
 	 */
 	// TODO remove method completely
 	public void loadSchematic(InputStream input) throws SchematicException, IOException, NoSuchAlgorithmException {
-		
-			schematic = Tag.readFrom(input);
 
-			loadSchematic(schematic);
+			loadSchematic(Tag.readFrom(input));
 	}
 	
 	public void loadSchematic(Tag input) throws SchematicException, IOException {
+
+		if (schematic != null) {
+			schematic.replaceTags(input);
+						
+		} else
+			schematic = input;
+		
+		if (Constants.DEBUG_TAG_SCHEMATICS) {
+			System.out.println("Loading tag schematic:");
+			schematic.print();
+		}
+		
 		if (!input.findNextTagByName("Materials", null).getValue().equals("Alpha"))
 			throw new SchematicException("The schematic is encoded for Minecraft classic, which is not supported.");
 
@@ -142,6 +153,11 @@ public class WorldData {
 			
 			schematic.findTagByName("Block").setValue(aBlocks);
 			schematic.findTagByName("Data").setValue(aData);
+			
+			if (Constants.DEBUG_TAG_SCHEMATICS) {
+				System.out.println("Saving tag schematic:");
+				schematic.print();
+			}
 		}
 			
 		schematic.writeTo(output);

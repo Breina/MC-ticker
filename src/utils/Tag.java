@@ -547,46 +547,63 @@ public class Tag {
             System.out.print("   ");
         }
     }
+    
+    @Override
+    public String toString() {     	
+    			
+    	return toString(this, 0);
+    }
+    
+    private String toString(Tag t, int indent) {
 
-    private void print(Tag t, int indent) {
+    	StringBuilder sb = new StringBuilder();
+    	
         Type type = t.getType();
         if (type == Type.TAG_End)
-            return;
+            return "";
         String name = t.getName();
         indent(indent);
-        System.out.print(getTypeString(t.getType()));
+        sb.append(getTypeString(t.getType()));
         if (name != null)
-            System.out.print("(\"" + t.getName() + "\")");
+        	sb.append("(\"" + t.getName() + "\")");
         if (type == Type.TAG_Byte_Array) {
             byte[] b = (byte[]) t.getValue();
-            System.out.println(": [" + b.length + " bytes]");
+            sb.append(": [" + b.length + " bytes]");
         } else if (type == Type.TAG_List) {
             Tag[] subtags = (Tag[]) t.getValue();
-            System.out.println(": " + subtags.length + " entries of type " + getTypeString(t.getListType()));
+            sb.append(": " + subtags.length + " entries of type " + getTypeString(t.getListType()));
             for (Tag st : subtags) {
                 print(st, indent + 1);
             }
             indent(indent);
-            System.out.println("}");
+            sb.append("}");
         } else if (type == Type.TAG_Compound) {
             Tag[] subtags = (Tag[]) t.getValue();
-            System.out.println(": " + (subtags.length - 1) + " entries");
+            sb.append(": " + (subtags.length - 1) + " entries");
             indent(indent);
-            System.out.println("{");
+            sb.append("{");
             for (Tag st : subtags) {
                 print(st, indent + 1);
             }
             indent(indent);
-            System.out.println("}");
+            sb.append("}");
         } else if (type == Type.TAG_Int_Array) { 
         	int[] i = (int[]) t.getValue(); 
-        	System.out.println(": [" + i.length * 4 + " bytes]"); 
+        	sb.append(": [" + i.length * 4 + " bytes]"); 
         } else {
-            System.out.println(": " + t.getValue());
+        	sb.append(": " + t.getValue());
         }
+        
+        return sb.toString();
+    }
+
+    private void print(Tag t, int indent) {
+    	
+    	System.out.println(toString(t, indent));
     }
     
     public void setHash(int hash) {
+    	
     	this.hash = hash;
     }
 
@@ -598,5 +615,25 @@ public class Tag {
     @Override
     public boolean equals(Object obj) {
     	return hash == obj.hashCode();
-    }    
+    }
+    
+    /**
+     * Replaces this tags with the contents of this compound tag
+     * Assumes a compound tag, will throw a ClassCastException and will infuriate CodeRaider
+     * "You should always type check when you're unsure." - CodeRaider
+     */
+    public void replaceTags(Tag copyTag) {
+    	
+    	Tag[] subtags = (Tag[]) copyTag.getValue();
+    	
+    	for (Tag fromTag : subtags) {
+    		
+    		Tag toTag = findTagByName(fromTag.name);
+    		
+    		if (toTag == null)
+    			addTag(fromTag);
+    		else
+    			toTag.setValue(fromTag.getValue());
+    	}
+    }
 }

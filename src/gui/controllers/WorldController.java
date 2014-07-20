@@ -12,13 +12,13 @@ import gui.objects.WorldData;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import logging.Log;
-import sim.controller.Sim;
 import utils.CircularByteBuffer;
 import utils.Tag;
 
@@ -35,17 +35,21 @@ public class WorldController {
 	private TimeController timeController;
 	
 	private MainController mainController;
+	private SimController simController;
 	
 //	private Cord3S selection;
 	
 	public WorldController(MainController mainController, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
 		
 		this.mainController = mainController;
+		this.simController = mainController.getSimController();
 		
 		worldData = new WorldData(schematicFile);		
 		worldMenu = new WorldMenu(this);
-		time = new TimeWindow(this);
 		timeController = new TimeController(this);
+		time = new TimeWindow(this);
+		
+		timeController.setTimeWindow(time);
 		
 		mainController.getWindowMenu().addWorldMenu(worldMenu);
 		
@@ -53,7 +57,9 @@ public class WorldController {
 		windows = new ArrayList<DrawingWindow>();		
 		addNewPerspective(Orientation.TOP);
 		
-		sendSchemToSim();
+		simController.setSchematic(worldData);
+		
+		timeController.init();
 	}
 	
 	public void addNewPerspective(Orientation orientation) {
@@ -110,28 +116,27 @@ public class WorldController {
 	
 	private void setBlock(final int x, final int y, final int z, final Block block) {
 		
-		worldData.setBlock(x, y, z, block);
+//		worldData.setBlock(x, y, z, block);
 		
-		Sim.getController().setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
+		timeController.loadCurrentTimeIntoSchematic();
+		
+		simController.setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
 				
 		timeController.init();
+//		
+//		try {
+//			worldData.loadSchematic(simController.getSchematic(worldData));
+//		} catch (SchematicException | IOException e) {
+//			e.printStackTrace();
+//		}
+//		updateWithNewData();
+//		
+//		System.out.println("stop");
 		
 	}
 	
 	private void destroySim() {
-		Sim.getController().destroy(worldData.getName());
-	}
-	
-	private void sendSchemToSim() {
-		
-		try {
-			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			worldData.saveSchematic(cbb.getOutputStream());
-			Sim.getController().loadWorld(worldData.getName(), cbb.getInputStream());
-			
-		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
-			Log.e("Failed to send schematic to the simulator: " + e.getMessage());
-		}
+		simController.destroy(worldData.getName());
 	}
 	
 	public void tick() {
@@ -154,6 +159,10 @@ public class WorldController {
 		return mainController;
 	}
 	
+	public TimeController getTimeController() {
+		return timeController;
+	}
+	
 	public WorldMenu getWorldMenu() {
 		return worldMenu;
 	}
@@ -167,7 +176,7 @@ public class WorldController {
 		updateWithNewData();
 		
 		destroySim();
-		sendSchemToSim();
+		simController.setSchematic(worldData);
 	}
 	
 	public void unSelectAll(EditorPanel source) {

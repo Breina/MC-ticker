@@ -11,7 +11,6 @@ import gui.bettergui.choosers.MinecraftFolderChooser;
 import gui.bettergui.menu.FileMenu;
 import gui.bettergui.menu.WindowMenu;
 import gui.exceptions.SchematicException;
-
 import gui.main.Cord3S;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import logging.Log;
 import sim.controller.Response;
-import sim.controller.Sim;
 
 public class MainController {
 	
@@ -40,6 +38,7 @@ public class MainController {
 	
 	private TileController tileController;
 	private BlockController blockController;
+	private SimController simController;
 	private List<WorldController> worldControllers;
 	
 	private WorldController selectionController;
@@ -53,6 +52,8 @@ public class MainController {
 		
 		tileController = new TileController(new File(gui.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(gui.main.Constants.BLOCKSFILE));
+		
+		simController = new SimController();
 		
 		desktopPane = new DesktopPane();
 		statusPanel = new StatusPanel();
@@ -79,7 +80,7 @@ public class MainController {
 	/**
 	 * Obtains the files.
 	 */
-	private boolean setupSim() {
+	private void setupSim() {
 
 		String mcpFolder = sim.constants.Constants.MCPCONFFOLDER;
 //		if (!(new File(mcpFolder).exists())) {
@@ -108,25 +109,14 @@ public class MainController {
 			MinecraftFolderChooser minecraftDialog = new MinecraftFolderChooser();
 			int result = minecraftDialog.showDialog(mainframe, "Select");
 			
-			if (result != MinecraftFolderChooser.APPROVE_OPTION) {
+			if (result != MinecraftFolderChooser.APPROVE_OPTION)
 				if (result == MinecraftFolderChooser.ERROR_OPTION)
 					Log.e("Something went wrong when finding .minecraft folder.");
-				
-				return false;
-			}
 			
 			minecraftFolder = minecraftDialog.getSelectedFile().getAbsolutePath();
 		}
 		
-		Response response = Sim.getController().initialize(mcpFolder, minecraftFolder);
-
-		if (response.getStatus() != Response.Type.SUCCESS) {
-			
-			Log.e(response.getMessage());
-			return false;
-		}
-		
-		return true;
+		simController.initialize(mcpFolder, minecraftFolder);
 	}
 	
 	
@@ -212,6 +202,10 @@ public class MainController {
 	
 	public BlockController getBlockController() {
 		return blockController;
+	}
+	
+	public SimController getSimController() {
+		return simController;
 	}
 	
 	public WorldController getSelectedWorld() {

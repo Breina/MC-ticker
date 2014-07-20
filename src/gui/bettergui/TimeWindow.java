@@ -1,5 +1,7 @@
 package gui.bettergui;
 
+import gui.bettergui.time.PlayState;
+import gui.controllers.TimeController;
 import gui.controllers.WorldController;
 import gui.objects.Block;
 
@@ -13,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -24,20 +27,22 @@ public class TimeWindow extends WorldMenuWindow {
 	
 	private final static int BTNSIZE = 60;
 	
-	private WorldController controller;
+	private TimeController timeController;
 	
 	private static boolean isInitialized;
 	private static ImageIcon start, rushBack, playBack, stepBack, pause, stepForward, playForward, rushForward, end;
 	
 	private JButton btnStart, btnStepBack, btnStepForward, btnEnd;
 	private JToggleButton btnRushBack, btnPlayBack, btnPause, btnPlayForward, btnRushForward;
+	private JLabel lblStep;
 	
 	private boolean isPaused, endFound;
 
-	public TimeWindow(WorldController controller) {
-		super(controller, "Time", true);
+	public TimeWindow(WorldController worldController) {
+		super(worldController, "Time", true);
 		
-		this.controller = controller;
+		this.timeController = worldController.getTimeController();
+		
 		isPaused = true;
 		endFound = false;
 		
@@ -84,6 +89,7 @@ public class TimeWindow extends WorldMenuWindow {
 		btnPlayForward = new JToggleButton(playForward);
 		btnRushForward = new JToggleButton(rushForward);
 		btnEnd = new JButton(end);
+		lblStep = new JLabel("0");
 		
 		group.add(btnRushBack);
 		group.add(btnPlayBack);
@@ -104,6 +110,7 @@ public class TimeWindow extends WorldMenuWindow {
 		contentPanel.add(btnPlayForward);
 		contentPanel.add(btnRushForward);
 		contentPanel.add(btnEnd);
+		contentPanel.add(lblStep);
 		
 		btnStart.addActionListener(new ActionListener() {
 			@Override
@@ -112,40 +119,46 @@ public class TimeWindow extends WorldMenuWindow {
 				setPaused(true);
 				setForwardEnabled(true);
 				setBackEnabled(false);
+				
+				timeController.setPlaystate(PlayState.START);
 			}
 		});
 		
 		btnRushBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(false);
 				setForwardEnabled(true);
+				
+				timeController.setPlaystate(PlayState.RUSHBACK);
 			}
 		});
 		
 		btnPlayBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(false);
 				setForwardEnabled(true);
+				
+				timeController.setPlaystate(PlayState.PLAYBACK);
 			}
 		});
 		
 		btnStepBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setForwardEnabled(true);
+				
+				timeController.setPlaystate(PlayState.STEPBACK);
 			}
 		});
 		
 		btnPause.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(btnPause.isSelected());
+				
+				timeController.setPlaystate(PlayState.PAUSED);
 			}
 		});
 		
@@ -154,35 +167,38 @@ public class TimeWindow extends WorldMenuWindow {
 			public void actionPerformed(ActionEvent e) {
 				setBackEnabled(true);
 				
-				controller.tick();
+				timeController.setPlaystate(PlayState.STEPFORWARD);
 			}
 		});
 		
 		btnPlayForward.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(false);
 				setBackEnabled(true);
+				
+				timeController.setPlaystate(PlayState.PLAYFORWARD);
 			}
 		});
 		
 		btnRushForward.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(false);
 				setBackEnabled(true);
+				
+				timeController.setPlaystate(PlayState.RUSHFORWARD);
 			}
 		});
 		
 		btnEnd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(true);
 				setBackEnabled(true);
 				setForwardEnabled(false);
+				
+				timeController.setPlaystate(PlayState.END);
 			}
 		});
 		
@@ -222,5 +238,9 @@ public class TimeWindow extends WorldMenuWindow {
 	
 	public void setEndFound(boolean b) {
 		endFound = b;
+	}
+	
+	public void setStep(int step) {
+		lblStep.setText(String.valueOf(step));
 	}
 }

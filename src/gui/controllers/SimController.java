@@ -1,56 +1,71 @@
-package sim.controller;
+package gui.controllers;
 
-import gui.main.Constants;
+import gui.exceptions.SchematicException;
+import gui.objects.WorldData;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.xml.ws.soap.AddressingFeature.Responses;
-
 import logging.Log;
+import sim.controller.Response;
+import sim.controller.Response.Type;
 import sim.logic.Simulator;
+import utils.CircularByteBuffer;
+import utils.Tag;
 
 /**
  * Largely responsible for catching errors and giving meaningful messages back
  * to the GUI.
  */
-public class Sim {
-
-	private boolean ready;
+public class SimController {
+	
 	private Simulator simulator;
-	
-	private static final Sim controller = new Sim();
-	private static final Response NOTREADYRESPONSE = new Response(Response.Type.ERROR, "The Simulator hasn't initialized yet.");
 
-	public static Sim getController() {
-		return controller;
+	public SimController() {
 	}
 	
-	public Sim() {
+	public void setSchematic(WorldData worldData) {
+		
+		try {
+			
+			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
+			worldData.saveSchematic(cbb.getOutputStream());
+			loadWorld(worldData.getName(), cbb.getInputStream());
+			
+		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
+			
+			Log.e("Failed to send schematic to the simulator " + analyseException(e));
+		}
+	}
+	
+	public Tag getSchematic(WorldData worldData) {
+		
+		try {
+			
+			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
+			saveWorld(worldData.getName(), cbb.getOutputStream());
+			
+			return Tag.readFrom(cbb.getInputStream());
+			
+		} catch (NoSuchAlgorithmException | IOException e) {
 
-		ready = false;
-
+			Log.e("Could not get schematic from the simulator" + analyseException(e));
+			return null;
+		}
 	}
 
-	public Response initialize(String mcpFolder, String minecraftFolder) {		
+	public void initialize(String mcpFolder, String minecraftFolder) {		
 		
 		try {
 			
 			simulator = new Simulator(mcpFolder, minecraftFolder);
-			
-			ready = true;
-			
-			return new Response(Response.Type.SUCCESS);
 
 		} catch (IllegalAccessException | ClassNotFoundException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not initlialize the Simulator" + analyseException(e), e);
+			Log.e("Could not initlialize the Simulator" + analyseException(e));
 		}
 	}
 	
@@ -59,89 +74,64 @@ public class Sim {
 		simulator.destroy(worldName);
 	}
 	
-	public Response createNewWorld(String worldName, int xSize, int ySize, int zSize) {
-		
-		if (!ready)
-			return NOTREADYRESPONSE;
+	public void createNewWorld(String worldName, int xSize, int ySize, int zSize) {
 		
 		try {
 			
 			simulator.createEmptyWorld(worldName, xSize, ySize, zSize);
-			
-			return new Response(Response.Type.SUCCESS);
 		
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not create new world" + analyseException(e), e);
+			Log.e("Could not create new world" + analyseException(e));
 		}
 		
 	}
 	
-	public Response loadWorld(String worldName, InputStream input) throws NoSuchAlgorithmException {
-		
-		if (!ready)
-			return NOTREADYRESPONSE;
+	public void loadWorld(String worldName, InputStream input) throws NoSuchAlgorithmException {
 		
 		try {
 			
 			simulator.loadWorld(worldName, input);
 			
-			return new Response(Response.Type.SUCCESS);
-			
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not load world" + analyseException(e), e);	
+			Log.e("Could not load world" + analyseException(e));	
 		}
 	}
 	
-	public Response saveWorld(String worldName, OutputStream output) {
-		
-		if (!ready)
-			return NOTREADYRESPONSE;
+	public void saveWorld(String worldName, OutputStream output) {
 		
 		try {
 			
 			simulator.saveWorld(worldName, output);
 			
-			return new Response(Response.Type.SUCCESS);
-			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | IOException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not save world" + analyseException(e), e);
+			Log.e("Could not save world" + analyseException(e));
 		}
 	}
 	
-	public Response tick(String worldName) {
-		
-		if (!ready)
-			return NOTREADYRESPONSE;
+	public void tick(String worldName) {
 		
 		try {
 			
 			simulator.tickWorld(worldName);
 			
-			return new Response(Response.Type.SUCCESS);
-			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not tick world" + analyseException(e), e);
+			Log.e("Could not tick world" + analyseException(e));
 		}
 	}
 	
-	public Response setBlock(String worldName, int x, int y, int z, byte id, byte data) {
-		
-		if (!ready)
-			return NOTREADYRESPONSE;
+	public void setBlock(String worldName, int x, int y, int z, byte id, byte data) {
 		
 		try {
 			
 			simulator.setBlock(worldName, x, y, z, id, data);
 			
-			return new Response(Response.Type.SUCCESS);
-			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
-			return new Response(Response.Type.ERROR, "Could not set block" + analyseException(e), e);
+			Log.e("Could not set block" + analyseException(e));
 		}
 	}
 	
@@ -189,7 +179,6 @@ public class Sim {
 			msg = "Other error: " + e.getClass();
 		}
 		
-		Log.e(msg);
 		e.printStackTrace();
 		
 		return ":\n" + msg;

@@ -146,8 +146,10 @@ public class Simulator {
 		
 		Tag schematicTag = Tag.readFrom(input);
 		
-		if (Constants.DEBUG_SCHEMATICS)
+		if (Constants.DEBUG_MC_SCHEMATICS) {
+			System.out.println("SET");
 			schematicTag.print();
+		}
 		
 		if (!schematicTag.getName().equals("Schematic"))
 			Log.w("The root tag was not named 'Schematic', continuing anyway.");
@@ -353,8 +355,10 @@ public class Simulator {
 		if (tEntities != null)
 			tSchematic.addTag(tEntities);
 	
-		if (Constants.DEBUG_SCHEMATICS)
+		if (Constants.DEBUG_MC_SCHEMATICS) {
+			System.out.println("GET:");
 			tSchematic.print();
+		}
 								
 		tSchematic.writeTo(os);
 		

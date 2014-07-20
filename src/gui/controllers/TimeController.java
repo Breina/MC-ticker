@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import logging.Log;
-import sim.controller.Sim;
 import utils.CircularByteBuffer;
 import utils.Tag;
 
@@ -20,7 +19,10 @@ import utils.Tag;
 public class TimeController implements Runnable {
 	
 	private List<Tag> timeLine;
-	private WorldController controller;
+	
+	private WorldController worldController;
+	private SimController simController;
+	
 	private WorldData worldData;
 	
 	private HashSet<Integer> foundHashes;
@@ -31,14 +33,17 @@ public class TimeController implements Runnable {
 	
 	private Thread thread;
 	
-	public TimeController(WorldController controller) {
+	public TimeController(WorldController worldController) {
 		
-		this.controller = controller;
-		worldData = controller.getWorldData();
-		window = controller.getTimeWindow();
+		this.worldController = worldController;
+		this.simController = worldController.getMainController().getSimController();
+		
+		worldData = worldController.getWorldData();
 		
 		timeLine = new ArrayList<>();
 		foundHashes = new HashSet<>();
+		
+		setPlaystate(PlayState.PAUSED);
 	}
 	
 	public void init() {
@@ -46,14 +51,11 @@ public class TimeController implements Runnable {
 		isPaused = true;
 		endFound = false;
 		
-//		thread = new Thread(this);
-//		thread.start();
-		
 		try {
-			Tag schematic = getSchemFromSim();
+			Tag schematic = simController.getSchematic(worldData);
 			
 			worldData.loadSchematic(schematic);
-			controller.updateWithNewData();
+			worldController.updateWithNewData();
 			
 			foundHashes.clear();
 			timeLine.clear();
@@ -61,10 +63,15 @@ public class TimeController implements Runnable {
 			foundHashes.add(schematic.hashCode());
 			timeLine.add(schematic);
 			
-			prepareTimeLine(100);
-			setPlaystate(PlayState.PAUSED);
+			window.setStep(0);
+			window.setEndFound(false);
 			
-		} catch (NoSuchAlgorithmException | SchematicException | IOException e) {
+			prepareTimeLine(100);
+			
+			thread = new Thread(this);
+			thread.start();
+			
+		} catch (SchematicException | IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -75,17 +82,16 @@ public class TimeController implements Runnable {
 			if (!tick()) {
 				
 				endFound = true;
+				window.setEndFound(true);
 				return;
 			}
 	}
 	
 	private boolean tick() {
 		
-		Sim.getController().tick(worldData.getName());
+		simController.tick(worldData.getName());
 		
-		Tag schematic;
-		try {
-			schematic = getSchemFromSim();
+		Tag schematic = simController.getSchematic(worldData);
 			
 			if (!foundHashes.contains(schematic.hashCode())) {
 
@@ -94,32 +100,43 @@ public class TimeController implements Runnable {
 				
 				return true;
 			}
-			
-		} catch (NoSuchAlgorithmException | IOException | SchematicException e) {
-			Log.e("Failed to get schematic from the simulator: " + e.getMessage());
-		}
 		
 		return false;
 	}
 	
-	private Tag getSchemFromSim() throws NoSuchAlgorithmException, IOException, SchematicException {
-		
-		CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-		Sim.getController().saveWorld(worldData.getName(), cbb.getOutputStream());
-//		worldData.loadSchematic(cbb.getInputStream());
-		
-		return Tag.readFrom(cbb.getInputStream());
-	}
-	
-	public void setPlaystate(PlayState playState) {
+	public synchronized void setPlaystate(PlayState playState) {
 		
 		switch (playState) {
 			
 			case START:
+				isPaused = true;
+				hasDelay = false;
+				
+				index = 0;
+				break;
+				
 			case RUSHBACK:
+				isPaused = false;
+				goForward = false;
+				hasDelay = false;
+				
+				notify();
+				break;
+				
 			case PLAYBACK:
+				isPaused = false;
+				goForward = false;
+				hasDelay = true;
+				
+				notify();
+				break;
+				
 			case STEPBACK:
-				// TODO
+				isPaused = true;
+				goForward = false;
+				hasDelay = false;
+				
+				notify();
 				break;
 				
 			case PAUSED:
@@ -160,7 +177,7 @@ public class TimeController implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		
 		// Hardcore thread never ends
 		
@@ -175,13 +192,25 @@ public class TimeController implements Runnable {
 				else
 					index--;
 				
-				if (index < 0 || index >= timeLine.size()) {
-					Log.e("The time controller tried to access uncalculated times.");
-					return;
+				if (index <= 0 ) {
+					index = 0;
+					setPlaystate(PlayState.PAUSED);
+					
+					window.setBackEnabled(false);
+					window.setPaused(true);
+				}
+				if (index >= (timeLine.size() - 1)) {
+					index = timeLine.size() - 1;
+					setPlaystate(PlayState.PAUSED);
+
+					window.setForwardEnabled(false);
+					window.setPaused(true);
 				}
 				
 				worldData.loadSchematic(timeLine.get(index));
-				controller.updateWithNewData();
+				worldController.updateWithNewData();
+				
+				window.setStep(index);
 				
 				if (!hasDelay)
 					wait(100l);
@@ -192,5 +221,20 @@ public class TimeController implements Runnable {
 		} catch (SchematicException | IOException e) {
 			Log.e("Could not read precomputed schematic.");
 		}
+	}
+	
+	public void loadCurrentTimeIntoSchematic() {
+		try {			
+			worldData.loadSchematic(timeLine.get(index));
+			simController.setSchematic(worldData);
+			worldController.updateWithNewData();
+			
+		} catch (SchematicException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setTimeWindow(TimeWindow window) {
+		this.window = window;
 	}
 }
