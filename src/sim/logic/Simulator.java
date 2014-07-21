@@ -11,13 +11,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import logging.Log;
-
 import sim.constants.Constants;
 import sim.exceptions.SchematicException;
 import sim.loading.Linker;
 import utils.Tag;
+import utils.Tag.Type;
 
 public class Simulator {
 	
@@ -31,6 +32,7 @@ public class Simulator {
 	private RNBTTags rNBTTags;
 	private REntity rEntity;
 	private RBootstrap rBootstrap;
+	private RNextTickListEntry rNextTickListEntry;
 	
 	private HashMap<String, WorldInstance> loadedWorlds;
 
@@ -62,6 +64,8 @@ public class Simulator {
 		rEntity = new REntity(linker, rNBTTags.getReflClass(), rWorld.getReflClass());
 		
 		rBootstrap = new RBootstrap(linker);
+		
+		rNextTickListEntry = new RNextTickListEntry(linker);
 		
 //		for (int i = 0; i < 200; i++) {
 //			try {
@@ -166,10 +170,14 @@ public class Simulator {
 		
 		Tag[] tileEntitiesTags = (Tag[]) schematicTag.findNextTagByName("TileEntities", null).getValue();
 		Tag[] entitiesTags = (Tag[]) schematicTag.findNextTagByName("Entities", null).getValue();
+		
+		Tag tileTicks = schematicTag.findNextTagByName("TileTicks", null);
+		if (tileTicks != null)
+			loadWorldTileTicks(world, (Tag[]) tileTicks.getValue());
 			
 		loadWorldBlocks(world, world.getxSize(), world.getySize(), world.getzSize(), idsArray, dataArray);
 		loadWorldTileEntities(world, tileEntitiesTags);
-		loadWorldEntities(world, entitiesTags);
+//		loadWorldEntities(world, entitiesTags); TODO
 	}
 	
 	/**
@@ -298,7 +306,27 @@ public class Simulator {
 			rWorld.spawnEntityInWorld(world, entity);
 		}
 	}
-
+	
+	private void loadWorldTileTicks(WorldInstance world, Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		rWorld.clearTickEntries(world);
+		
+		for (Tag tag : tags) {
+			
+			int xCoord		= (int) tag.findNextTagByName("x", null).getValue();
+			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
+			int zCoord		= (int) tag.findNextTagByName("z", null).getValue();
+			
+			int intBlock	= (int) tag.findNextTagByName("i", null).getValue();
+			byte byteBlock	= (byte) intBlock;
+			Object block	= rBlock.getBlock(byteBlock);
+			
+			int time		= (int) tag.findNextTagByName("t", null).getValue();
+			int priority	= (int) tag.findNextTagByName("p", null).getValue();
+			
+			rWorld.addTickEntry(world, xCoord, yCoord, zCoord, block, time, priority);
+		}
+	}
 	
 	public void saveWorld(String worldName, OutputStream os) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
@@ -342,18 +370,25 @@ public class Simulator {
 			// Both of these can be null
 			Tag tTileEntities = saveWorldTileEntities(world);
 			Tag tEntities = saveWorldEntities(world);
+			Tag tTileTicks = saveWorldTileTicks(world);
 			
 			Tag tEnd = new Tag(Tag.Type.TAG_End, "", null);
 			
 		Tag tSchematic;
 		
 		tSchematic = new Tag(Tag.Type.TAG_Compound, "Schematic", new Tag[]{tHeight, tLength, tWidth, tMaterials, tData, tBlocks, tEnd});
+//		tSchematic = new Tag(Tag.Type.TAG_Compound, "Schematic", new Tag[]{tHeight, tLength, tWidth, tMaterials, tData, tBlocks});
 		
 		if (tTileEntities != null)
 			tSchematic.addTag(tTileEntities);
 		
 		if (tEntities != null)
 			tSchematic.addTag(tEntities);
+		
+		if (tTileTicks != null)
+			tSchematic.addTag(tTileTicks);
+		
+		tSchematic.addTag(tEnd);
 	
 		if (Constants.DEBUG_MC_SCHEMATICS) {
 			System.out.println("GET:");
@@ -418,6 +453,49 @@ public class Simulator {
 		Tag tEntities = new Tag(Tag.Type.TAG_List, "Entities", payload);
 		
 		return tEntities;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Tag saveWorldTileTicks(WorldInstance world) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		
+		Set tickTicks = world.getPendingTickListEntries();
+		int size = tickTicks.size();
+		
+		if (size == 0)
+			return null;
+		
+		Iterator<Object> tileTicksIterator = tickTicks.iterator();
+		
+//		System.out.println("Printing tileTicks:");
+		
+//		Tag[] tTileTickArray = new Tag[size + 1];
+		Tag[] tTileTickArray = new Tag[size];
+		int index = 0;
+		
+		while (tileTicksIterator.hasNext()) {
+			
+			Object tileTick = tileTicksIterator.next();
+			
+			Tag tXCoord		= new Tag(Type.TAG_Int, "x", rNextTickListEntry.getXCoord(tileTick));
+			Tag tYCoord		= new Tag(Type.TAG_Int, "y", rNextTickListEntry.getYCoord(tileTick));
+			Tag tZCoord		= new Tag(Type.TAG_Int, "z", rNextTickListEntry.getZCoord(tileTick));
+			Tag tBlock		= new Tag(Type.TAG_Int, "i", rBlock.getIdFromBlock(rNextTickListEntry.getBlock(tileTick)));
+			Tag tTime		= new Tag(Type.TAG_Int, "t", (int) (rNextTickListEntry.getScheduledTime(tileTick) - world.getWorldTime()));
+			Tag tPriority	= new Tag(Type.TAG_Int, "p", rNextTickListEntry.getPriority(tileTick));
+			Tag tEnd		= new Tag(Tag.Type.TAG_End, "", null);
+			
+			Tag tTileTick = new Tag(Type.TAG_Compound, null, new Tag[]{tXCoord, tYCoord, tZCoord, tBlock, tTime, tPriority, tEnd});
+			
+			tTileTickArray[index++] = tTileTick;
+		}
+		
+//		tTileTickArray[size] = new Tag(Tag.Type.TAG_End, "", null);
+		
+		Tag tTileTicks = new Tag(Type.TAG_List, "TileTicks", tTileTickArray);
+		
+//		System.out.println(tTileTicks);
+		
+		return tTileTicks;
 	}
 	
 	/**

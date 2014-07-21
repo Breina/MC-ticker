@@ -1,13 +1,13 @@
 package sim.logic;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
 
 public class WorldInstance {
 
 	private Object world;
 	// Where all future updates are stored as PendingTickListEntry objects
-	private HashSet<?> pendingTickListEntriesHashSet;
+	private Set<?> pendingTickListEntries;
 	private ArrayList<Object> loadedTileEntities, loadedEntities;
 	private long worldTime;
 	private boolean doTimeUpdate;
@@ -25,13 +25,17 @@ public class WorldInstance {
 	public void setWorld(Object world) {
 		this.world = world;
 	}
-
-	public HashSet<?> getPendingTickListEntriesHashSet() {
-		return pendingTickListEntriesHashSet;
+	
+	public void clearPendingTickListEntries() {
+		pendingTickListEntries.clear();
 	}
 
-	public void setPendingTickListEntriesHashSet(HashSet<?> pendingTickListEntriesHashSet) {
-		this.pendingTickListEntriesHashSet = pendingTickListEntriesHashSet;
+	public Set<?> getPendingTickListEntries() {
+		return pendingTickListEntries;
+	}
+
+	public void setPendingTickListEntries(Set<?> pendingTickListEntries) {
+		this.pendingTickListEntries = pendingTickListEntries;
 	}
 
 	public ArrayList<Object> getLoadedTileEntities() {

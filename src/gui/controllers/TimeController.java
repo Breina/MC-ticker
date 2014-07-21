@@ -212,7 +212,7 @@ public class TimeController implements Runnable {
 				
 				window.setStep(index);
 				
-				if (!hasDelay)
+				if (hasDelay)
 					wait(100l);
 			}
 		} catch (InterruptedException e) {
@@ -224,7 +224,8 @@ public class TimeController implements Runnable {
 	}
 	
 	public void loadCurrentTimeIntoSchematic() {
-		try {			
+		try {
+			
 			worldData.loadSchematic(timeLine.get(index));
 			simController.setSchematic(worldData);
 			worldController.updateWithNewData();

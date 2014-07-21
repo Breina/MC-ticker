@@ -51,18 +51,22 @@ public class Constants {
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
 		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isClient"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"field_147482_g"}, {"field_147484_a"}, {"field_147483_b"}, {"playerEntities"}, {"weatherEffects"},
-		{"entityIdMap"}, {"rand", "RNG for World."}};
+		{"entityIdMap"}, {"rand", "RNG for World."}, {"xCoord", "X position this tick is occuring at"},
+		{"yCoord", "Y position this tick is occuring at"}, {"zCoord", "Z position this tick is occuring at"}, {"scheduledTime"},
+		{"priority"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
-		"NBTSizeTracker"};
+		"NBTSizeTracker", "NextTickListEntry"};
 	
 	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
 	public final static String WORLD_GETBLOCK = "a";
 	public final static String WORLD_PROFILER = "C";
+	public final static String WORLD_ADDTILEENTRY = "b";
 	public final static String BOOTLOADER_REGISTER = "b";
 	public final static String NBTTAGCOMPOUND_LOAD = "a";			// {"load", "\"Read the actual data"}
+	public final static String NEXTTICKLISTENTRY_BLOCK = "g";
 	
 	// All of these are properties of the World object
 	public final static String WORLDTYPE = "Simulation";

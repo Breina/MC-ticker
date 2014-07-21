@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import logging.Log;
-import sim.constants.Constants;
 import sim.loading.Linker;
 
 /**

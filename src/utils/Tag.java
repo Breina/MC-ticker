@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer.Form;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -598,8 +599,42 @@ public class Tag {
     }
 
     private void print(Tag t, int indent) {
-    	
-    	System.out.println(toString(t, indent));
+        Type type = t.getType();
+        if (type == Type.TAG_End)
+            return;
+        String name = t.getName();
+        indent(indent);
+        System.out.print(getTypeString(t.getType()));
+        if (name != null)
+            System.out.print("(\"" + t.getName() + "\")");
+        if (type == Type.TAG_Byte_Array) {
+            byte[] b = (byte[]) t.getValue();
+            System.out.println(": [" + b.length + " bytes]");
+        } else if (type == Type.TAG_List) {
+            Tag[] subtags = (Tag[]) t.getValue();
+            System.out.println(": " + subtags.length + " entries of type " + getTypeString(t.getListType()));
+            for (Tag st : subtags) {
+                print(st, indent + 1);
+            }
+            indent(indent);
+            System.out.println("}");
+        } else if (type == Type.TAG_Compound) {
+            Tag[] subtags = (Tag[]) t.getValue();
+            System.out.println(": " + (subtags.length - 1) + " entries");
+            indent(indent);
+            System.out.println("{");
+            for (Tag st : subtags) {
+                print(st, indent + 1);
+            }
+            indent(indent);
+            System.out.println("}");
+        } else if (type == Type.TAG_Int_Array) {
+            int[] i = (int[]) t.getValue();
+            System.out.println(": [" + i.length * 4 + " bytes]");
+ 
+        } else {
+            System.out.println(": " + t.getValue());
+        }
     }
     
     public void setHash(int hash) {
@@ -618,22 +653,44 @@ public class Tag {
     }
     
     /**
-     * Replaces this tags with the contents of this compound tag
-     * Assumes a compound tag, will throw a ClassCastException and will infuriate CodeRaider
-     * "You should always type check when you're unsure." - CodeRaider
+     * Replaces a tag's contents with another.
+     * 
+     * @param toTag
+     * @param fromTag
+     */
+    public void replaceTag(Tag toTag, Tag fromTag) {
+    	
+    	if (toTag.getType() != fromTag.getType())
+    		throw new RuntimeException("Mismatched types when copying " + toTag.getName() +
+    									", from " + fromTag.getType() + " to " + toTag.getType());
+    	
+    	toTag.setValue(fromTag.value);
+    	toTag.listType = fromTag.listType;
+    }
+    
+    /**
+     * Replaces this tags with the contents of this compound or list tag.
+     * 
+     * @param copyTag The compound or list tag.
      */
     public void replaceTags(Tag copyTag) {
+    	
+    	if (getType() != Type.TAG_Compound && getType() != Type.TAG_List)
+    		throw new RuntimeException("Replacing tags of non-list type: " + getType());
     	
     	Tag[] subtags = (Tag[]) copyTag.getValue();
     	
     	for (Tag fromTag : subtags) {
+    		
+    		if (fromTag.getType() == Type.TAG_End)
+    			break;
     		
     		Tag toTag = findTagByName(fromTag.name);
     		
     		if (toTag == null)
     			addTag(fromTag);
     		else
-    			toTag.setValue(fromTag.getValue());
+    			replaceTag(toTag, fromTag);
     	}
     }
 }

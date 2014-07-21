@@ -10,8 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 
 import logging.Log;
-import sim.controller.Response;
-import sim.controller.Response.Type;
 import sim.logic.Simulator;
 import utils.CircularByteBuffer;
 import utils.Tag;

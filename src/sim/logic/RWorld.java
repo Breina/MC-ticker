@@ -26,11 +26,10 @@ public class RWorld implements ISimulated {
 	
 	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap;
 	private Method m_tickUpdates, m_tick, m_getBlock, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
-		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities;
-	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_pendingTickListEntriesHashSet,
-		f_pendingTickListEntriesThisTick, f_worldInfo, f_chunkProvider, f_isClient, f_worldAccesses, f_loadedEntityList,
-		f_unloadedEntityList, f_loadedTileEntities, f_toLoadTileEntities, f_toUnloadTileEntities, f_playerEntities,
-		f_weatherEffects, f_entityIdMap, f_rand;
+		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry;
+	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isClient,
+	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_loadedTileEntities, f_toLoadTileEntities, f_toUnloadTileEntities,
+	f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo;
 	private Enum<?> e_GameType;
 	
@@ -95,6 +94,7 @@ public class RWorld implements ISimulated {
 		
 		// TODO can't use linker yet for these
 		m_getBlock							= World.getDeclaredMethod(Constants.WORLD_GETBLOCK, int.class, int.class, int.class);
+		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTILEENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
 		f_theProfiler						= World.getField(Constants.WORLD_PROFILER);
 		f_theProfiler						.setAccessible(true);
 	}
@@ -129,12 +129,10 @@ public class RWorld implements ISimulated {
 		f_theProfiler.set(worldServer, rProfiler.getInstance());
 		
 		TreeSet<?> pendingTickListEntriesTreeSet = new TreeSet<>();
-		HashSet<?> pendingTickListEntriesHashSet = new HashSet<>();
-		List<?> pendingTickListEntriesThisTick = new ArrayList<>();
 		
 		f_pendingTickListEntriesTreeSet.set(worldServer, pendingTickListEntriesTreeSet);
-		f_pendingTickListEntriesHashSet.set(worldServer, pendingTickListEntriesHashSet);
-		f_pendingTickListEntriesThisTick.set(worldServer, pendingTickListEntriesThisTick);
+		f_pendingTickListEntriesHashSet.set(worldServer, new HashSet<Object>());
+		f_pendingTickListEntriesThisTick.set(worldServer, new ArrayList<Object>());
 		
 		Object worldType = c_worldType.newInstance(_worldTypeId, _worldType);
 		e_GameType = Enum.valueOf((Class<Enum>) GameType, _gameType);
@@ -176,7 +174,7 @@ public class RWorld implements ISimulated {
 			world.setWorld(worldServer);
 			world.setLoadedTileEntities(loadedTileEntities);
 			world.setLoadedEntities(loadedEntities);
-			world.setPendingTickListEntriesHashSet(pendingTickListEntriesHashSet);
+			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setDoTimeUpdate(true);
 		return world;
 	}
@@ -195,7 +193,7 @@ public class RWorld implements ISimulated {
 	public void tickUpdates(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		if (Constants.DEBUG_WORLD)
-			System.out.println("Ticking " + world.getPendingTickListEntriesHashSet().size() + " pending updates...");
+			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
 		
 		advanceTicks(world, advanceTicks);
 		
@@ -292,9 +290,9 @@ public class RWorld implements ISimulated {
 	 * Returns the hashset containing NextTickListEntry objects
 	 * @return
 	 */
-	public Object getPendingTicksHashset(WorldInstance world) {
+	public Object getPendingTicks(WorldInstance world) {
 		
-		return world.getPendingTickListEntriesHashSet();
+		return world.getPendingTickListEntries();
 	}
 	
 	public ArrayList<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {
@@ -302,5 +300,13 @@ public class RWorld implements ISimulated {
 		ArrayList<Object> tileEntities = (ArrayList<Object>) f_loadedTileEntities.get(world.getWorld());
 		
 		return tileEntities;
+	}
+	
+	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		m_addTickEntry.invoke(world.getWorld(), x, y, z, block, scheduledTime, priority);
+	}
+	
+	public void clearTickEntries(WorldInstance world) {
+		world.clearPendingTickListEntries();
 	}
 }
