@@ -93,13 +93,13 @@ public class TimeController implements Runnable {
 		
 		Tag schematic = simController.getSchematic(worldData);
 			
-			if (!foundHashes.contains(schematic.hashCode())) {
+		if (!foundHashes.contains(schematic.hashCode())) {
 
-				timeLine.add(schematic);
-				foundHashes.add(schematic.hashCode());
-				
-				return true;
-			}
+			timeLine.add(schematic);
+			foundHashes.add(schematic.hashCode());
+			
+			return true;
+		}
 		
 		return false;
 	}
@@ -224,8 +224,7 @@ public class TimeController implements Runnable {
 	}
 	
 	public void loadCurrentTimeIntoSchematic() {
-		try {
-			
+		try {			
 			worldData.loadSchematic(timeLine.get(index));
 			simController.setSchematic(worldData);
 			worldController.updateWithNewData();

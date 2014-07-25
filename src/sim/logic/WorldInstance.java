@@ -7,7 +7,7 @@ public class WorldInstance {
 
 	private Object world;
 	// Where all future updates are stored as PendingTickListEntry objects
-	private Set<?> pendingTickListEntries;
+	private Set<?> pendingTickListEntries, pendingTickListHashSet;
 	private ArrayList<Object> loadedTileEntities, loadedEntities;
 	private long worldTime;
 	private boolean doTimeUpdate;
@@ -26,8 +26,9 @@ public class WorldInstance {
 		this.world = world;
 	}
 	
-	public void clearPendingTickListEntries() {
+	public void clearPendingTickLists() {
 		pendingTickListEntries.clear();
+		pendingTickListHashSet.clear();
 	}
 
 	public Set<?> getPendingTickListEntries() {
@@ -36,6 +37,10 @@ public class WorldInstance {
 
 	public void setPendingTickListEntries(Set<?> pendingTickListEntries) {
 		this.pendingTickListEntries = pendingTickListEntries;
+	}
+	
+	public void setPendingTickListHashSet(Set<?> pendingTickListHashSet) {
+		this.pendingTickListHashSet = pendingTickListHashSet;
 	}
 
 	public ArrayList<Object> getLoadedTileEntities() {

@@ -172,6 +172,7 @@ public class Simulator {
 		Tag[] entitiesTags = (Tag[]) schematicTag.findNextTagByName("Entities", null).getValue();
 		
 		Tag tileTicks = schematicTag.findNextTagByName("TileTicks", null);
+		
 		if (tileTicks != null)
 			loadWorldTileTicks(world, (Tag[]) tileTicks.getValue());
 			
@@ -311,7 +312,11 @@ public class Simulator {
 		
 		rWorld.clearTickEntries(world);
 		
+		System.out.println("LOAD");
+		
 		for (Tag tag : tags) {
+			
+			tag.print();
 			
 			int xCoord		= (int) tag.findNextTagByName("x", null).getValue();
 			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
@@ -466,8 +471,6 @@ public class Simulator {
 		
 		Iterator<Object> tileTicksIterator = tickTicks.iterator();
 		
-//		System.out.println("Printing tileTicks:");
-		
 //		Tag[] tTileTickArray = new Tag[size + 1];
 		Tag[] tTileTickArray = new Tag[size];
 		int index = 0;
@@ -493,7 +496,8 @@ public class Simulator {
 		
 		Tag tTileTicks = new Tag(Type.TAG_List, "TileTicks", tTileTickArray);
 		
-//		System.out.println(tTileTicks);
+		System.out.println("SAVE");
+		tTileTicks.print();
 		
 		return tTileTicks;
 	}

@@ -116,23 +116,11 @@ public class WorldController {
 	
 	private void setBlock(final int x, final int y, final int z, final Block block) {
 		
-//		worldData.setBlock(x, y, z, block);
-		
 		timeController.loadCurrentTimeIntoSchematic();
 		
 		simController.setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
 				
 		timeController.init();
-//		
-//		try {
-//			worldData.loadSchematic(simController.getSchematic(worldData));
-//		} catch (SchematicException | IOException e) {
-//			e.printStackTrace();
-//		}
-//		updateWithNewData();
-//		
-//		System.out.println("stop");
-		
 	}
 	
 	private void destroySim() {

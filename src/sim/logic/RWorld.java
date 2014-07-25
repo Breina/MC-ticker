@@ -129,9 +129,10 @@ public class RWorld implements ISimulated {
 		f_theProfiler.set(worldServer, rProfiler.getInstance());
 		
 		TreeSet<?> pendingTickListEntriesTreeSet = new TreeSet<>();
+		HashSet<?> pendingTickListEntriesHashSet = new HashSet<>();
 		
 		f_pendingTickListEntriesTreeSet.set(worldServer, pendingTickListEntriesTreeSet);
-		f_pendingTickListEntriesHashSet.set(worldServer, new HashSet<Object>());
+		f_pendingTickListEntriesHashSet.set(worldServer, pendingTickListEntriesHashSet);
 		f_pendingTickListEntriesThisTick.set(worldServer, new ArrayList<Object>());
 		
 		Object worldType = c_worldType.newInstance(_worldTypeId, _worldType);
@@ -175,6 +176,7 @@ public class RWorld implements ISimulated {
 			world.setLoadedTileEntities(loadedTileEntities);
 			world.setLoadedEntities(loadedEntities);
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
+			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
 		return world;
 	}
@@ -307,6 +309,6 @@ public class RWorld implements ISimulated {
 	}
 	
 	public void clearTickEntries(WorldInstance world) {
-		world.clearPendingTickListEntries();
+		world.clearPendingTickLists();
 	}
 }
