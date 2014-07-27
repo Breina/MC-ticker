@@ -2,8 +2,8 @@
 nbproject/private/
 
 #eclipse
-.settings/
-.project
+#.settings/
+#.project
 
 # generic files to ignore
 *~

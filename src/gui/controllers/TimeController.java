@@ -33,7 +33,7 @@ public class TimeController implements Runnable {
 	
 	private TimeWindow window;
 	
-	private Thread thread;
+	private boolean go;
 	
 	public TimeController(WorldController worldController) {
 		
@@ -65,8 +65,8 @@ public class TimeController implements Runnable {
 			
 			window.setStep(0);
 			
-			thread = new Thread(this);
-			thread.start();
+			go = true;
+			new Thread(this).start();
 			
 		} catch (SchematicException | IOException e) {
 			e.printStackTrace();
@@ -92,10 +92,13 @@ public class TimeController implements Runnable {
 		
 		Tag schematic = simController.getSchematic(worldData);
 
-		if (checkHash) {
+		if (checkHash && !isPaused) {
 			int hash = schematic.hashCode();
-			if (foundHashes.contains(hash))
+			
+			if (foundHashes.contains(hash) && !isPaused) {
+				checkHash = false;
 				return null;
+			}
 			
 			foundHashes.add(hash);
 		}
@@ -146,6 +149,7 @@ public class TimeController implements Runnable {
 					
 				case PAUSED:
 					isPaused = true;
+					checkHash = true;
 					break;
 					
 				case STEPFORWARD:
@@ -196,7 +200,7 @@ public class TimeController implements Runnable {
 			
 			Tag schematic;
 			
-			for (;;) {
+			while (go) {
 				
 				if (isPaused)
 					wait();
@@ -204,10 +208,9 @@ public class TimeController implements Runnable {
 				if (goForward) {
 					if (timeLine.atEnd()) {
 						schematic = tick();
-						if (checkHash && schematic == null) {
-							setPlaystate(PlayState.PAUSED);
+						if (schematic == null) {
+							isPaused = true;
 							window.setPaused(true);
-							checkHash = false;
 							continue;
 						}
 					}
@@ -275,5 +278,9 @@ public class TimeController implements Runnable {
 	
 	public void setTimeWindow(TimeWindow window) {
 		this.window = window;
+	}
+	
+	public void stopThread() {
+		go = false;
 	}
 }

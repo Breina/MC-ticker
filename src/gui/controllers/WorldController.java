@@ -88,6 +88,7 @@ public class WorldController {
 			drawingWindow.dispose();
 		
 		time.dispose();
+		timeController.stopThread();
 		destroySim();
 		
 		mainController.getWindowMenu().removeWorldMenu(worldMenu);
