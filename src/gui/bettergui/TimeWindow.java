@@ -36,7 +36,7 @@ public class TimeWindow extends WorldMenuWindow {
 	private JToggleButton btnRushBack, btnPlayBack, btnPause, btnPlayForward, btnRushForward;
 	private JLabel lblStep;
 	
-	private boolean isPaused, endFound;
+	private boolean isPaused, isBack;
 
 	public TimeWindow(WorldController worldController) {
 		super(worldController, "Time", true);
@@ -44,7 +44,7 @@ public class TimeWindow extends WorldMenuWindow {
 		this.timeController = worldController.getTimeController();
 		
 		isPaused = true;
-		endFound = false;
+		isBack = false;
 		
 		if (!isInitialized) {
 			
@@ -99,7 +99,6 @@ public class TimeWindow extends WorldMenuWindow {
 		
 		setPaused(true);
 		setBackEnabled(false);
-		btnEnd.setEnabled(false);
 		
 		contentPanel.add(btnStart);
 		contentPanel.add(btnRushBack);
@@ -115,9 +114,7 @@ public class TimeWindow extends WorldMenuWindow {
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
 				setPaused(true);
-				setForwardEnabled(true);
 				setBackEnabled(false);
 				
 				timeController.setPlaystate(PlayState.START);
@@ -128,7 +125,6 @@ public class TimeWindow extends WorldMenuWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setPaused(false);
-				setForwardEnabled(true);
 				
 				timeController.setPlaystate(PlayState.RUSHBACK);
 			}
@@ -138,7 +134,6 @@ public class TimeWindow extends WorldMenuWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setPaused(false);
-				setForwardEnabled(true);
 				
 				timeController.setPlaystate(PlayState.PLAYBACK);
 			}
@@ -147,7 +142,6 @@ public class TimeWindow extends WorldMenuWindow {
 		btnStepBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setForwardEnabled(true);
 				
 				timeController.setPlaystate(PlayState.STEPBACK);
 			}
@@ -175,7 +169,6 @@ public class TimeWindow extends WorldMenuWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setPaused(false);
-				setBackEnabled(true);
 				
 				timeController.setPlaystate(PlayState.PLAYFORWARD);
 			}
@@ -185,7 +178,6 @@ public class TimeWindow extends WorldMenuWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setPaused(false);
-				setBackEnabled(true);
 				
 				timeController.setPlaystate(PlayState.RUSHFORWARD);
 			}
@@ -195,8 +187,6 @@ public class TimeWindow extends WorldMenuWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setPaused(true);
-				setBackEnabled(true);
-				setForwardEnabled(false);
 				
 				timeController.setPlaystate(PlayState.END);
 			}
@@ -216,28 +206,29 @@ public class TimeWindow extends WorldMenuWindow {
 		
 		if (isPaused)
 			btnStepBack.setEnabled(b);
+		
+		isBack = b;
 	}
 	
-	public void setForwardEnabled(boolean b) {
-		if (endFound)
-			btnEnd.setEnabled(b);
-		btnRushForward.setEnabled(b);
-		btnPlayForward.setEnabled(b);
-		
-		if (isPaused)
-			btnStepForward.setEnabled(b);
-	}
+	// Always enabled
+//	public void setForwardEnabled(boolean b) {
+//		if (endFound)
+//			btnEnd.setEnabled(b);
+//		btnRushForward.setEnabled(b);
+//		btnPlayForward.setEnabled(b);
+//		
+//		if (isPaused)
+//			btnStepForward.setEnabled(b);
+//	}
 	
 	public void setPaused(boolean b) {
-		btnStepBack.setEnabled(b);
+		if (isBack)
+			btnStepBack.setEnabled(b);
+		
 		btnStepForward.setEnabled(b);
 		btnPause.setSelected(b);
 		
 		isPaused = b;
-	}
-	
-	public void setEndFound(boolean b) {
-		endFound = b;
 	}
 	
 	public void setStep(int step) {

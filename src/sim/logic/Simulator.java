@@ -95,7 +95,7 @@ public class Simulator {
 					blockData[size] = 0;
 				}
 			
-		loadWorldBlocks(world, xSize, ySize, zSize, blockIds, blockData);	
+		setWorldBlocks(world, xSize, ySize, zSize, blockIds, blockData);	
 	}
 	
 	private WorldInstance getWorldByName(String name) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -117,7 +117,7 @@ public class Simulator {
 		loadedWorlds.remove(worldName);
 	}
 	
-	public void loadWorldFromFile(File schematicFile) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
+	public void setWorldFromFile(File schematicFile) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
 		
 		try {
 			
@@ -127,7 +127,7 @@ public class Simulator {
 			if (!schematicFile.canRead())
 				throw new SchematicException("Unauthorized to read file: " + schematicFile.getPath());
 			
-			loadWorld(schematicFile.getName(), new FileInputStream(schematicFile));
+			setWorld(schematicFile.getName(), new FileInputStream(schematicFile));
 			
 		} catch (IOException | SchematicException e) {
 			
@@ -144,7 +144,7 @@ public class Simulator {
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public void loadWorld(String worldName, InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
+	public void setWorld(String worldName, InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
 		
 		WorldInstance world = getWorldByName(worldName);
 		
@@ -161,24 +161,35 @@ public class Simulator {
 		if (!schematicTag.findNextTagByName("Materials", null).getValue().equals("Alpha"))
 			Log.w("The schematic is encoded for Minecraft classic or something else, which is not supported, but I'll try.");
 		
+		// Size
 		world.setxSize((int) ((short) schematicTag.findNextTagByName("Width", null).getValue()));
 		world.setySize((int) ((short) schematicTag.findNextTagByName("Height", null).getValue()));
 		world.setzSize((int) ((short) schematicTag.findNextTagByName("Length", null).getValue()));
 		
+		// Blocks
 		byte[] idsArray = (byte[]) schematicTag.findNextTagByName("Blocks", null).getValue();
 		byte[] dataArray = (byte[]) schematicTag.findNextTagByName("Data", null).getValue();
 		
-		Tag[] tileEntitiesTags = (Tag[]) schematicTag.findNextTagByName("TileEntities", null).getValue();
-		Tag[] entitiesTags = (Tag[]) schematicTag.findNextTagByName("Entities", null).getValue();
+		setWorldBlocks(world, world.getxSize(), world.getySize(), world.getzSize(), idsArray, dataArray);
 		
+		// TileEntities
+		Tag tileEntities = schematicTag.findNextTagByName("TileEntities", null);
+		rWorld.clearTileEntities(world);
+		if (tileEntities != null)
+			setWorldTileEntities(world, (Tag[]) tileEntities.getValue());
+		
+		// Entities
+		Tag entities = schematicTag.findNextTagByName("Entities", null);
+		rWorld.clearEntities(world);
+		// TODO
+//		if (entities != null)
+//			setWorldEntities(world, (Tag[]) entities.getValue());
+		
+		// TileTicks
 		Tag tileTicks = schematicTag.findNextTagByName("TileTicks", null);
-		
+		rWorld.clearTickEntries(world);
 		if (tileTicks != null)
-			loadWorldTileTicks(world, (Tag[]) tileTicks.getValue());
-			
-		loadWorldBlocks(world, world.getxSize(), world.getySize(), world.getzSize(), idsArray, dataArray);
-		loadWorldTileEntities(world, tileEntitiesTags);
-//		loadWorldEntities(world, entitiesTags); TODO
+			setWorldTileTicks(world, (Tag[]) tileTicks.getValue());
 	}
 	
 	/**
@@ -188,7 +199,7 @@ public class Simulator {
 	 * Assumes SharedWorld.blockData has the exact same dimensions as SharedWorld.blockIds.
 	 * @param world The world object to load in
 	 */
-	private void loadWorldBlocks(WorldInstance world, int xSize, int ySize, int zSize, byte[] blockIds, byte[] blockDatas) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+	private void setWorldBlocks(WorldInstance world, int xSize, int ySize, int zSize, byte[] blockIds, byte[] blockDatas) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
 		
 		rChunkProvider.clear();
 		
@@ -258,7 +269,7 @@ public class Simulator {
 	 * Loads all tile entities from Tags, can run in a separate thread
 	 * @param tags The tag array
 	 */
-	private void loadWorldTileEntities(WorldInstance world, Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+	private void setWorldTileEntities(WorldInstance world, Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		for (int i = 0; i < tags.length; i++) {
 			
@@ -294,7 +305,7 @@ public class Simulator {
 		}
 	}
 	
-	private void loadWorldEntities(WorldInstance world, Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+	private void setWorldEntities(WorldInstance world, Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		for (int i = 0; i < tags.length; i++) {
 			
@@ -308,15 +319,9 @@ public class Simulator {
 		}
 	}
 	
-	private void loadWorldTileTicks(WorldInstance world, Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		rWorld.clearTickEntries(world);
-		
-		System.out.println("LOAD");
+	private void setWorldTileTicks(WorldInstance world, Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		for (Tag tag : tags) {
-			
-			tag.print();
 			
 			int xCoord		= (int) tag.findNextTagByName("x", null).getValue();
 			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
@@ -333,7 +338,7 @@ public class Simulator {
 		}
 	}
 	
-	public void saveWorld(String worldName, OutputStream os) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+	public void getWorld(String worldName, OutputStream os) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		WorldInstance world = getWorldByName(worldName);
 		
@@ -373,16 +378,15 @@ public class Simulator {
 			Tag tData = new Tag(Tag.Type.TAG_Byte_Array, "Data", blockData);
 			
 			// Both of these can be null
-			Tag tTileEntities = saveWorldTileEntities(world);
-			Tag tEntities = saveWorldEntities(world);
-			Tag tTileTicks = saveWorldTileTicks(world);
+			Tag tTileEntities = getWorldTileEntities(world);
+			Tag tEntities = getWorldEntities(world);
+			Tag tTileTicks = getWorldTileTicks(world);
 			
 			Tag tEnd = new Tag(Tag.Type.TAG_End, "", null);
 			
 		Tag tSchematic;
 		
 		tSchematic = new Tag(Tag.Type.TAG_Compound, "Schematic", new Tag[]{tHeight, tLength, tWidth, tMaterials, tData, tBlocks, tEnd});
-//		tSchematic = new Tag(Tag.Type.TAG_Compound, "Schematic", new Tag[]{tHeight, tLength, tWidth, tMaterials, tData, tBlocks});
 		
 		if (tTileEntities != null)
 			tSchematic.addTag(tTileEntities);
@@ -405,7 +409,7 @@ public class Simulator {
 		Log.i("Saving world");
 	}
 	
-	private Tag saveWorldTileEntities(WorldInstance world) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+	private Tag getWorldTileEntities(WorldInstance world) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		List<Object> tileEntities = rWorld.getLoadedTileEntities(world);//world.getLoadedTileEntities();
 		
@@ -434,7 +438,7 @@ public class Simulator {
 		return tTileEntities;		
 	}
 	
-	private Tag saveWorldEntities(WorldInstance world) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+	private Tag getWorldEntities(WorldInstance world) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		List<Object> entities = world.getLoadedEntities();
 		
 		if (entities.size() == 0)
@@ -461,7 +465,7 @@ public class Simulator {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Tag saveWorldTileTicks(WorldInstance world) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	private Tag getWorldTileTicks(WorldInstance world) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		
 		Set tickTicks = world.getPendingTickListEntries();
 		int size = tickTicks.size();
@@ -471,7 +475,6 @@ public class Simulator {
 		
 		Iterator<Object> tileTicksIterator = tickTicks.iterator();
 		
-//		Tag[] tTileTickArray = new Tag[size + 1];
 		Tag[] tTileTickArray = new Tag[size];
 		int index = 0;
 		
@@ -492,12 +495,7 @@ public class Simulator {
 			tTileTickArray[index++] = tTileTick;
 		}
 		
-//		tTileTickArray[size] = new Tag(Tag.Type.TAG_End, "", null);
-		
 		Tag tTileTicks = new Tag(Type.TAG_List, "TileTicks", tTileTickArray);
-		
-		System.out.println("SAVE");
-		tTileTicks.print();
 		
 		return tTileTicks;
 	}

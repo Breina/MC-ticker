@@ -26,6 +26,14 @@ public class WorldInstance {
 		this.world = world;
 	}
 	
+	public void clearLoadedTileEntities() {
+		loadedTileEntities.clear();
+	}
+	
+	public void clearLoadedEntities() {
+		loadedEntities.clear();
+	}
+	
 	public void clearPendingTickLists() {
 		pendingTickListEntries.clear();
 		pendingTickListHashSet.clear();

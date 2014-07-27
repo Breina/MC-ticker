@@ -308,6 +308,14 @@ public class RWorld implements ISimulated {
 		m_addTickEntry.invoke(world.getWorld(), x, y, z, block, scheduledTime, priority);
 	}
 	
+	public void clearTileEntities(WorldInstance world) {
+		world.clearLoadedTileEntities();
+	}
+	
+	public void clearEntities(WorldInstance world) {
+		world.clearLoadedEntities();
+	}
+	
 	public void clearTickEntries(WorldInstance world) {
 		world.clearPendingTickLists();
 	}

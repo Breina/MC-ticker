@@ -30,7 +30,7 @@ public class SimController {
 		try {
 			
 			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			worldData.saveSchematic(cbb.getOutputStream());
+			worldData.getSchematic(cbb.getOutputStream());
 			loadWorld(worldData.getName(), cbb.getInputStream());
 			
 		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
@@ -89,7 +89,7 @@ public class SimController {
 		
 		try {
 			
-			simulator.loadWorld(worldName, input);
+			simulator.setWorld(worldName, input);
 			
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -101,7 +101,7 @@ public class SimController {
 		
 		try {
 			
-			simulator.saveWorld(worldName, output);
+			simulator.getWorld(worldName, output);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | IOException e) {
 			

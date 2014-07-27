@@ -40,13 +40,13 @@ public class WorldData {
 		this.upToDate = false;
 		this.schematicFile = schematicFile;
 		
-		loadSchematic(new FileInputStream(schematicFile));
+		setSchematic(new FileInputStream(schematicFile));
 	}
 	
 	public void save() {
 		
 		try {
-			saveSchematic(new FileOutputStream(schematicFile));
+			getSchematic(new FileOutputStream(schematicFile));
 		} catch (SchematicException | IOException e) {
 			
 			Log.e("Could not save schematic: " + e.getMessage());
@@ -56,7 +56,7 @@ public class WorldData {
 	public void load() {
 		
 		try {
-			loadSchematic(new FileInputStream(schematicFile));
+			setSchematic(new FileInputStream(schematicFile));
 		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
 
 			Log.e("Could not load schematic: " + e.getMessage());
@@ -71,17 +71,17 @@ public class WorldData {
 	 * @throws NoSuchAlgorithmException 
 	 */
 	// TODO remove method completely
-	public void loadSchematic(InputStream input) throws SchematicException, IOException, NoSuchAlgorithmException {
+	public void setSchematic(InputStream input) throws SchematicException, IOException, NoSuchAlgorithmException {
 
-			loadSchematic(Tag.readFrom(input));
+			setSchematic(Tag.readFrom(input));
 	}
 	
-	public void loadSchematic(Tag input) throws SchematicException, IOException {
+	public void setSchematic(Tag input) throws SchematicException, IOException {
 
-		if (schematic != null) {
-			schematic.replaceTags(input);
-						
-		} else
+//		if (schematic != null) {
+//			schematic.replaceTags(input);
+//						
+//		} else
 			schematic = input;
 		
 		if (Constants.DEBUG_TAG_SCHEMATICS) {
@@ -127,7 +127,7 @@ public class WorldData {
 	 * @throws SchematicException
 	 * @throws IOException
 	 */
-	public void saveSchematic(OutputStream output) throws SchematicException, IOException {
+	public void getSchematic(OutputStream output) throws SchematicException, IOException {
 		
 		if (!upToDate) {
 		

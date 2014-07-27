@@ -2,32 +2,33 @@ package gui.controllers;
 
 import gui.bettergui.TimeWindow;
 import gui.bettergui.time.PlayState;
+import gui.bettergui.time.TimeLine;
 import gui.exceptions.SchematicException;
 import gui.objects.WorldData;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import logging.Log;
-import utils.CircularByteBuffer;
 import utils.Tag;
 
 
 public class TimeController implements Runnable {
 	
-	private List<Tag> timeLine;
+	private TimeLine timeLine; 
+	private int tickCounter = 0;
+	private int maxCount = 0;
 	
 	private WorldController worldController;
 	private SimController simController;
 	
 	private WorldData worldData;
 	
-	private HashSet<Integer> foundHashes;
-	private int index;
-	private boolean goForward, isPaused, hasDelay, endFound;
+//	private HashSet<Integer> foundHashes;
+	
+	private boolean goForward, isPaused, hasDelay;
 	
 	private TimeWindow window;
 	
@@ -40,33 +41,28 @@ public class TimeController implements Runnable {
 		
 		worldData = worldController.getWorldData();
 		
-		timeLine = new ArrayList<>();
-		foundHashes = new HashSet<>();
+		timeLine = new TimeLine(100);
+//		foundHashes = new HashSet<>();
 		
 		setPlaystate(PlayState.PAUSED);
 	}
 	
 	public void init() {
-		index = 0;
 		isPaused = true;
-		endFound = false;
 		
 		try {
 			Tag schematic = simController.getSchematic(worldData);
 			
-			worldData.loadSchematic(schematic);
+			worldData.setSchematic(schematic);
 			worldController.updateWithNewData();
 			
-			foundHashes.clear();
-			timeLine.clear();
+//			foundHashes.clear();
+			timeLine.init(schematic);
 			
-			foundHashes.add(schematic.hashCode());
-			timeLine.add(schematic);
+//			foundHashes.add(schematic.hashCode());
 			
 			window.setStep(0);
-			window.setEndFound(false);
-			
-			prepareTimeLine(100);
+//			window.setEndFound(false);
 			
 			thread = new Thread(this);
 			thread.start();
@@ -76,103 +72,107 @@ public class TimeController implements Runnable {
 		}
 	}
 	
-	private void prepareTimeLine(int max) {
+	public void updateCurrentSchematic(Tag schematic) {
 		
-		for (int i = 0; i < max; i++)
-			if (!tick()) {
-				
-				endFound = true;
-				window.setEndFound(true);
-				return;
-			}
+		try {
+			timeLine.set(schematic);
+			worldData.setSchematic(schematic);
+			worldController.updateWithNewData();
+			
+		} catch (SchematicException | IOException e) {
+			Log.e("Failed to update updated schematic: " + e.getMessage());
+		}
 	}
 	
-	private boolean tick() {
+	private Tag tick() {
 		
 		simController.tick(worldData.getName());
 		
 		Tag schematic = simController.getSchematic(worldData);
-			
-		if (!foundHashes.contains(schematic.hashCode())) {
-
-			timeLine.add(schematic);
-			foundHashes.add(schematic.hashCode());
-			
-			return true;
-		}
+		timeLine.add(schematic);
 		
-		return false;
+		return schematic;
 	}
 	
 	public synchronized void setPlaystate(PlayState playState) {
 		
-		switch (playState) {
-			
-			case START:
-				isPaused = true;
-				hasDelay = false;
+		try {
+		
+			switch (playState) {
 				
-				index = 0;
-				break;
-				
-			case RUSHBACK:
-				isPaused = false;
-				goForward = false;
-				hasDelay = false;
-				
-				notify();
-				break;
-				
-			case PLAYBACK:
-				isPaused = false;
-				goForward = false;
-				hasDelay = true;
-				
-				notify();
-				break;
-				
-			case STEPBACK:
-				isPaused = true;
-				goForward = false;
-				hasDelay = false;
-				
-				notify();
-				break;
-				
-			case PAUSED:
-				isPaused = true;
-				break;
-				
-			case STEPFORWARD:
-				isPaused = true;
-				goForward = true;
-				hasDelay = false;
-				
-				notify();
-				break;
-				
-			case PLAYFORWARD:
-				isPaused = false;
-				goForward = true;
-				hasDelay = true;
-				
-				notify();
-				break;
-				
-			case RUSHFORWARD:
-				isPaused = false;
-				goForward = true;
-				hasDelay = false;
-				
-				notify();
-				break;
-				
-			case END:
-				isPaused = true;
-				hasDelay = false;
-				
-				if (endFound)
-					index = timeLine.size() - 1;
+				case START:
+					isPaused = true;
+					hasDelay = false;
+					
+					worldData.setSchematic(timeLine.first());
+					worldController.updateWithNewData();
+					window.setStep(0);
+					break;
+					
+				case RUSHBACK:
+					isPaused = false;
+					goForward = false;
+					hasDelay = false;
+					
+					notify();
+					break;
+					
+				case PLAYBACK:
+					isPaused = false;
+					goForward = false;
+					hasDelay = true;
+					
+					notify();
+					break;
+					
+				case STEPBACK:
+					isPaused = true;
+					goForward = false;
+					hasDelay = false;
+					
+					notify();
+					break;
+					
+				case PAUSED:
+					isPaused = true;
+					break;
+					
+				case STEPFORWARD:
+					isPaused = true;
+					goForward = true;
+					hasDelay = false;
+					
+					notify();
+					break;
+					
+				case PLAYFORWARD:
+					isPaused = false;
+					goForward = true;
+					hasDelay = true;
+					
+					notify();
+					break;
+					
+				case RUSHFORWARD:
+					isPaused = false;
+					goForward = true;
+					hasDelay = false;
+					
+					notify();
+					break;
+					
+				case END:
+					isPaused = true;
+					hasDelay = false;
+					
+					worldData.setSchematic(timeLine.last());
+					worldController.updateWithNewData();
+					window.setStep(maxCount);
+					window.setBackEnabled(true);
+			}
+		
+		} catch (SchematicException | IOException e) {
+			Log.e("Could not set playstate " + playState + ": " + e.getMessage());
 		}
 	}
 
@@ -182,38 +182,53 @@ public class TimeController implements Runnable {
 		// Hardcore thread never ends
 		
 		try {
+			
+			Tag schematic;
+			
 			for (;;) {
 				
 				if (isPaused)
 					wait();
 				
-				if (goForward)
-					index++;
-				else
-					index--;
-				
-				if (index <= 0 ) {
-					index = 0;
-					setPlaystate(PlayState.PAUSED);
+				if (goForward) {
+					if (timeLine.atEnd())
+						schematic = tick();
+					else
+						schematic = timeLine.next();
 					
-					window.setBackEnabled(false);
-					window.setPaused(true);
-				}
-				if (index >= (timeLine.size() - 1)) {
-					index = timeLine.size() - 1;
-					setPlaystate(PlayState.PAUSED);
-
-					window.setForwardEnabled(false);
-					window.setPaused(true);
-				}
-				
-				worldData.loadSchematic(timeLine.get(index));
+					tickCounter++;
+					if (tickCounter > maxCount)
+						maxCount = tickCounter;
+					
+					window.setBackEnabled(true);
+					
+				} else
+					if (timeLine.atStart()) {
+						schematic = timeLine.first();
+						setPlaystate(PlayState.PAUSED);
+						
+					} else {
+						schematic = timeLine.prev();
+						
+						if (timeLine.atStart()) {
+							setPlaystate(PlayState.PAUSED);
+							window.setPaused(true);
+							window.setBackEnabled(false);
+						}
+						
+						tickCounter--;
+					}
+						
+					
+				worldData.setSchematic(schematic);
 				worldController.updateWithNewData();
 				
-				window.setStep(index);
+				window.setStep(tickCounter);
 				
 				if (hasDelay)
-					wait(100l);
+					wait(90l);
+				
+				wait(10l);
 			}
 		} catch (InterruptedException e) {
 			Log.e("The time controller's thread was rudely abrupted! :o");			
@@ -224,12 +239,16 @@ public class TimeController implements Runnable {
 	}
 	
 	public void loadCurrentTimeIntoSchematic() {
-		try {			
-			worldData.loadSchematic(timeLine.get(index));
+		try {
+			if (timeLine.atEnd())
+				return;
+			
+			worldData.setSchematic(timeLine.get());
 			simController.setSchematic(worldData);
-			worldController.updateWithNewData();
 			
 		} catch (SchematicException | IOException e) {
+			
+			Log.e("Could not prepare simulator before placing block:" + e.getMessage());
 			e.printStackTrace();
 		}
 	}

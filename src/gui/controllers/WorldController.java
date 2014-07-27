@@ -12,15 +12,10 @@ import gui.objects.WorldData;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
-import logging.Log;
-import utils.CircularByteBuffer;
-import utils.Tag;
 
 /**
  * Controlls everything about one world
@@ -119,18 +114,12 @@ public class WorldController {
 		timeController.loadCurrentTimeIntoSchematic();
 		
 		simController.setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
-				
-		timeController.init();
+		
+		timeController.updateCurrentSchematic(simController.getSchematic(worldData));
 	}
 	
 	private void destroySim() {
 		simController.destroy(worldData.getName());
-	}
-	
-	public void tick() {
-		
-		
-		updateWithNewData();
 	}
 	
 	public void updateWithNewData() {
@@ -162,6 +151,7 @@ public class WorldController {
 	public void revert() {
 		worldData.load();
 		updateWithNewData();
+		timeController.init();
 		
 		destroySim();
 		simController.setSchematic(worldData);
