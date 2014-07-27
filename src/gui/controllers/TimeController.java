@@ -26,7 +26,8 @@ public class TimeController implements Runnable {
 	
 	private WorldData worldData;
 	
-//	private HashSet<Integer> foundHashes;
+	private HashSet<Integer> foundHashes;
+	private boolean checkHash;
 	
 	private boolean goForward, isPaused, hasDelay;
 	
@@ -42,7 +43,7 @@ public class TimeController implements Runnable {
 		worldData = worldController.getWorldData();
 		
 		timeLine = new TimeLine(100);
-//		foundHashes = new HashSet<>();
+		foundHashes = new HashSet<>();
 		
 		setPlaystate(PlayState.PAUSED);
 	}
@@ -56,13 +57,13 @@ public class TimeController implements Runnable {
 			worldData.setSchematic(schematic);
 			worldController.updateWithNewData();
 			
-//			foundHashes.clear();
 			timeLine.init(schematic);
 			
-//			foundHashes.add(schematic.hashCode());
+			foundHashes.clear();
+			foundHashes.add(schematic.hashCode());
+			checkHash = true;
 			
 			window.setStep(0);
-//			window.setEndFound(false);
 			
 			thread = new Thread(this);
 			thread.start();
@@ -75,6 +76,7 @@ public class TimeController implements Runnable {
 	public void updateCurrentSchematic(Tag schematic) {
 		
 		try {
+			foundHashes.clear();
 			timeLine.set(schematic);
 			worldData.setSchematic(schematic);
 			worldController.updateWithNewData();
@@ -89,6 +91,15 @@ public class TimeController implements Runnable {
 		simController.tick(worldData.getName());
 		
 		Tag schematic = simController.getSchematic(worldData);
+
+		if (checkHash) {
+			int hash = schematic.hashCode();
+			if (foundHashes.contains(hash))
+				return null;
+			
+			foundHashes.add(hash);
+		}
+		
 		timeLine.add(schematic);
 		
 		return schematic;
@@ -191,8 +202,15 @@ public class TimeController implements Runnable {
 					wait();
 				
 				if (goForward) {
-					if (timeLine.atEnd())
+					if (timeLine.atEnd()) {
 						schematic = tick();
+						if (checkHash && schematic == null) {
+							setPlaystate(PlayState.PAUSED);
+							window.setPaused(true);
+							checkHash = false;
+							continue;
+						}
+					}
 					else
 						schematic = timeLine.next();
 					
@@ -202,7 +220,8 @@ public class TimeController implements Runnable {
 					
 					window.setBackEnabled(true);
 					
-				} else
+				} else {
+					checkHash = true;
 					if (timeLine.atStart()) {
 						schematic = timeLine.first();
 						setPlaystate(PlayState.PAUSED);
@@ -218,6 +237,7 @@ public class TimeController implements Runnable {
 						
 						tickCounter--;
 					}
+				}
 						
 					
 				worldData.setSchematic(schematic);
