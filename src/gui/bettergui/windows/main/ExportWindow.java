@@ -1,4 +1,4 @@
-package gui.bettergui;
+package gui.bettergui.windows.main;
 
 import gui.controllers.MainController;
 import gui.controllers.WorldController;
@@ -28,7 +28,7 @@ import javax.swing.SpinnerNumberModel;
 
 import logging.Log;
 
-public class ExportWindow extends WindowMenuWindow {
+public class ExportWindow extends MainWindow {
 	private static final long serialVersionUID = 4399955648841335487L;
 	
 	private MainController controller;

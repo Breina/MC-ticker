@@ -1,4 +1,4 @@
-package gui.bettergui;
+package gui.bettergui.windows.main;
 
 import gui.controllers.MainController;
 
@@ -11,7 +11,7 @@ import javax.swing.text.DefaultCaret;
 import logging.ILogger;
 import logging.Log;
 
-public class LogWindow extends WindowMenuWindow implements ILogger {
+public class LogWindow extends MainWindow implements ILogger {
 	
 	private static final long serialVersionUID = 3272280523525631777L;
 
@@ -32,7 +32,7 @@ public class LogWindow extends WindowMenuWindow implements ILogger {
 		
 		setPreferredSize(new Dimension(1008, 350));
 		setSize(1008, 350);
-		setLocation(0, 500);
+		setLocation(0, 1000);
 		add(new JScrollPane(textBox));
 		
 		setupLogger();

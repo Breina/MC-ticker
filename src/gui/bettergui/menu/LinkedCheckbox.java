@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.bettergui.InternalWindow;
-import gui.bettergui.WindowMenuWindow;
+import gui.bettergui.windows.main.MainWindow;
 
 import javax.swing.JCheckBox;
 

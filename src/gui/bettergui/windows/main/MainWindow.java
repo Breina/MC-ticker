@@ -1,18 +1,19 @@
-package gui.bettergui;
+package gui.bettergui.windows.main;
 
+import gui.bettergui.InternalWindow;
 import gui.bettergui.menu.LinkedCheckbox;
 import gui.controllers.MainController;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class WindowMenuWindow extends InternalWindow {
+public class MainWindow extends InternalWindow {
 	private static final long serialVersionUID = -7291404124042489301L;
 	
 	private MainController controller;
 	private LinkedCheckbox checkbox;
 
-	public WindowMenuWindow(MainController controller, String title, boolean visibleByDefault) {
+	public MainWindow(MainController controller, String title, boolean visibleByDefault) {
 		super(controller, title);
 		
 		this.controller = controller;

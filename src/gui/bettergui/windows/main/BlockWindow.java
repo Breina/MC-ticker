@@ -1,5 +1,6 @@
-package gui.bettergui;
+package gui.bettergui.windows.main;
 
+import gui.bettergui.DesktopPane;
 import gui.bettergui.blocks.BlockCategory;
 import gui.bettergui.blocks.BlockLogic;
 import gui.controllers.BlockController;
@@ -21,7 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-public class BlockWindow extends WindowMenuWindow {
+public class BlockWindow extends MainWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
 	
 	private final static int BTNSIZE = 25;
@@ -38,6 +39,8 @@ public class BlockWindow extends WindowMenuWindow {
 //		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();
 		this.tileController = mainController.getTileController();
+		
+		setLocation(0, 57);
 		
 		buildGUI();
 	}

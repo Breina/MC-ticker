@@ -1,5 +1,6 @@
-package gui.bettergui;
+package gui.bettergui.windows.world;
 
+import gui.bettergui.InternalWindow;
 import gui.bettergui.editor.EditorPanel;
 import gui.controllers.WorldController;
 import gui.objects.Orientation;
@@ -106,6 +107,8 @@ public class DrawingWindow extends InternalWindow {
 //		updateLayerOnAllWindows();
 		
 		pack();
+		
+		setLocation(152, 57);
 		
 //		editor.repaintAll();
 	}

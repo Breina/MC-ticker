@@ -1,15 +1,15 @@
 package gui.controllers;
 
-import gui.bettergui.BlockWindow;
 import gui.bettergui.DesktopPane;
-import gui.bettergui.ExportWindow;
-import gui.bettergui.LogWindow;
 import gui.bettergui.RSFrame;
 import gui.bettergui.StatusPanel;
 import gui.bettergui.choosers.MCPFolderChooser;
 import gui.bettergui.choosers.MinecraftFolderChooser;
 import gui.bettergui.menu.FileMenu;
 import gui.bettergui.menu.WindowMenu;
+import gui.bettergui.windows.main.BlockWindow;
+import gui.bettergui.windows.main.ExportWindow;
+import gui.bettergui.windows.main.LogWindow;
 import gui.exceptions.SchematicException;
 import gui.main.Cord3S;
 

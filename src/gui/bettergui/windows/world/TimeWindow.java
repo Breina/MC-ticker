@@ -1,5 +1,6 @@
-package gui.bettergui;
+package gui.bettergui.windows.world;
 
+import gui.bettergui.DesktopPane;
 import gui.bettergui.time.PlayState;
 import gui.controllers.TimeController;
 import gui.controllers.WorldController;
@@ -22,7 +23,7 @@ import javax.swing.JToggleButton;
 import logging.Log;
 
 // TODO hook this class up to TimeController
-public class TimeWindow extends WorldMenuWindow {
+public class TimeWindow extends WorldWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
 	
 	private final static int BTNSIZE = 60;
@@ -65,6 +66,8 @@ public class TimeWindow extends WorldMenuWindow {
 				Log.e("Failed to load time-icons: " + e.getMessage());
 			}
 		}
+		
+		setLocation(152, 0);
 		
 		buildGUI();
 	}

@@ -94,7 +94,7 @@ public class RWorld implements ISimulated {
 		
 		// TODO can't use linker yet for these
 		m_getBlock							= World.getDeclaredMethod(Constants.WORLD_GETBLOCK, int.class, int.class, int.class);
-		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTILEENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
+		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
 		f_theProfiler						= World.getField(Constants.WORLD_PROFILER);
 		f_theProfiler						.setAccessible(true);
 	}
@@ -297,9 +297,9 @@ public class RWorld implements ISimulated {
 		return world.getPendingTickListEntries();
 	}
 	
-	public ArrayList<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {
+	public List<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {
 		
-		ArrayList<Object> tileEntities = (ArrayList<Object>) f_loadedTileEntities.get(world.getWorld());
+		List<Object> tileEntities = (List<Object>) f_loadedTileEntities.get(world.getWorld());
 		
 		return tileEntities;
 	}

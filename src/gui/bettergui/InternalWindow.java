@@ -1,5 +1,7 @@
 package gui.bettergui;
 
+import java.util.List;
+
 import gui.controllers.MainController;
 
 import javax.swing.JInternalFrame;
@@ -7,7 +9,7 @@ import javax.swing.JInternalFrame;
 public class InternalWindow extends JInternalFrame {
 	private static final long serialVersionUID = 7086467386852495806L;
 	
-	private static int spawnDelta = 0;
+	private static int spawnDelta = 0; 
 	
 	private MainController controller;
 	
@@ -17,7 +19,7 @@ public class InternalWindow extends JInternalFrame {
 		this.controller = controller;
 		
 		setLocation(spawnDelta, spawnDelta);
-		spawnDelta += 50;
+//		spawnDelta += 50;
 		
 		setVisible(true);
 		controller.getDesktop().add(this);

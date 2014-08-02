@@ -1,5 +1,6 @@
-package gui.bettergui;
+package gui.bettergui.windows.world;
 
+import gui.bettergui.InternalWindow;
 import gui.bettergui.menu.LinkedCheckbox;
 import gui.controllers.MainController;
 import gui.controllers.WorldController;
@@ -7,12 +8,12 @@ import gui.controllers.WorldController;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class WorldMenuWindow extends InternalWindow {
+public class WorldWindow extends InternalWindow {
 	
 	private WorldController controller;
 	private LinkedCheckbox checkbox;
 
-	public WorldMenuWindow(WorldController controller, String title, boolean visibleByDefault) {
+	public WorldWindow(WorldController controller, String title, boolean visibleByDefault) {
 		super(controller.getMainController(), title);
 		
 		this.controller = controller;

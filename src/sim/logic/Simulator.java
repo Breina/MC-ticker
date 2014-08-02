@@ -271,6 +271,8 @@ public class Simulator {
 	 */
 	private void setWorldTileEntities(WorldInstance world, Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
+		System.out.println("SET");
+		
 		for (int i = 0; i < tags.length; i++) {
 			
 			Tag schematicTag = tags[i];
@@ -279,12 +281,13 @@ public class Simulator {
 			int z = (int) schematicTag.findTagByName("z").getValue();
 			
 			Object mcTag = rNBTTags.getMinecraftTagFromTag(schematicTag);
+			System.out.println(mcTag);
 			
 			Object chunk = rChunkProvider.getChunk(x, z);
 			
 			Object tileEntity = rTileEntity.createTileEntityFromNBT(mcTag);
 			
-//			try {
+			try {
 //				rTileEntity.debug(tileEntity);
 //				Object itemsTag = rNBTTags.getTagList(mcTag, "Items");
 //				Object itemTag = rNBTTags.getCompoundTagAtObject(itemsTag, 0);
@@ -293,10 +296,10 @@ public class Simulator {
 //				System.out.println("Loaded item:  " + itemStack);
 //				Object itemStack = rTileEntity.loadItemStackFromNBT(itemTag);
 //				System.out.println(item);
-//			} catch (Exception e) {
-//				System.out.println("No inventory");
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				System.out.println("No inventory");
+				e.printStackTrace();
+			}
 
 			rChunk.addTileEntity(chunk, tileEntity);
 			
@@ -321,7 +324,11 @@ public class Simulator {
 	
 	private void setWorldTileTicks(WorldInstance world, Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
+		
+		
 		for (Tag tag : tags) {
+			
+			
 			
 			int xCoord		= (int) tag.findNextTagByName("x", null).getValue();
 			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
@@ -420,6 +427,8 @@ public class Simulator {
 		Tag[] payload = new Tag[tileEntities.size()];
 		Iterator<Object> i = tileEntities.iterator();
 		
+		System.out.println("GET");
+		
 		int j = 0;
 		while (i.hasNext()) {
 			
@@ -427,6 +436,8 @@ public class Simulator {
 			Object mcTag = rNBTTags.newInstance();
 			
 			rTileEntity.getNBTFromTileEntity(mcTileEntity, mcTag);
+			
+			System.out.println(mcTag);
 			
 			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
 			
@@ -441,6 +452,8 @@ public class Simulator {
 	private Tag getWorldEntities(WorldInstance world) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		List<Object> entities = world.getLoadedEntities();
 		
+//		System.out.println("GET " + entities.size());
+		
 		if (entities.size() == 0)
 			return null;
 		
@@ -454,6 +467,8 @@ public class Simulator {
 			Object mcTag = rNBTTags.newInstance();
 			
 			rEntity.getNBTFromEntity(entity, mcTag);
+
+//			System.out.println(mcTag);
 			
 			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
 			j++;
@@ -508,8 +523,8 @@ public class Simulator {
 		
 		WorldInstance world = getWorldByName(worldName);
 		
-		rWorld.tickUpdates(world, 2l);
-//		rWorld.tickEntities(world);
+//		rWorld.tickUpdates(world, 2l);
+		rWorld.tickEntities(world);
 	}
 	
 	public void setBlock(String worldName, int x, int y, int z, byte id, byte data) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

@@ -1,8 +1,8 @@
 package gui.controllers;
 
-import gui.bettergui.TimeWindow;
 import gui.bettergui.time.PlayState;
 import gui.bettergui.time.TimeLine;
+import gui.bettergui.windows.world.TimeWindow;
 import gui.exceptions.SchematicException;
 import gui.objects.WorldData;
 

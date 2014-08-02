@@ -63,7 +63,7 @@ public class Constants {
 	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
 	public final static String WORLD_GETBLOCK = "a";
 	public final static String WORLD_PROFILER = "C";
-	public final static String WORLD_ADDTILEENTRY = "b";
+	public final static String WORLD_ADDTICKENTRY = "b";
 	public final static String BOOTLOADER_REGISTER = "b";
 	public final static String NBTTAGCOMPOUND_LOAD = "a";			// {"load", "\"Read the actual data"}
 	public final static String NEXTTICKLISTENTRY_BLOCK = "g";
