@@ -4,7 +4,7 @@ import gui.bettergui.InternalWindow;
 import gui.bettergui.editor.EditorPanel;
 import gui.controllers.WorldController;
 import gui.objects.Orientation;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,29 +37,29 @@ public class DrawingWindow extends InternalWindow {
 		
 		this.worldController = controller;
 		
-		WorldData worldData = controller.getWorldData();
+		ViewData viewData = controller.getWorldData();
 		
 		JMenuBar menuBar = new JMenuBar();
 		
 		switch (orientation) {
 			case TOP:
-				title = worldData.getName() + ": y=";
-				max = worldData.getYSize();
+				title = viewData.getName() + ": y=";
+				max = viewData.getYSize();
 				up = new JButton("↑");		// \u2191
 				down = new JButton("↓");	// \u2193
 				
 				break;
 				
 			case FRONT:
-				title = worldData.getName() + ": z=";
-				max = worldData.getZSize();
+				title = viewData.getName() + ": z=";
+				max = viewData.getZSize();
 				up = new JButton("↙");		// \u2199
 				down = new JButton("↗");	// \u2197
 				break;
 				
 			case RIGHT:
-				title = worldData.getName() + ": x=";
-				max = worldData.getXSize();
+				title = viewData.getName() + ": x=";
+				max = viewData.getXSize();
 				up = new JButton("→");		// \u2192
 				down = new JButton("←");	// \u2190
 				break;

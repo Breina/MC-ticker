@@ -9,7 +9,7 @@ import gui.main.Cord2S;
 import gui.main.Cord3S;
 import gui.objects.Block;
 import gui.objects.Orientation;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -113,23 +113,23 @@ public class EditorPanel extends JLayeredPane {
 	 */
 	private void extractWorldDimensions() {
 		
-		WorldData worldData = worldController.getWorldData();
+		ViewData viewData = worldController.getWorldData();
 		
 		switch (orientation) {
 			
 			case TOP:
-				width = worldData.getXSize();
-				height = worldData.getZSize();
+				width = viewData.getXSize();
+				height = viewData.getZSize();
 				break;
 				
 			case FRONT:
-				width = worldData.getXSize();
-				height = worldData.getYSize();
+				width = viewData.getXSize();
+				height = viewData.getYSize();
 				break;
 				
 			case RIGHT:
-				width = worldData.getZSize();
-				height = worldData.getYSize();	
+				width = viewData.getZSize();
+				height = viewData.getYSize();	
 		}
 	}
 
@@ -301,7 +301,7 @@ public class EditorPanel extends JLayeredPane {
 	private BufferedImage getRedstoneWire(Block b, short x, short y, short z) {
 		byte powerLevel = b.getData();
 		
-		WorldData worldData = worldController.getWorldData();
+		ViewData viewData = worldController.getWorldData();
 		BufferedImage bi = null;
 		boolean[] cons = new boolean[4];
 		
@@ -309,17 +309,17 @@ public class EditorPanel extends JLayeredPane {
 		final short[] ZCORDS = {(short) (z - 1), z, (short) (z + 1), z};
 		
 		
-		final boolean up = !worldData.getBlock(x, (short) (y + 1), z).isSolidBlock();
+		final boolean up = !viewData.getBlock(x, (short) (y + 1), z).isSolidBlock();
 		
 		Block testBlock;
 		for (byte i = 0; i < 4; i++) {
-			testBlock = worldData.getBlock(XCORDS[i], y, ZCORDS[i]);
+			testBlock = viewData.getBlock(XCORDS[i], y, ZCORDS[i]);
 					// anything on same level
 			cons[i] = (testBlock.isConnectable(i % 2 == 0) ? true : false)
 					// wire 1 block lower
-					|| (!testBlock.isSolidBlock() && worldData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE)
+					|| (!testBlock.isSolidBlock() && viewData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE)
 					// wire 1 block higher
-					|| (up && worldData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE);			
+					|| (up && viewData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE);			
 		}
 		testBlock = null;
   		

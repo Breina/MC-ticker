@@ -1,18 +1,16 @@
 package gui.bettergui.time;
 
-import utils.Tag;
-
-public class TimeLine {
+public class TimeLine<T> {
 	
-	private Tag[] items;
+	private Object[] items;
 	private int start, index, end;
 	
 	public TimeLine(int size) {
 		
-		items = new Tag[size];
+		items = new Object[size];
 	}
 	
-	public void init(Tag first) {
+	public void init(T first) {
 		start = 0;
 		index = 0;
 		end = 0;
@@ -28,40 +26,45 @@ public class TimeLine {
 		return index == end;
 	}
 	
-	public Tag first() {
-		return items[index = start];
+	@SuppressWarnings("unchecked")
+	public T first() {
+		return (T) items[index = start];
 	}
 	
-	public Tag prev() {
+	@SuppressWarnings("unchecked")
+	public T prev() {
 		if (index == start)
 			throw new ArrayIndexOutOfBoundsException("prev");
 		if (--index < 0)
 			index = items.length - 1;
-		return items[index];		
+		return (T) items[index];		
 	}
 	
-	public Tag get() {
-		return items[index];
+	@SuppressWarnings("unchecked")
+	public T get() {
+		return (T) items[index];
 	}
 	
-	public void set(Tag tag) {
+	public void set(T tag) {
 		items[index] = tag;
 		end = index;
 	}
 	
-	public Tag next() {
+	@SuppressWarnings("unchecked")
+	public T next() {
 		if (index == end)
 			throw new ArrayIndexOutOfBoundsException("next");
 		if (++index == items.length)
 			index = 0;
-		return items[index];
+		return (T) items[index];
 	}
 	
-	public Tag last() {
-		return items[index = end];
+	@SuppressWarnings("unchecked")
+	public T last() {
+		return (T) items[index = end];
 	}
 	
-	public void add(Tag tag) {
+	public void add(T tag) {
 		if (index == end)
 			if (++index == items.length)
 				index = 0;

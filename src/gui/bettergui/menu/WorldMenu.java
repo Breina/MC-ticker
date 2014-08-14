@@ -4,7 +4,7 @@ import gui.bettergui.choosers.SchematicChooser;
 import gui.controllers.WorldController;
 import gui.exceptions.SchematicException;
 import gui.objects.Orientation;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,18 +100,20 @@ public class WorldMenu extends JMenu {
 		saveAs.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SchematicChooser chooser = new SchematicChooser(controller.getWorldData().getSchematicFile());
-				
-				int result = chooser.showSaveDialog(controller.getMainController().getRSframe());
-				
-				if (result == SchematicChooser.APPROVE_OPTION) {
-					
-					WorldData worldData = controller.getWorldData();
-					worldData.setSchematicFile(chooser.getSelectedFile());
-					worldData.save();
-					
-				} else if (result == SchematicChooser.ERROR_OPTION)
-					Log.e("Something when wrong when selecting a file to save to.");
+				// TODO
+//				SchematicChooser chooser = new SchematicChooser(controller.getWorldData().getSchematicFile());
+//				
+//				int result = chooser.showSaveDialog(controller.getMainController().getRSframe());
+//				
+//				if (result == SchematicChooser.APPROVE_OPTION) {
+//					
+//					
+//					ViewData viewData = controller.getWorldData();
+//					viewData.setSchematicFile(chooser.getSelectedFile());
+//					viewData.save();
+//					
+//				} else if (result == SchematicChooser.ERROR_OPTION)
+//					Log.e("Something when wrong when selecting a file to save to.");
 			}
 		});
 		

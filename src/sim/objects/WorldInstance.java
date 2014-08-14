@@ -1,14 +1,15 @@
-package sim.logic;
+package sim.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class WorldInstance {
 
 	private Object world;
 	// Where all future updates are stored as PendingTickListEntry objects
-	private Set<?> pendingTickListEntries, pendingTickListHashSet;
-	private ArrayList<Object> loadedTileEntities, loadedEntities;
+	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
+	private List<Object> loadedTileEntities, loadedEntities;
 	private long worldTime;
 	private boolean doTimeUpdate;
 	
@@ -39,19 +40,23 @@ public class WorldInstance {
 		pendingTickListHashSet.clear();
 	}
 
-	public Set<?> getPendingTickListEntries() {
+	public Set<Object> getPendingTickListEntries() {
 		return pendingTickListEntries;
 	}
+	
+	public Set<Object> getPendingTickListHashSet() {
+		return pendingTickListHashSet;
+	}
 
-	public void setPendingTickListEntries(Set<?> pendingTickListEntries) {
+	public void setPendingTickListEntries(Set<Object> pendingTickListEntries) {
 		this.pendingTickListEntries = pendingTickListEntries;
 	}
 	
-	public void setPendingTickListHashSet(Set<?> pendingTickListHashSet) {
+	public void setPendingTickListHashSet(Set<Object> pendingTickListHashSet) {
 		this.pendingTickListHashSet = pendingTickListHashSet;
 	}
 
-	public ArrayList<Object> getLoadedTileEntities() {
+	public List<Object> getLoadedTileEntities() {
 		return loadedTileEntities;
 	}
 
@@ -59,7 +64,7 @@ public class WorldInstance {
 		this.loadedTileEntities = loadedTileEntities;
 	}
 
-	public ArrayList<Object> getLoadedEntities() {
+	public List<Object> getLoadedEntities() {
 		return loadedEntities;
 	}
 

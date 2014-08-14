@@ -3,7 +3,7 @@ package gui.bettergui.windows.main;
 import gui.controllers.MainController;
 import gui.controllers.WorldController;
 import gui.main.Constants;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 import gui.threads.ExportRunnable;
 
 import java.awt.BorderLayout;

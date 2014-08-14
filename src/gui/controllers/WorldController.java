@@ -8,15 +8,17 @@ import gui.exceptions.SchematicException;
 import gui.main.Cord3S;
 import gui.objects.Block;
 import gui.objects.Orientation;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.Tag;
 import logging.Log;
 
 /**
@@ -24,7 +26,7 @@ import logging.Log;
  */
 public class WorldController {
 	
-	private WorldData worldData;
+	private ViewData viewData;
 	
 	private List<DrawingWindow> windows;
 	private WorldMenu worldMenu;
@@ -41,7 +43,11 @@ public class WorldController {
 		this.mainController = mainController;
 		this.simController = mainController.getSimController();
 		
-		worldData = new WorldData(schematicFile);		
+		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
+		
+		viewData = new ViewData((short) schematic.findTagByName("Width").getValue(),
+								(short) schematic.findTagByName("Height").getValue(),
+								(short) schematic.findTagByName("Length").getValue());
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
 		time = new TimeWindow(this);
@@ -54,7 +60,7 @@ public class WorldController {
 		windows = new ArrayList<DrawingWindow>();		
 		addNewPerspective(Orientation.TOP);
 		
-		simController.setSchematic(worldData);
+		simController.setSchematic(viewData.getName(), schematic);
 		
 		timeController.init();
 	}
@@ -121,13 +127,13 @@ public class WorldController {
 		
 		timeController.loadCurrentTimeIntoSchematic();
 		
-		simController.setBlock(worldData.getName(), x, y, z, block.getId(), block.getData());
+		simController.setBlock(viewData.getName(), x, y, z, block.getId(), block.getData());
 		
-		timeController.updateCurrentSchematic(simController.getSchematic(worldData));
+		timeController.updateCurrentSchematic(simController.getState(viewData.getName()));
 	}
 	
 	private void destroySim() {
-		simController.destroy(worldData.getName());
+		simController.destroy(viewData.getName());
 	}
 	
 	public void updateWithNewData() {
@@ -136,8 +142,8 @@ public class WorldController {
 			window.getEditor().updateWithNewData();
 	}
 	
-	public WorldData getWorldData() {
-		return worldData;
+	public ViewData getWorldData() {
+		return viewData;
 	}
 	
 	public MainController getMainController() {
@@ -157,12 +163,13 @@ public class WorldController {
 	}
 
 	public void revert() {
-		worldData.load();
-		updateWithNewData();
-		timeController.init();
-		
-		destroySim();
-		simController.setSchematic(worldData);
+		// TODO
+//		worldData.load();
+//		updateWithNewData();
+//		timeController.init();
+//		
+//		destroySim();
+//		simController.setSchematic(worldData);
 	}
 	
 	public void unSelectAll(EditorPanel source) {
@@ -214,6 +221,6 @@ public class WorldController {
 	
 	@Override
 	public String toString() {
-		return worldData.getName();
+		return viewData.getName();
 	}
 }

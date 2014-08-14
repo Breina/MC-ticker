@@ -18,6 +18,7 @@ import org.objenesis.ObjenesisStd;
 
 import sim.constants.Constants;
 import sim.loading.Linker;
+import sim.objects.WorldInstance;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of World's reflection
@@ -128,8 +129,8 @@ public class RWorld implements ISimulated {
 		f_levelSaving.setBoolean(worldServer, false);
 		f_theProfiler.set(worldServer, rProfiler.getInstance());
 		
-		TreeSet<?> pendingTickListEntriesTreeSet = new TreeSet<>();
-		HashSet<?> pendingTickListEntriesHashSet = new HashSet<>();
+		TreeSet<Object> pendingTickListEntriesTreeSet = new TreeSet<>();
+		HashSet<Object> pendingTickListEntriesHashSet = new HashSet<>();
 		
 		f_pendingTickListEntriesTreeSet.set(worldServer, pendingTickListEntriesTreeSet);
 		f_pendingTickListEntriesHashSet.set(worldServer, pendingTickListEntriesHashSet);

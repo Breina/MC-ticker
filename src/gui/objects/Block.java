@@ -5,32 +5,8 @@ import java.util.Arrays;
 public class Block {
 	
 	public static final byte BLOCK_AIR				= 0;
-	public static final byte BLOCK_WATER_FLOWING	= 8;
-	public static final byte BLOCK_WATER_SOURCE		= 9;
-	public static final byte BLOCK_GLASS			= 20;
-	public static final byte BLOCK_SLAB				= 44;
 	public static final byte BLOCK_CHEST			= 54;
 	public static final byte BLOCK_WIRE				= 55;
-	public static final byte BLOCK_WOOD_DOOR		= 64;
-	public static final byte BLOCK_LEVER			= 69;
-	public static final byte BLOCK_STONE_PLATE		= 70;
-	public static final byte BLOCK_IRON_DOOR		= 71;
-	public static final byte BLOCK_WOOD_PLATE		= 72;
-	public static final byte BLOCK_TORCH_OFF		= 75; 
-	public static final byte BLOCK_TORCH_ON			= 76;
-	public static final byte BLOCK_STONE_BUTTON		= 77;
-	public static final byte BLOCK_ICE				= 79;
-	public static final byte BLOCK_REPEATER_OFF		= 93;
-	public static final byte BLOCK_REPEATER_ON		= 94;
-	public static final byte BLOCK_STAINED_GLASS	= 95;
-	public static final byte BLOCK_WOOD_BUTTON		= (byte) 143; // yeah good job java...
-	public static final byte BLOCK_GOLD_PLATE		= (byte) 147;
-	public static final byte BLOCK_IRON_PLATE		= (byte) 148;
-	public static final byte BLOCK_COMPARATOR		= (byte) 149;
-//	public static final byte BLOCK_COMPARATOR_ON	= (byte) 150; depricated since MC 1.6
-	public static final byte BLOCK_REDSTONE			= (byte) 152;
-	public static final byte BLOCK_HOPPER			= (byte) 154;
-	public static final byte BLOCK_PACKED_ICE		= (byte) 174;
 	
 	public static final byte DATA_NONE = 0;
 	

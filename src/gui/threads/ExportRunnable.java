@@ -4,7 +4,7 @@ import gui.bettergui.editor.EditorPanel;
 import gui.controllers.WorldController;
 import gui.main.GifSequenceWriter;
 import gui.objects.Orientation;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

@@ -1,8 +1,10 @@
 package gui.controllers;
 
 import gui.exceptions.SchematicException;
-import gui.objects.WorldData;
+import gui.objects.ViewData;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import logging.Log;
 import sim.logic.Simulator;
+import sim.objects.WorldState;
 import utils.CircularByteBuffer;
 import utils.Tag;
 
@@ -25,26 +28,24 @@ public class SimController {
 	public SimController() {
 	}
 	
-	public void setSchematic(WorldData worldData) {
+	public void setSchematic(String name, Tag schematic) {
 		
 		try {
 			
-			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			worldData.getSchematic(cbb.getOutputStream());
-			loadWorld(worldData.getName(), cbb.getInputStream());
+			loadWorld(name, schematic);
 			
-		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 			
 			Log.e("Failed to send schematic to the simulator " + analyseException(e));
 		}
 	}
 	
-	public Tag getSchematic(WorldData worldData) {
+	public Tag getSchematic(String name) {
 		
 		try {
 			
 			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			saveWorld(worldData.getName(), cbb.getOutputStream());
+			saveWorld(name, cbb.getOutputStream());
 			
 			return Tag.readFrom(cbb.getInputStream());
 			
@@ -85,7 +86,7 @@ public class SimController {
 		
 	}
 	
-	public void loadWorld(String worldName, InputStream input) throws NoSuchAlgorithmException {
+	public void loadWorld(String worldName, Tag input) throws NoSuchAlgorithmException {
 		
 		try {
 			
@@ -192,4 +193,31 @@ public class SimController {
 //		sim.setBlock("test", 2, 1, 2, (byte) 76, (byte) 5);
 //	}
 
+	public void setState(String worldName, WorldState state) {
+		
+		try {
+			
+			simulator.setState(worldName, state);
+			
+		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | InstantiationException | IOException e) {
+			
+			Log.e("Could not set state" + analyseException(e));
+		}
+	}
+	
+	public WorldState getState(String worldName) {
+		
+		try {
+			
+			return simulator.getState(worldName);
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| InstantiationException e) {
+			
+			Log.e("Could not get state" + analyseException(e));
+		}
+		
+		return null;
+	}
 }
