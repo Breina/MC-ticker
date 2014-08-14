@@ -38,7 +38,7 @@ public class TimeController implements Runnable {
 	public TimeController(WorldController worldController) {
 		
 		this.worldController = worldController;
-		this.simController = worldController.getMainController().getSimController();
+		this.simController = worldController.getSimController();
 		
 		viewData = worldController.getWorldData();
 		
@@ -53,7 +53,7 @@ public class TimeController implements Runnable {
 		
 		try {
 //			Tag schematic = simController.getSchematic(worldData);
-			WorldState state = simController.getState(viewData.getName());
+			WorldState state = simController.getState();
 			
 			viewData.setState(state);
 			worldController.updateWithNewData();
@@ -89,10 +89,10 @@ public class TimeController implements Runnable {
 	
 	private WorldState tick() {
 		
-		simController.tick(viewData.getName());
+		simController.tick();
 		
 //		Tag schematic = simController.getSchematic(worldData);
-		WorldState state = simController.getState(viewData.getName());
+		WorldState state = simController.getState();
 
 //		if (checkHash && !isPaused) {
 //			int hash = schematic.hashCode();
@@ -264,19 +264,10 @@ public class TimeController implements Runnable {
 	}
 	
 	public void loadCurrentTimeIntoSchematic() {
-//		try {
-			if (timeLine.atEnd())
-				return;
-			
-//			worldData.setState(timeLine.get());
-			simController.setState(viewData.getName(), timeLine.get());
-//			System.out.println("GOTTEN STATE HAS: " + timeLine.get().getTileTicks().size());
-			
-//		} catch (SchematicException e) {
-//			
-//			Log.e("Could not prepare simulator before placing block:" + e.getMessage());
-//			e.printStackTrace();
-//		}
+		if (timeLine.atEnd())
+			return;
+
+		simController.setState(timeLine.get());
 	}
 	
 	public void setTimeWindow(TimeWindow window) {

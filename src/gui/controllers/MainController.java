@@ -15,6 +15,7 @@ import gui.main.Cord3S;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import logging.Log;
 import sim.controller.Response;
+import sim.logic.Simulator;
+import sim.logic.World;
 
 public class MainController {
 	
@@ -38,11 +41,12 @@ public class MainController {
 	
 	private TileController tileController;
 	private BlockController blockController;
-	private SimController simController;
 	private List<WorldController> worldControllers;
 	
 	private WorldController selectionController;
 	private Cord3S selectionCord;
+	
+	private Simulator simulator;
 	
 	public MainController() {
 		
@@ -52,8 +56,6 @@ public class MainController {
 		
 		tileController = new TileController(new File(gui.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(gui.main.Constants.BLOCKSFILE));
-		
-		simController = new SimController();
 		
 		desktopPane = new DesktopPane();
 		statusPanel = new StatusPanel();
@@ -116,7 +118,15 @@ public class MainController {
 			minecraftFolder = minecraftDialog.getSelectedFile().getAbsolutePath();
 		}
 		
-		simController.initialize(mcpFolder, minecraftFolder);
+		try {
+			simulator = new Simulator(mcpFolder, minecraftFolder);
+			
+		} catch (ClassNotFoundException | NoSuchFieldException | SecurityException | InstantiationException
+				| IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException
+				| IOException e) {
+			
+			Log.e("Could not initlialize the Simulator" + SimController.analyseException(e));
+		}
 	}
 	
 	
@@ -128,12 +138,13 @@ public class MainController {
 		
 		try {
 			
-			WorldController worldController = new WorldController(this, schematicFile);
+			World world = simulator.createWorld();
+			WorldController worldController = new WorldController(this, world, schematicFile);
 			worldControllers.add(worldController);
 			
 			onWorldAdded(worldController);
 			
-		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
+		} catch (SchematicException | IOException | NoSuchAlgorithmException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			Log.e("Failed to load schematic: " + e.getMessage());
 		}
 	}
@@ -202,10 +213,6 @@ public class MainController {
 	
 	public BlockController getBlockController() {
 		return blockController;
-	}
-	
-	public SimController getSimController() {
-		return simController;
 	}
 	
 	public WorldController getSelectedWorld() {

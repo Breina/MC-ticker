@@ -12,6 +12,7 @@ import sim.loading.Linker;
 public class RBootstrap implements ISimulated {
 	
 	private Class<?> Bootstrap;
+	private Method m_register;
 	
 //	private Class<?> Item;
 //	private Method m_getIconString, m_getItemById;
@@ -26,7 +27,10 @@ public class RBootstrap implements ISimulated {
 	private void prepareBootstrap(Linker linker) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		Bootstrap = linker.getClass("Bootstrap");
-		Method m_register = Bootstrap.getDeclaredMethod(Constants.BOOTLOADER_REGISTER);
+		m_register = Bootstrap.getDeclaredMethod(Constants.BOOTLOADER_REGISTER);
+	}
+	
+	public void register() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		m_register.invoke(null);
 	}
 

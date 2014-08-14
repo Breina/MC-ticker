@@ -22,6 +22,7 @@ public class ViewData {
 	private final static Block AIRBLOCK = new Block((byte) 0);
 	
 	public ViewData(short width, short height, short length) {
+		
 		this.xSize = width;
 		this.ySize = height;
 		this.zSize = length;

@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import logging.Log;
 import sim.logic.Simulator;
+import sim.logic.World;
 import sim.objects.WorldState;
 import utils.CircularByteBuffer;
 import utils.Tag;
@@ -23,16 +24,17 @@ import utils.Tag;
  */
 public class SimController {
 	
-	private Simulator simulator;
+	private World world;
 
-	public SimController() {
+	public SimController(World world) {
+		this.world = world;
 	}
 	
-	public void setSchematic(String name, Tag schematic) {
+	public void setSchematic(Tag schematic) {
 		
 		try {
 			
-			loadWorld(name, schematic);
+			loadWorld(schematic);
 			
 		} catch (NoSuchAlgorithmException e) {
 			
@@ -40,12 +42,12 @@ public class SimController {
 		}
 	}
 	
-	public Tag getSchematic(String name) {
+	public Tag getSchematic() {
 		
 		try {
 			
 			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			saveWorld(name, cbb.getOutputStream());
+			saveWorld(cbb.getOutputStream());
 			
 			return Tag.readFrom(cbb.getInputStream());
 			
@@ -55,29 +57,12 @@ public class SimController {
 			return null;
 		}
 	}
-
-	public void initialize(String mcpFolder, String minecraftFolder) {		
+	
+	public void createNewWorld(int xSize, int ySize, int zSize) {
 		
 		try {
 			
-			simulator = new Simulator(mcpFolder, minecraftFolder);
-
-		} catch (IllegalAccessException | ClassNotFoundException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
-			
-			Log.e("Could not initlialize the Simulator" + analyseException(e));
-		}
-	}
-	
-	public void destroy(String worldName) {
-		
-		simulator.destroy(worldName);
-	}
-	
-	public void createNewWorld(String worldName, int xSize, int ySize, int zSize) {
-		
-		try {
-			
-			simulator.createEmptyWorld(worldName, xSize, ySize, zSize);
+			world.createEmptyWorld(xSize, ySize, zSize);
 		
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -86,11 +71,11 @@ public class SimController {
 		
 	}
 	
-	public void loadWorld(String worldName, Tag input) throws NoSuchAlgorithmException {
+	public void loadWorld(Tag input) throws NoSuchAlgorithmException {
 		
 		try {
 			
-			simulator.setWorld(worldName, input);
+			world.setWorld(input);
 			
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -98,11 +83,11 @@ public class SimController {
 		}
 	}
 	
-	public void saveWorld(String worldName, OutputStream output) {
+	public void saveWorld(OutputStream output) {
 		
 		try {
 			
-			simulator.getWorld(worldName, output);
+			world.getWorld(output);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | IOException e) {
 			
@@ -110,11 +95,11 @@ public class SimController {
 		}
 	}
 	
-	public void tick(String worldName) {
+	public void tick() {
 		
 		try {
 			
-			simulator.tickWorld(worldName);
+			world.tickWorld();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -122,11 +107,11 @@ public class SimController {
 		}
 	}
 	
-	public void setBlock(String worldName, int x, int y, int z, byte id, byte data) {
+	public void setBlock(int x, int y, int z, byte blockId, byte blockData) {
 		
 		try {
 			
-			simulator.setBlock(worldName, x, y, z, id, data);
+			world.setBlock(x, y, z, blockId, blockData);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -134,7 +119,7 @@ public class SimController {
 		}
 	}
 	
-	private String analyseException(Exception e) {
+	public static String analyseException(Exception e) {
 		
 		String msg;
 		
@@ -193,11 +178,11 @@ public class SimController {
 //		sim.setBlock("test", 2, 1, 2, (byte) 76, (byte) 5);
 //	}
 
-	public void setState(String worldName, WorldState state) {
+	public void setState(WorldState state) {
 		
 		try {
 			
-			simulator.setState(worldName, state);
+			world.setState(state);
 			
 		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException | IOException e) {
@@ -206,11 +191,11 @@ public class SimController {
 		}
 	}
 	
-	public WorldState getState(String worldName) {
+	public WorldState getState() {
 		
 		try {
 			
-			return simulator.getState(worldName);
+			return world.getState();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| InstantiationException e) {

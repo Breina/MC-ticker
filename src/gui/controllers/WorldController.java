@@ -14,10 +14,12 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import sim.logic.World;
 import utils.Tag;
 import logging.Log;
 
@@ -38,10 +40,10 @@ public class WorldController {
 	
 //	private Cord3S selection;
 	
-	public WorldController(MainController mainController, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
+	public WorldController(MainController mainController, World world, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
 		
 		this.mainController = mainController;
-		this.simController = mainController.getSimController();
+		this.simController = new SimController(world);
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
@@ -60,7 +62,7 @@ public class WorldController {
 		windows = new ArrayList<DrawingWindow>();		
 		addNewPerspective(Orientation.TOP);
 		
-		simController.setSchematic(viewData.getName(), schematic);
+		simController.setSchematic(schematic);
 		
 		timeController.init();
 	}
@@ -97,7 +99,6 @@ public class WorldController {
 		
 		time.dispose();
 		timeController.stopThread();
-		destroySim();
 		
 		mainController.getWindowMenu().removeWorldMenu(worldMenu);
 		mainController.onWorldRemoved(this);
@@ -127,13 +128,9 @@ public class WorldController {
 		
 		timeController.loadCurrentTimeIntoSchematic();
 		
-		simController.setBlock(viewData.getName(), x, y, z, block.getId(), block.getData());
+		simController.setBlock(x, y, z, block.getId(), block.getData());
 		
-		timeController.updateCurrentSchematic(simController.getState(viewData.getName()));
-	}
-	
-	private void destroySim() {
-		simController.destroy(viewData.getName());
+		timeController.updateCurrentSchematic(simController.getState());
 	}
 	
 	public void updateWithNewData() {
@@ -222,5 +219,9 @@ public class WorldController {
 	@Override
 	public String toString() {
 		return viewData.getName();
+	}
+	
+	public SimController getSimController() {
+		return simController;
 	}
 }
