@@ -27,7 +27,6 @@ public class BlockWindow extends MainWindow {
 	
 	private final static int BTNSIZE = 25;
 	
-//	private MainController mainController;
 	private BlockController blockController;
 	private TileController tileController;
 	
@@ -36,11 +35,10 @@ public class BlockWindow extends MainWindow {
 	public BlockWindow(MainController mainController) {
 		super(mainController, "Blocks", true);
 		
-//		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();
 		this.tileController = mainController.getTileController();
 		
-		setLocation(0, 57);
+		setLocation(0, 52);
 		
 		buildGUI();
 	}

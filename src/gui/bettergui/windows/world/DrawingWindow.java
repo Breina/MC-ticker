@@ -108,7 +108,7 @@ public class DrawingWindow extends InternalWindow {
 		
 		pack();
 		
-		setLocation(152, 57);
+		setLocation(164, 109);
 		
 //		editor.repaintAll();
 	}

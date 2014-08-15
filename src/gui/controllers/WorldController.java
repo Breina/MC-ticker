@@ -47,7 +47,8 @@ public class WorldController {
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
-		viewData = new ViewData((short) schematic.findTagByName("Width").getValue(),
+		viewData = new ViewData(schematicFile.getName(),
+								(short) schematic.findTagByName("Width").getValue(),
 								(short) schematic.findTagByName("Height").getValue(),
 								(short) schematic.findTagByName("Length").getValue());
 		worldMenu = new WorldMenu(this);

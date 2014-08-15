@@ -122,6 +122,7 @@ public class ExportWindow extends MainWindow {
 		
 		//setSize(200, 300);
 		setPreferredSize(new Dimension(200, 360));
+		setLocation(200, 200);
 		pack();
 	}
 	

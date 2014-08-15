@@ -3,13 +3,13 @@ package gui.controllers;
 import gui.bettergui.DesktopPane;
 import gui.bettergui.RSFrame;
 import gui.bettergui.StatusPanel;
-import gui.bettergui.choosers.MCPFolderChooser;
 import gui.bettergui.choosers.MinecraftFolderChooser;
 import gui.bettergui.menu.FileMenu;
 import gui.bettergui.menu.WindowMenu;
 import gui.bettergui.windows.main.BlockWindow;
 import gui.bettergui.windows.main.ExportWindow;
 import gui.bettergui.windows.main.LogWindow;
+import gui.bettergui.windows.main.ToolWindow;
 import gui.exceptions.SchematicException;
 import gui.main.Cord3S;
 
@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import logging.Log;
-import sim.controller.Response;
 import sim.logic.Simulator;
 import sim.logic.World;
 
@@ -35,6 +35,7 @@ public class MainController {
 	private FileMenu fileMenu;
 	private LogWindow logWindow;
 	private BlockWindow blockWindow;
+	private ToolWindow toolWindow;
 	private RSFrame mainframe;
 	private ExportWindow exportWindow;
 	private StatusPanel statusPanel;
@@ -63,6 +64,7 @@ public class MainController {
 		windowMenu = new WindowMenu(this);
 		logWindow = new LogWindow(this);
 		blockWindow = new BlockWindow(this);
+		toolWindow = new ToolWindow(this);
 		mainframe = new RSFrame(this);
 		exportWindow = new ExportWindow(this);
 		
@@ -71,6 +73,13 @@ public class MainController {
 	
 	private void setLF() {
 		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            return;
+		        }
+		    }
+			
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException

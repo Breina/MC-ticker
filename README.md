@@ -101,5 +101,6 @@ Links
 * Where I've been updating my progress so far: http://forum.openredstone.org/showthread.php?tid=1606
 * The best redstone community: http://openredstone.org/
 * Lots of nice icons: http://p.yusukekamiyamane.com/
+* The background: http://iwithered.deviantart.com/
 * His Circular Byte Buffer proved very useful: http://ostermiller.org/utils/src/CircularByteBuffer.java.html
 * Their Tag class to parse and write schematics: http://minecraft.gamepedia.com/Development_resources/Example_NBT_Class
