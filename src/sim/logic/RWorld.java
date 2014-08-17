@@ -271,10 +271,8 @@ public class RWorld implements ISimulated {
 		
 		boolean succes = (boolean) m_setBlock.invoke(world.getWorld(), x, y, z, block, metaData, flags);
 		
-		if (succes)
-			Log.i("Set block");
-		else
-			Log.w("Unsuccesfully set block");
+//		if (!succes)
+//			Log.w("Set block: no changes");
 		
 		return succes;
 	}

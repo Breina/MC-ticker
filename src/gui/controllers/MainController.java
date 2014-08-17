@@ -12,6 +12,8 @@ import gui.bettergui.windows.main.LogWindow;
 import gui.bettergui.windows.main.ToolWindow;
 import gui.exceptions.SchematicException;
 import gui.main.Cord3S;
+import gui.objects.Block;
+import gui.tools.Tool;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,10 @@ public class MainController {
 	private WorldController selectionController;
 	private Cord3S selectionCord;
 	
+	private Tool tool;
+	
+	private Block block;
+	
 	private Simulator simulator;
 	
 	public MainController() {
@@ -73,12 +79,12 @@ public class MainController {
 	
 	private void setLF() {
 		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            return;
-		        }
-		    }
+//			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//		        if ("Nimbus".equals(info.getName())) {
+//		            UIManager.setLookAndFeel(info.getClassName());
+//		            return;
+//		        }
+//		    }
 			
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
@@ -171,6 +177,7 @@ public class MainController {
 		selectionCord = cord;
 		
 		statusPanel.updateSelection(source.getWorldData().getName(), cord);
+		tool.onSelectionChanged();
 	}
 	
 	public void saveAll() {
@@ -230,5 +237,21 @@ public class MainController {
 	
 	public Cord3S getSelectedCord() {
 		return selectionCord;
+	}
+	
+	public void setTool(Tool tool) {
+		this.tool = tool;
+	}
+	
+	public Tool getTool() {
+		return tool;
+	}
+	
+	public void setBlock(Block block) {
+		this.block = block;
+	}
+	
+	public Block getBlock() {
+		return block;
 	}
 }

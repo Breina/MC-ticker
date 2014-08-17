@@ -27,6 +27,7 @@ public class BlockWindow extends MainWindow {
 	
 	private final static int BTNSIZE = 25;
 	
+	private MainController mainController;
 	private BlockController blockController;
 	private TileController tileController;
 	
@@ -35,6 +36,7 @@ public class BlockWindow extends MainWindow {
 	public BlockWindow(MainController mainController) {
 		super(mainController, "Blocks", true);
 		
+		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();
 		this.tileController = mainController.getTileController();
 		
@@ -80,7 +82,7 @@ public class BlockWindow extends MainWindow {
 				btn.addItemListener(new ItemListener() {
 					@Override
 					public void itemStateChanged(ItemEvent e) {
-						selectedBlock = new Block(bl.getId(), (byte) 0);
+						mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
 					}
 				});
 				
@@ -92,12 +94,5 @@ public class BlockWindow extends MainWindow {
 		pack();
 		
 		setLayer(DesktopPane.PALETTE_LAYER);		
-	}
-	
-	
-	
-	public Block getSelectedBlock() {
-		
-		return selectedBlock;
 	}
 }

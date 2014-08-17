@@ -74,9 +74,10 @@ public class TimeController implements Runnable {
 		}
 	}
 	
-	public void updateCurrentSchematic(WorldState state) {
+	public void updateCurrentSchematic() {
 		
 		try {
+			WorldState state = simController.getState();
 //			foundHashes.clear();
 			timeLine.set(state);
 			viewData.setState(state);
@@ -263,8 +264,8 @@ public class TimeController implements Runnable {
 		}
 	}
 	
-	public void loadCurrentTimeIntoSchematic() {
-		if (timeLine.atEnd())
+	public void loadCurrentTimeIntoSchematic(boolean ignoreIfAtEnd) {
+		if (ignoreIfAtEnd && timeLine.atEnd())
 			return;
 
 		simController.setState(timeLine.get());

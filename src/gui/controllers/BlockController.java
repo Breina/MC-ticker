@@ -45,7 +45,7 @@ public class BlockController {
 		return cats;
 	}
 	
-	public BlockLogic getBlock(byte id, byte data) {
+	public BlockLogic getBlock(byte id) {
 		
 		for (BlockSet blockSet : blockSets)
 			if (blockSet.containsBlock(id))
@@ -53,6 +53,4 @@ public class BlockController {
 		
 		return null;
 	}
-	
-	
 }

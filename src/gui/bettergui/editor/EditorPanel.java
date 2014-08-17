@@ -10,6 +10,7 @@ import gui.main.Cord3S;
 import gui.objects.Block;
 import gui.objects.Orientation;
 import gui.objects.ViewData;
+import gui.tools.Tool;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -20,6 +21,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -106,6 +108,11 @@ public class EditorPanel extends JLayeredPane {
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		addMouseMotionListener(new MouseMoveHandler());
 		addMouseListener(new MouseHandler());
+		
+		Tool tool = worldController.getMainController().getTool();
+		addMouseListener(tool);
+		if (tool.hasMouseMotionListener())
+			addMouseMotionListener((MouseMotionListener) tool);
 	}
 
 	/**
@@ -420,17 +427,6 @@ public class EditorPanel extends JLayeredPane {
 	}
 	
 	protected class MouseHandler extends MouseAdapter {
-		
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-			dragButton = e.getButton();			
-			worldController.onEditorClicked(dragButton);
-			
-			repaintBlocks();
-			repaint();
-		}
-		
 		@Override
 		public void mouseExited(MouseEvent e) {
 			unSelect();			
@@ -474,20 +470,12 @@ public class EditorPanel extends JLayeredPane {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			
 			onSelectionUpdated((short) e.getX(), (short) e.getY());
 		}
 		
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			
-			if (onSelectionUpdated((short) e.getX(), (short) e.getY())) {
-				Log.i("Setting extra");
-				worldController.onEditorClicked(dragButton);
-				
-				repaintBlocks();
-				repaint();
-			}
+			onSelectionUpdated((short) e.getX(), (short) e.getY());
 		}
 	}
 	

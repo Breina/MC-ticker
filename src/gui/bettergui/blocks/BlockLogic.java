@@ -101,13 +101,28 @@ public class BlockLogic {
 		return (byte) ((data & ~mask) | increasedData);
 	}
 	
-	public byte rotate(byte data) {
+	private byte decreaseData(byte data, byte mask, byte decrease, byte min, byte max) {
+		byte decreasedData = (byte) ((data - decrease) & mask);
 		
-		return increaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
+		if (decreasedData < min)
+			decreasedData = max;
+		
+		return (byte) ((data & ~mask) | decreasedData);
 	}
 	
-	public byte click(byte data) {
+	public byte rotate(byte data, boolean forward) {
 		
-		return increaseData(data, clickMask, clickIncrease, clickMin, clickMax);
+		if (forward)
+			return increaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
+		else
+			return decreaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
+	}
+	
+	public byte click(byte data, boolean forward) {
+		
+		if (forward)
+			return increaseData(data, clickMask, clickIncrease, clickMin, clickMax);
+		else
+			return decreaseData(data, clickMask, clickIncrease, clickMin, clickMax);
 	}
 }

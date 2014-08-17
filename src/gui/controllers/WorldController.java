@@ -105,33 +105,34 @@ public class WorldController {
 		mainController.onWorldRemoved(this);
 	}
 	
-	public void onEditorClicked(int button) {
-		
-		Cord3S selection = mainController.getSelectedCord();
-		
-		try {
-			switch (button) {			
-				case MouseEvent.BUTTON1:
-					setBlock(selection.x, selection.y, selection.z, Block.B_AIR);
-					break;
-					
-				case MouseEvent.BUTTON3:
-					setBlock(selection.x, selection.y, selection.z, mainController.getEditorWindow().getSelectedBlock());
-					break;
-			}
-		} catch (NullPointerException e) {
-			Log.e("Setting the block failed, I don't know why this happens sometimes. Try again and good luck next time :)");
-			e.printStackTrace();
-		}
-	}
+	// TODO remove
+//	public void onEditorClicked(int button) {
+//		
+//		Cord3S selection = mainController.getSelectedCord();
+//		
+//		try {
+//			switch (button) {			
+//				case MouseEvent.BUTTON1:
+//					setBlock(selection.x, selection.y, selection.z, Block.B_AIR);
+//					break;
+//					
+//				case MouseEvent.BUTTON3:
+//					setBlock(selection.x, selection.y, selection.z, mainController.getBlock());
+//					break;
+//			}
+//		} catch (NullPointerException e) {
+//			Log.e("Setting the block failed, I don't know why this happens sometimes. Try again and good luck next time :)");
+//			e.printStackTrace();
+//		}
+//	}
 	
-	private void setBlock(final int x, final int y, final int z, final Block block) {
+	public void setBlock(final int x, final int y, final int z, final Block block) {
 		
-		timeController.loadCurrentTimeIntoSchematic();
+		timeController.loadCurrentTimeIntoSchematic(true);
 		
 		simController.setBlock(x, y, z, block.getId(), block.getData());
 		
-		timeController.updateCurrentSchematic(simController.getState());
+		timeController.updateCurrentSchematic();
 	}
 	
 	public void updateWithNewData() {
@@ -158,6 +159,10 @@ public class WorldController {
 	
 	public TimeWindow getTimeWindow() {
 		return time;
+	}
+	
+	public List<DrawingWindow> getOpenWindows() {
+		return windows;
 	}
 
 	public void revert() {
