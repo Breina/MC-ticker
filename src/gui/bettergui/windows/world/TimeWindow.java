@@ -1,26 +1,21 @@
 package gui.bettergui.windows.world;
 
+import gui.Util;
 import gui.bettergui.DesktopPane;
 import gui.bettergui.time.PlayState;
 import gui.controllers.TimeController;
 import gui.controllers.WorldController;
-import gui.objects.Block;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-
-import logging.Log;
 
 // TODO hook this class up to TimeController
 public class TimeWindow extends WorldWindow {
@@ -30,9 +25,6 @@ public class TimeWindow extends WorldWindow {
 
 	private TimeController timeController;
 
-	private static boolean isInitialized;
-	private static ImageIcon start, rushBack, playBack, stepBack, pause, stepForward, playForward, rushForward, end;
-
 	private JButton btnStart, btnStepBack, btnStepForward, btnEnd;
 	private JToggleButton btnRushBack, btnPlayBack, btnPause, btnPlayForward, btnRushForward;
 	private JLabel lblStep;
@@ -41,39 +33,17 @@ public class TimeWindow extends WorldWindow {
 
 	public TimeWindow(WorldController worldController) {
 		super(worldController, "Time", true);
+		
+		setFrameIcon(Util.getIcon("time/clock.png"));
 
 		this.timeController = worldController.getTimeController();
 
 		isPaused = true;
 		isBack = false;
 
-		if (!isInitialized) {
-
-			try {
-				start = getIcon("start");
-				rushBack = getIcon("rush-back");
-				playBack = getIcon("play-back");
-				stepBack = getIcon("step-back");
-				pause = getIcon("pause");
-				stepForward = getIcon("step-forward");
-				playForward = getIcon("play-forward");
-				rushForward = getIcon("rush-forward");
-				end = getIcon("end");
-
-				isInitialized = true;
-
-			} catch (IOException e) {
-				Log.e("Failed to load time-icons: " + e.getMessage());
-			}
-		}
-
 		setLocation(164, 52);
 
 		buildGUI();
-	}
-
-	private ImageIcon getIcon(String name) throws IOException {
-		return new ImageIcon(ImageIO.read(new File("img/time/" + name + ".png")));
 	}
 
 	public void buildGUI() {
@@ -83,16 +53,26 @@ public class TimeWindow extends WorldWindow {
 
 		ButtonGroup group = new ButtonGroup();
 
-		btnStart = new JButton(start);
-		btnRushBack = new JToggleButton(rushBack);
-		btnPlayBack = new JToggleButton(playBack);
-		btnStepBack = new JButton(stepBack);
-		btnPause = new JToggleButton(pause);
-		btnStepForward = new JButton(stepForward);
-		btnPlayForward = new JToggleButton(playForward);
-		btnRushForward = new JToggleButton(rushForward);
-		btnEnd = new JButton(end);
+		btnStart = new JButton(Util.getIcon("time/start.png"));
+		btnRushBack = new JToggleButton(Util.getIcon("time/rush-back.png"));
+		btnPlayBack = new JToggleButton(Util.getIcon("time/play-back.png"));
+		btnStepBack = new JButton(Util.getIcon("time/step-back.png"));
+		btnPause = new JToggleButton(Util.getIcon("time/pause.png"));
+		btnStepForward = new JButton(Util.getIcon("time/step-forward.png"));
+		btnPlayForward = new JToggleButton(Util.getIcon("time/play-forward.png"));
+		btnRushForward = new JToggleButton(Util.getIcon("time/rush-forward.png"));
+		btnEnd = new JButton(Util.getIcon("time/end.png"));
 		lblStep = new JLabel("0");
+		
+		btnStart.setToolTipText("Jump to earliest state");
+		btnRushBack.setToolTipText("Play backwards fast");
+		btnPlayBack.setToolTipText("Play backwards at regular speed");
+		btnStepBack.setToolTipText("Go back one tick");
+		btnPause.setToolTipText("The pause icon should be pretty universal");
+		btnStepForward.setToolTipText("Do one tick");
+		btnPlayForward.setToolTipText("Minecraft default");
+		btnRushForward.setToolTipText("Minecraft on steroids");
+		btnEnd.setToolTipText("Go to last performed state");
 
 		group.add(btnRushBack);
 		group.add(btnPlayBack);

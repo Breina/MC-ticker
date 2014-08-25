@@ -44,7 +44,7 @@ public class Constants {
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
 		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getIconString"}, {"getItemById"}, {"registerItems"},
 		{"getInventoryName"}, {"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
-		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}};
+		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"levelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -58,7 +58,7 @@ public class Constants {
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
-		"NBTSizeTracker", "NextTickListEntry"};
+		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer"};
 	
 	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
 	public final static String WORLD_GETBLOCK = "a";

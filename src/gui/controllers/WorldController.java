@@ -19,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sim.logic.World;
+import sim.logic.SimWorld;
 import utils.Tag;
 import logging.Log;
 
@@ -40,10 +40,10 @@ public class WorldController {
 	
 //	private Cord3S selection;
 	
-	public WorldController(MainController mainController, World world, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
+	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
 		
 		this.mainController = mainController;
-		this.simController = new SimController(world);
+		this.simController = new SimController(simWorld);
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		

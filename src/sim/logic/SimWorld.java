@@ -20,7 +20,7 @@ import sim.objects.WorldState;
 import utils.Tag;
 import utils.Tag.Type;
 
-public class World {
+public class SimWorld {
 	
 	private RWorld rWorld;
 	private RBlock rBlock;
@@ -34,7 +34,7 @@ public class World {
 	
 	private WorldInstance world;
 	
-	public World(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
+	public SimWorld(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
 			RTileEntity rTileEntity, RWorld rWorld) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
@@ -284,8 +284,6 @@ public class World {
 		
 		for (Tag tag : tags) {
 			
-			
-			
 			int xCoord		= (int) tag.findNextTagByName("x", null).getValue();
 			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
 			int zCoord		= (int) tag.findNextTagByName("z", null).getValue();
@@ -486,6 +484,12 @@ public class World {
 		
 		rWorld.tickUpdates(world, 2l);
 //		rWorld.tickEntities(world);
+	}
+	
+	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		Object block = rWorld.getBlock(world, x, y, z);
+		rBlock.onBlockActivated(block, world, x, y, z, null, 0, 0, 0, 0);
 	}
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

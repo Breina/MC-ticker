@@ -13,7 +13,7 @@ public class ToolPlace extends Tool {
 	private Block dragBlock;
 
 	public ToolPlace(MainController mainController) {
-		super(mainController, "Place", false);
+		super(mainController, "Place", "block.png", false);
 	}
 
 	@Override

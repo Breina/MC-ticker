@@ -28,7 +28,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import logging.Log;
 import sim.logic.Simulator;
-import sim.logic.World;
+import sim.logic.SimWorld;
 
 public class MainController {
 	
@@ -153,8 +153,8 @@ public class MainController {
 		
 		try {
 			
-			World world = simulator.createWorld();
-			WorldController worldController = new WorldController(this, world, schematicFile);
+			SimWorld simWorld = simulator.createWorld();
+			WorldController worldController = new WorldController(this, simWorld, schematicFile);
 			worldControllers.add(worldController);
 			
 			onWorldAdded(worldController);

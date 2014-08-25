@@ -67,8 +67,8 @@ public class Simulator {
 		rNextTickListEntry = new RNextTickListEntry(linker);
 	}
 	
-	public World createWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		return new World(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld);
+	public SimWorld createWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld);
 	}
 	
 	// Just so that I have at least one method here after refactoring

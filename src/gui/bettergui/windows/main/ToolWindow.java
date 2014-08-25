@@ -1,5 +1,6 @@
 package gui.bettergui.windows.main;
 
+import gui.Util;
 import gui.bettergui.DesktopPane;
 import gui.bettergui.editor.EditorPanel;
 import gui.bettergui.windows.world.DrawingWindow;
@@ -15,20 +16,26 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
+
+import logging.Log;
 
 public class ToolWindow extends MainWindow {
 	private static final long serialVersionUID = 5371809301081276026L;
-	
-//	private JToggleButton btnActivate, btnPlace, btnSelect, btnRotate, btnMove;
 	
 	private Tool currentTool;
 	private MainController mainController;
 
 	public ToolWindow(MainController mainController) {
 		super(mainController, "Tools", true);
+		
+		setFrameIcon(Util.getIcon("tools/toolbox.png"));
 		
 		this.mainController = mainController;
 		
@@ -40,24 +47,12 @@ public class ToolWindow extends MainWindow {
 	public void buildGUI() {
 		
 		setLayout(new GridLayout(1, 5));
-		
-//		add(btnActivate = new JToggleButton("Activate"));
-//		add(btnPlace = new JToggleButton("Place"), true);
-//		add(btnSelect = new JToggleButton("Select"));
-//		add(btnRotate = new JToggleButton("Rotate"));
-//		add(btnMove = new JToggleButton("Move"));
-//		
+
 		ButtonGroup group = new ButtonGroup();
 		addTool(group, new ToolActivate(mainController));
 		addTool(group, new ToolSelect(mainController));
 		addTool(group, new ToolPlace(mainController));
 		addTool(group, new ToolRotate(mainController));
-		
-//		group.add(btnActivate);
-//		group.add(btnPlace);
-//		group.add(btnSelect);
-//		group.add(btnRotate);
-//		group.add(btnMove);
 		
 		pack();
 		
@@ -65,7 +60,15 @@ public class ToolWindow extends MainWindow {
 	}
 	
 	private void addTool(ButtonGroup group, final Tool tool) {
-		JToggleButton btn = new JToggleButton(tool.getName());
+		JToggleButton btn;
+		
+		if (tool.getFileName() == null)
+			btn = new JToggleButton(tool.getName());
+		else {
+			btn = new JToggleButton(Util.getIcon("tools/" + tool.getFileName()));
+			btn.setToolTipText(tool.getName());
+		}
+			
 		add(btn);
 		group.add(btn);
 		

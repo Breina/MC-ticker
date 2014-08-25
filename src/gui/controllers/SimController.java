@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import logging.Log;
 import sim.logic.Simulator;
-import sim.logic.World;
+import sim.logic.SimWorld;
 import sim.objects.WorldState;
 import utils.CircularByteBuffer;
 import utils.Tag;
@@ -24,10 +24,10 @@ import utils.Tag;
  */
 public class SimController {
 	
-	private World world;
+	private SimWorld simWorld;
 
-	public SimController(World world) {
-		this.world = world;
+	public SimController(SimWorld simWorld) {
+		this.simWorld = simWorld;
 	}
 	
 	public void setSchematic(Tag schematic) {
@@ -62,7 +62,7 @@ public class SimController {
 		
 		try {
 			
-			world.createEmptyWorld(xSize, ySize, zSize);
+			simWorld.createEmptyWorld(xSize, ySize, zSize);
 		
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -75,7 +75,7 @@ public class SimController {
 		
 		try {
 			
-			world.setWorld(input);
+			simWorld.setWorld(input);
 			
 		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -87,7 +87,7 @@ public class SimController {
 		
 		try {
 			
-			world.getWorld(output);
+			simWorld.getWorld(output);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | IOException e) {
 			
@@ -99,7 +99,7 @@ public class SimController {
 		
 		try {
 			
-			world.tickWorld();
+			simWorld.tickWorld();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
@@ -111,11 +111,23 @@ public class SimController {
 		
 		try {
 			
-			world.setBlock(x, y, z, blockId, blockData);
+			simWorld.setBlock(x, y, z, blockId, blockData);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
 			Log.e("Could not set block" + analyseException(e));
+		}
+	}
+	
+	public void activateBlock(int x, int y, int z) {
+		
+		try {
+			
+			simWorld.onBlockActivated(x, y, z);
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			
+			Log.e("Could not activate block" + analyseException(e));
 		}
 	}
 	
@@ -182,7 +194,7 @@ public class SimController {
 		
 		try {
 			
-			world.setState(state);
+			simWorld.setState(state);
 			
 		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException | IOException e) {
@@ -195,7 +207,7 @@ public class SimController {
 		
 		try {
 			
-			return world.getState();
+			return simWorld.getState();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| InstantiationException e) {

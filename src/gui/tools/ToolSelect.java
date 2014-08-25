@@ -7,7 +7,7 @@ import gui.controllers.MainController;
 public class ToolSelect extends Tool {
 
 	public ToolSelect(MainController mainController) {
-		super(mainController, "Select", false);
+		super(mainController, "Select", "select.png", false);
 	}
 
 	@Override

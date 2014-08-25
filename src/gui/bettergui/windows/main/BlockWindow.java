@@ -13,14 +13,19 @@ import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+
+import logging.Log;
 
 public class BlockWindow extends MainWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
@@ -35,6 +40,13 @@ public class BlockWindow extends MainWindow {
 
 	public BlockWindow(MainController mainController) {
 		super(mainController, "Blocks", true);
+		
+		try {
+			setFrameIcon(new ImageIcon(ImageIO.read(new File("img/tools/block.png"))));
+			
+		} catch (IOException e) {
+			Log.e("Failed to set icon for blocks window: " + e.getMessage());
+		}
 		
 		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();

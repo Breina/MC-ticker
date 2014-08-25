@@ -56,14 +56,14 @@
 			<name>Piston</name>
 			
 			<icon data="2" />
-			<rotation mask="5" />
+			<rotation mask="7" max="5" />
 		</block>
 		
 		<block id="29">
 			<name>Sticky piston</name>
 			
 			<icon data="2" />
-			<rotation mask="5" />
+			<rotation mask="7" max="5" />
 		</block>
 		
 		<block id="23">

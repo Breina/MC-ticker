@@ -7,14 +7,15 @@ import java.util.HashMap;
 
 import logging.Log;
 import sim.loading.Linker;
+import sim.objects.WorldInstance;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Block's reflection
  */
 public class RBlock implements ISimulated {
 	
-	private Class<?> Block;
-	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity;
+	private Class<?> Block, EntityPlayer;
+	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated;
 	private Field f_unlocalizedNameBlock;
 	
 	 // A buffer for all blocks that were once obtained
@@ -35,6 +36,8 @@ public class RBlock implements ISimulated {
 	private void prepareBlock(Linker linker) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		
 		Block = linker.getClass("Block");
+		EntityPlayer = linker.getClass("EntityPlayer");
+		
 //		Method m_registerBlocks = linker.method("registerBlocks", Block);
 //		m_registerBlocks.invoke(null, new Object[]{}); // adds blocks to blockRegistry
 		
@@ -47,6 +50,7 @@ public class RBlock implements ISimulated {
 		m_getBlockById = linker.method("getBlockById", Block, int.class);
 		m_getIdFromBlock = linker.method("getIdFromBlock", Block, Block);
 		m_hasTileEntity = linker.method("hasTileEntity", Block);
+		m_onBlockActivated = linker.method("onBlockActivated", Block, linker.getClass("World"), int.class, int.class, int.class, EntityPlayer, int.class, float.class, float.class, float.class);
 	}
 	
 	/**
@@ -74,6 +78,10 @@ public class RBlock implements ISimulated {
 		}
 		
 		return block;		
+	}
+	
+	public void onBlockActivated(Object block, WorldInstance world, int x, int y, int z, Object player, int side, float vecX, float vexY, float vecZ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		m_onBlockActivated.invoke(block, world.getWorld(), x, y, z, player, side, vecX, vexY, vecZ);
 	}
 	
 	private int compansateForJavasLackOfUnsignedBytes(byte b) {

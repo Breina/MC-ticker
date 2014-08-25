@@ -14,7 +14,7 @@ public class ToolRotate extends Tool {
 	private BlockController blockController;
 
 	public ToolRotate(MainController mainController) {
-		super(mainController, "Rotate", false);
+		super(mainController, "Rotate", "rotate.png", false);
 		
 		this.blockController = mainController.getBlockController();
 	}
