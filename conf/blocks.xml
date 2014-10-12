@@ -27,25 +27,31 @@
 			<name>Wire</name>
 		</block>
 		
+		<block id="75" hidden="true">
+			<rotation mask="5" min="1" sides="wensd" />
+		</block>
+		
 		<block id="76">
 			<name>Torch</name>
 			
 			<icon data="5" orientation="front" />
-			<rotation mask="5" min="1" />
+			<rotation mask="5" min="1" sides="wensd" />
 		</block>
 		
 		<block id="93">
 			<name>Repeater</name>
 			
 			<rotation mask="3" />
-			<click mask="12" />
+		</block>
+		
+		<block id="94" hidden="true">
+			<rotation mask="3" />
 		</block>
 		
 		<block id="149">
 			<name>Comparator</name>
 			
 			<rotation mask="3" />
-			<click mask="4" />
 		</block>
 		
 		<block id="152">
@@ -91,7 +97,6 @@
 			<name>Cauldron</name>
 			
 			<icon data="2" orientation="front" />
-			<click mask="3" />
 		</block>
 	
 	</category>
@@ -101,36 +106,29 @@
 			<name>Wooden button</name>
 			
 			<icon data="5" />
-			<rotation mask="5" />
-			<click mask="8" />
+			<rotation mask="7" max="5" sides="uwensd" />
 		</block>
 		
 		<block id="77">
 			<name>Stone button</name>
 			
 			<icon data="5" />
-			<rotation mask="5" />
-			<click mask="8" />
+			<rotation mask="7" max="5" sides="uwensd" />
 		</block>
 		
 		<block id="69">
 			<name>Lever</name>
 			
 			<icon data="6" orientation="front" />
-			<rotation mask="7" />
-			<click mask="8" />
+			<rotation mask="7" sides="uwensddu" />
 		</block>
 	
 		<block id="72">
 			<name>Wooden pressure plate</name>
-			
-			<click mask="1" />
 		</block>
 		
 		<block id="70">
 			<name>Stone pressure plate</name>
-			
-			<click mask="1" />
 		</block>
 	</category>
 	
@@ -144,7 +142,6 @@
 			
 			<icon orientation="front" />
 			<rotation mask="3" />
-			<click mask="4" />
 		</block>
 	</category>
 	
@@ -179,7 +176,7 @@
 			<name>Fire</name>
 		</block>
 		
-				<block id="9">
+		<block id="9">
 			<name>Water source</name>
 		</block>
 		

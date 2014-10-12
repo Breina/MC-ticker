@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -47,20 +48,73 @@ public class SimWorld {
 		this.rProfiler = rProfiler;
 		this.rTileEntity = rTileEntity;
 		this.rWorld = rWorld;
-		
-		createInstance();
 	}
 	
-	private void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		Log.i("Creating new world");
 		world = rWorld.createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
 				Constants.SEED, Constants.WORLDPROVIDER, Constants.MAPFEATURESENABLED, Constants.HARDCOREENABLED, rChunk, rChunkProvider,
 				rProfiler);
 	}
 	
+	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+		
+		switch (worldTypeId) {
+			case 1:
+			case 2:
+			case 3:
+						Log.i("WorldType              id=" + worldTypeId + ", name=" + worldType);
+				break;
+				
+			default:
+						Log.w("Custom WordType:       id=" + worldTypeId + ", name=" + worldType);
+		}
+		
+						Log.i("GameType               " + gameType);
+						Log.i("Seed                   " + seed);
+						
+		switch (worldProvider) {
+			case -1:
+						Log.i("WorldProvider          Hell");
+				break;
+			case 0:
+						Log.i("WorldProvider          Surface");
+				break;
+			case 1:
+						Log.i("WorldProvider          End");
+				break;
+			default:
+						Log.i("Custom WorldProvider   " + worldProvider);
+		}
+		
+						Log.i("Hardcore               " + (hardcoreEnabled ? "Enabled" : "Disabled"));
+						
+		switch (difficulty) {
+			case 0:
+						Log.i("Difficulty             Peaceful");
+				break;
+			case 1:
+						Log.i("Difficulty             Easy");
+				break;
+			case 2:
+						Log.i("Difficulty             Normal");
+				break;
+			case 3:
+						Log.i("Difficulty             Hard");
+				break;
+			default:
+						Log.e("Custom Difficulty      " + difficulty);
+		}		
+		
+		Log.i("Creating new world");
+		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler); 
+	}
+	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int size = xSize * ySize * zSize;
+		
+		
 		
 		byte[] blockIds = new byte[size];
 		byte[] blockData = new byte[size];

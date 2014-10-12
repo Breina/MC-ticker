@@ -16,7 +16,7 @@ public class Constants {
 	public final static int OUTPUT_INDENT = 90;
 	
 	// The name that will be returned should it ever be called
-	public final static String CHUNKPROVIDERSTRING = "RSsim's chunkprovider";
+	public final static String CHUNKPROVIDERSTRING = "SIM chunkprovider";
 	
 	// Files | folders
 	public final static String JOINEDSRG = "joined.srg";
@@ -60,15 +60,17 @@ public class Constants {
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer"};
 	
-	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
+	// Untranslated methods
 	public final static String WORLD_GETBLOCK = "a";
-	public final static String WORLD_PROFILER = "C";
 	public final static String WORLD_ADDTICKENTRY = "b";
 	public final static String BOOTLOADER_REGISTER = "b";
-	public final static String NBTTAGCOMPOUND_LOAD = "a";			// {"load", "\"Read the actual data"}
+	public final static String NBTTAGCOMPOUND_LOAD = "a"; // Used to be {"load", "Read the actual data"} 
+	
+	// Untranslated fields
+	public final static String WORLD_PROFILER = "C";
 	public final static String NEXTTICKLISTENTRY_BLOCK = "g";
 	
-	// All of these are properties of the World object
+	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";
 	public final static int WORLDTYPEID = 1;
 	public final static String APPNAME = "Simulator";
