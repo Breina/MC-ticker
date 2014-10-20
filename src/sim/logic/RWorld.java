@@ -17,21 +17,22 @@ import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
 import sim.constants.Constants;
+import sim.loading.ClassTester;
 import sim.loading.Linker;
 import sim.objects.WorldInstance;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of World's reflection
  */
-public class RWorld implements ISimulated {
+public class RWorld {
 	
-	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap;
-	private Method m_tickUpdates, m_tick, m_getBlock, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
-		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry;
-	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isClient,
+	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap, BlockPos;
+	private Method m_tickUpdates, m_tick, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
+		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState;
+	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isRemote,
 	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_loadedTileEntities, f_toLoadTileEntities, f_toUnloadTileEntities,
 	f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick;
-	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo;
+	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
 	private Enum<?> e_GameType;
 	
 	public RWorld(Linker linker, Object profiler) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
@@ -54,18 +55,29 @@ public class RWorld implements ISimulated {
 		WorldInfo							= linker.getClass("WorldInfo");
 		IChunkProvider						= linker.getClass("IChunkProvider");
 		IntHashMap							= linker.getClass("IntHashMap");
+		BlockPos							= linker.getClass("BlockPos");
+		
+		Class<?> IBlockState				= linker.getClass("IBlockState");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
-		f_provider							= linker.field("provider", World);			
-		f_levelSaving						= linker.field("levelSaving", WorldServer);
+		f_provider							= linker.field("provider", World);
+		
+		f_levelSaving						= linker.field("disableLevelSaving", WorldServer);
+		
 		f_pendingTickListEntriesTreeSet		= linker.field("pendingTickListEntriesTreeSet", WorldServer);
 		f_pendingTickListEntriesHashSet		= linker.field("pendingTickListEntriesHashSet", WorldServer);
 		f_pendingTickListEntriesThisTick	= linker.field("pendingTickListEntriesThisTick", WorldServer);
-		f_entityIdMap						= linker.field("entityIdMap", WorldServer);
+		
+		// TODO 1.8
+//		f_entityIdMap						= linker.field("entityIdMap", WorldServer);
+		
 		f_chunkProvider						= linker.field("chunkProvider", World);
 		f_worldInfo							= linker.field("worldInfo", World);
-		f_isClient							= linker.field("isClient", World);
+		
+		// TODO 1.8
+		f_isRemote							= linker.field("isRemote", World);
+		
 		f_worldAccesses						= linker.field("worldAccesses", World);
 		f_loadedEntityList					= linker.field("loadedEntityList", World);
 		f_unloadedEntityList				= linker.field("unloadedEntityList", World);
@@ -81,23 +93,30 @@ public class RWorld implements ISimulated {
 		c_worldSettings						= WorldSettings.getConstructor(long.class, GameType, boolean.class, boolean.class,
 													WorldType);
 		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);		
+		c_blockPos							= BlockPos.getDeclaredConstructor(int.class, int.class, int.class);
 		
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, new Class[]{boolean.class});
 		m_tick								= linker.method("tick", WorldServer, new Class[]{});
-		m_getBlockMetadata					= linker.method("getBlockMetadata", World, int.class, int.class, int.class);
-		m_setBlock							= linker.method("setBlock", World, int.class, int.class, int.class,
-													linker.getClass("Block"), int.class, int.class);
+		
+		// TODO 1.8
+//		m_getBlockMetadata					= linker.method("getBlockMetadata", World, int.class, int.class, int.class);
+//		m_setBlock							= linker.method("setBlock", World, int.class, int.class, int.class,
+//													linker.getClass("Block"), int.class, int.class);
+		
 		m_setWorldTime						= linker.method("func_82738_a", World, long.class );
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
 		m_updateEntities					= linker.method("updateEntities", World);
 		
 		// TODO can't use linker yet for these
-		m_getBlock							= World.getDeclaredMethod(Constants.WORLD_GETBLOCK, int.class, int.class, int.class);
-		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
-		f_theProfiler						= World.getField(Constants.WORLD_PROFILER);
-		f_theProfiler						.setAccessible(true);
+		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
+		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
+		
+		// TODO 1.8
+//		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
+//		f_theProfiler						= World.getField(Constants.WORLD_PROFILER);
+//		f_theProfiler						.setAccessible(true);
 	}
 	
 	/**
@@ -126,8 +145,10 @@ public class RWorld implements ISimulated {
 		
 		Object worldProvider = m_getProviderForDimension.invoke(null, _worldProvider);
 		f_provider.set(worldServer, worldProvider);
-		f_levelSaving.setBoolean(worldServer, false);
-		f_theProfiler.set(worldServer, rProfiler.getInstance());
+		
+		f_levelSaving.setBoolean(worldServer, true);
+		
+//		f_theProfiler.set(worldServer, rProfiler.getInstance());
 		
 		TreeSet<Object> pendingTickListEntriesTreeSet = new TreeSet<>();
 		HashSet<Object> pendingTickListEntriesHashSet = new HashSet<>();
@@ -149,15 +170,16 @@ public class RWorld implements ISimulated {
 		
 		f_chunkProvider.set(worldServer, chunkProvider);
 		
-		// TODO Make this available
-		Object entityIdMap = IntHashMap.newInstance();
-		f_entityIdMap.set(worldServer, entityIdMap);
+		// TODO 1.8 (Make this available)
+//		Object entityIdMap = IntHashMap.newInstance();
+//		f_entityIdMap.set(worldServer, entityIdMap);
 		
 		// TODO Make this available
 		ArrayList<Object> loadedTileEntities = new ArrayList<Object>();
 		ArrayList<Object> loadedEntities = new ArrayList<Object>();
 		
-		f_isClient.setBoolean(worldServer, false);
+		f_isRemote.setBoolean(worldServer, false);
+		
 		f_worldAccesses.set(worldServer, new ArrayList<>()); // No one's listening, go home worldAccesses
 		f_loadedEntityList.set(worldServer, loadedEntities);
 		f_unloadedEntityList.set(worldServer, new ArrayList<>());
@@ -205,7 +227,7 @@ public class RWorld implements ISimulated {
 		Log.i("Ticking updates");
 	}
 	
-	public void  tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		m_updateEntities.invoke(world.getWorld());
 	}
@@ -251,40 +273,30 @@ public class RWorld implements ISimulated {
 		return succes;		
 	}
 	
-	public Object getBlock(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private Object getBlockPos(int x, int y, int z) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		Object block = m_getBlock.invoke(world.getWorld(), x, y, z);
+		Object blockPos = c_blockPos.newInstance(x, y, z);
 		
-		return block;
+		return blockPos;
 	}
 	
-	public int getBlockMetaData(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object getBlockState(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		int metaData = (int) m_getBlockMetadata.invoke(world.getWorld(), x, y, z);
+		Object blockState = m_getBlockState.invoke(world.getWorld(), getBlockPos(x, y, z));
 		
-		return metaData;
+		return blockState;
 	}
 	
-	public boolean setBlock(WorldInstance world, int x, int y, int z, Object block, int metaData, boolean update, boolean sendChange) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public boolean setBlockState(WorldInstance world, int x, int y, int z, Object blockState, boolean update, boolean sendChange) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int flags = 4 | (sendChange ? 2 : 0) | (update ? 1 : 0);
 		
-		boolean succes = (boolean) m_setBlock.invoke(world.getWorld(), x, y, z, block, metaData, flags);
+		boolean succes = (boolean) m_setBlockState.invoke(world.getWorld(), getBlockPos(x, y, z), blockState, flags);
 		
-//		if (!succes)
-//			Log.w("Set block: no changes");
+		if (!succes)
+			Log.w("Set block: no changes");
 		
 		return succes;
-	}
-	
-	
-	/**
-	 * Returns World, not WorldServer
-	 */
-	@Override
-	public Class<?> getReflClass() {
-
-		return World;
 	}
 	
 	/**
@@ -304,7 +316,12 @@ public class RWorld implements ISimulated {
 	}
 	
 	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		m_addTickEntry.invoke(world.getWorld(), x, y, z, block, scheduledTime, priority);
+		
+		Log.e("World addTickEntry TODO 1.8");
+		
+		return;
+		
+//		m_addTickEntry.invoke(world.getWorld(), x, y, z, block, scheduledTime, priority);
 	}
 	
 	public void clearTileEntities(WorldInstance world) {

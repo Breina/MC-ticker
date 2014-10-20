@@ -1,0 +1,43 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="tileset">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="entry" type="nodeType" maxOccurs="unbounded" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute type="xs:string" name="name"/>
+			<xs:attribute type="xs:string" name="extension"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="nodeType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="name" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="condition" type="conditionType" maxOccurs="unbounded" minOccurs="0" />
+			<xs:element name="top" type="nodeType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="front" type="nodeType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="right" type="nodeType" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+		
+		<xs:attribute type="xs:short" name="rotation" use="optional"/>
+		<xs:attribute type="xs:string" name="mirror" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="conditionType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="name" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="condition" type="conditionType" maxOccurs="unbounded" minOccurs="0" />
+			<xs:element name="top" type="nodeType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="front" type="nodeType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="right" type="nodeType" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+		
+		<xs:attribute type="xs:short" name="id" use="optional"/>
+		<xs:attribute type="xs:byte" name="data" use="optional"/>
+		<xs:attribute type="xs:byte" name="mask" use="optional"/>
+		
+		<xs:attribute type="xs:short" name="rotation" use="optional"/>
+		<xs:attribute type="xs:string" name="mirror" use="optional"/>
+	</xs:complexType>
+</xs:schema>

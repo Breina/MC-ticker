@@ -9,7 +9,7 @@ import sim.loading.ClassTester;
 import sim.loading.Linker;
 
 
-public class RBootstrap implements ISimulated {
+public class RBootstrap {
 	
 	private Class<?> Bootstrap;
 	private Method m_register;
@@ -27,16 +27,13 @@ public class RBootstrap implements ISimulated {
 	private void prepareBootstrap(Linker linker) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		Bootstrap = linker.getClass("Bootstrap");
-		m_register = Bootstrap.getDeclaredMethod(Constants.BOOTLOADER_REGISTER);
+		
+		m_register = linker.method("register", Bootstrap);
 	}
 	
 	public void register() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
 		m_register.invoke(null);
-	}
-
-	@Override
-	public Class<?> getReflClass() {
-		return Bootstrap;
 	}
 	
 //	private void prepareItem(Linker linker) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

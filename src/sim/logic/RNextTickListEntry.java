@@ -7,7 +7,7 @@ import sim.loading.ClassTester;
 import sim.loading.Linker;
 import logging.Log;
 
-public class RNextTickListEntry implements ISimulated {
+public class RNextTickListEntry {
 	
 	private Class<?> NextTickListEntry;
 	private Field f_xCoord, f_yCoord, f_zCoord, f_scheduledTime, f_priority, f_block;
@@ -23,14 +23,17 @@ public class RNextTickListEntry implements ISimulated {
 		
 		NextTickListEntry = linker.getClass("NextTickListEntry");
 		
-		f_xCoord = linker.field("xCoord", NextTickListEntry);
-		f_yCoord = linker.field("yCoord", NextTickListEntry);
-		f_zCoord = linker.field("zCoord", NextTickListEntry);
+		// TODO 1.8
+//		f_xCoord = linker.field("xCoord", NextTickListEntry);
+//		f_yCoord = linker.field("yCoord", NextTickListEntry);
+//		f_zCoord = linker.field("zCoord", NextTickListEntry);
+		
 		f_scheduledTime = linker.field("scheduledTime", NextTickListEntry);
 		f_priority = linker.field("priority", NextTickListEntry);
 		
-		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
-		f_block.setAccessible(true);
+		// TODO 1.8
+//		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
+//		f_block.setAccessible(true);
 	}
 	
 	public int getXCoord(Object instance) throws IllegalArgumentException, IllegalAccessException {
@@ -55,11 +58,5 @@ public class RNextTickListEntry implements ISimulated {
 	
 	public Object getBlock(Object instance) throws IllegalArgumentException, IllegalAccessException {
 		return f_block.get(instance);
-	}
-	
-	@Override
-	public Class<?> getReflClass() {
-		
-		return NextTickListEntry;
 	}
 }

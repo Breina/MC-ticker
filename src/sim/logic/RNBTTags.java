@@ -16,7 +16,7 @@ import sim.loading.Linker;
 import utils.CircularByteBuffer;
 import utils.Tag;
 
-public class RNBTTags implements ISimulated {
+public class RNBTTags {
 	
 	private Class<?> NBTTagCompound, NBTTagList, NBTSizeTracker;
 	private Constructor<?> c_NBTTagCompound, c_NBTSizeTracker;
@@ -36,14 +36,13 @@ public class RNBTTags implements ISimulated {
 	
 	private void prepareNBTTagCompound(Linker linker) throws NoSuchMethodException, SecurityException {
 		
-		NBTTagCompound = linker.getClass("NBTTagCompound"); // dh
+		NBTTagCompound = linker.getClass("NBTTagCompound");
 		NBTTagList = linker.getClass("NBTTagList");
-		NBTSizeTracker = linker.getClass("NBTSizeTracker"); // ds
+		NBTSizeTracker = linker.getClass("NBTSizeTracker");
 		
 		c_NBTTagCompound = NBTTagCompound.getDeclaredConstructor();
 		c_NBTSizeTracker = NBTSizeTracker.getDeclaredConstructor(long.class);
 		
-//		m_load = linker.method("load", NBTTagCompound, DataInput.class, int.class, NBTSizeTracker);
 		m_load = NBTTagCompound.getDeclaredMethod(Constants.NBTTAGCOMPOUND_LOAD, DataInput.class, int.class, NBTSizeTracker);
 		m_load.setAccessible(true);
 		
@@ -107,12 +106,6 @@ public class RNBTTags implements ISimulated {
 		Object compoundTag = m_getCompoundTagAt.invoke(tag, pos);
 		
 		return compoundTag;
-	}
-	
-	@Override
-	public Class<?> getReflClass() {
-		
-		return NBTTagCompound;
 	}
 
 }

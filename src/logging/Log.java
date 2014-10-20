@@ -33,6 +33,8 @@ public class Log {
 		
 		if (!Constants.LOG_IGNORE_WARNINGS || !(type == TimeString.Types.warning))
 			lastTime = curTime;
+		
+		System.out.println(ts);
 	}
 	
 	public static String getMessages() {

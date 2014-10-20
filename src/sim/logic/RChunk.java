@@ -1,3 +1,4 @@
+
 package sim.logic;
 
 import java.lang.reflect.Array;
@@ -11,16 +12,16 @@ import sim.loading.Linker;
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Chunk's reflection
  */
-public class RChunk implements ISimulated {
+public class RChunk {
 	
-	private Class<?> Chunk;
+	private Class<?> Chunk, Block;
 	private Constructor<?> c_chunk;
 	private Method m_genHeightMap, m_addTileEntity, m_onChunkLoad;
 	private RBlock rBlock;
 	
-	public RChunk(Linker linker, RBlock rBlock, Class<?> TileEntity) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public RChunk(Linker linker, RBlock rBlock) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		prepareChunk(linker, TileEntity);
+		prepareChunk(linker);
 		this.rBlock = rBlock;
 		
 		Log.i("Preparing Chunks");
@@ -29,16 +30,17 @@ public class RChunk implements ISimulated {
 	/**
 	 * Prepares all reflection about to happen
 	 */
-	private void prepareChunk(Linker linker, Class<?> TileEntity) throws NoSuchMethodException, SecurityException {
+	private void prepareChunk(Linker linker) throws NoSuchMethodException, SecurityException {
 		
 		Chunk = linker.getClass("Chunk");
 		Class<?> World = linker.getClass("World");
-		Class<?> Block = linker.getClass("Block");
+		Class<?> TileEntity = linker.getClass("TileEntity");
+		Class<?> ChunkPrimer = linker.getClass("ChunkPrimer");
 		
-		// Just gets the class of an array of blocks
-		Class<?> BlockArray = Array.newInstance(Block, 0).getClass();
+		c_chunk = Chunk.getDeclaredConstructor(World, ChunkPrimer, int.class, int.class);
 		
-		c_chunk = Chunk.getDeclaredConstructor(World, BlockArray, byte[].class, int.class, int.class);
+		// TODO remove
+//		c_chunk = Chunk.getDeclaredConstructor(World, BlockArray, byte[].class, int.class, int.class);
 		
 		m_genHeightMap = linker.method("generateSkylightMap", Chunk);
 		m_addTileEntity = linker.method("addTileEntity", Chunk, TileEntity);
@@ -58,17 +60,21 @@ public class RChunk implements ISimulated {
 	
 	public Object generateEmptyChunk(Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		Object airBlock = rBlock.getBlock((byte) 0);
+		// TODO 1.8
 		
-		Object blockArray = Array.newInstance(rBlock.getReflClass(), 16);
+		return null;
 		
-		for (int i = 0; i < 16; i++) {
-			Array.set(blockArray, i, airBlock);
-		}
-		
-		byte[] metaData = new byte[16];
-		
-		return createChunk(world, blockArray, metaData, 0, 0);
+//		Object airBlock = rBlock.getBlock((byte) 0);
+//		
+//		Object blockArray = Array.newInstance(Block, 16);
+//		
+//		for (int i = 0; i < 16; i++) {
+//			Array.set(blockArray, i, airBlock);
+//		}
+//		
+//		byte[] metaData = new byte[16];
+//		
+//		return createChunk(world, blockArray, metaData, 0, 0);
 	}
 	
 	/**
@@ -80,22 +86,19 @@ public class RChunk implements ISimulated {
 	 * @param zPos The Y chunk position
 	 * @return The Chunk object
 	 */
-	public Object createChunk(Object world, Object blockArray, byte[] metaData, int xPos, int zPos) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object createChunk(Object world, Object chunkPrimer, int xPos, int zPos) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		Object chunk = c_chunk.newInstance(world, blockArray, metaData, xPos, zPos);
-
+		Object chunk = c_chunk.newInstance(world, chunkPrimer, xPos, zPos);
+		
 		// TODO might be optional
 		m_genHeightMap.invoke(chunk);
 		
-		// TODO if every doing unloading, this needs to be in ChunkProvider (there will be a bug to fix then as well)
+		// TODO if ever doing unloading, this needs to be in ChunkProvider (there will be a bug to fix then as well)
 		onChunkLoad(chunk);
 		
 		return chunk;
-	}
-
-	@Override
-	public Class<?> getReflClass() {
-
-		return Chunk;
+		
+		// TODO remove
+//		Object chunk = c_chunk.newInstance(world, blockArray, metaData, xPos, zPos);
 	}
 }

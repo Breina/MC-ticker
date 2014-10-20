@@ -16,7 +16,7 @@ public class Constants {
 	public final static int OUTPUT_INDENT = 90;
 	
 	// The name that will be returned should it ever be called
-	public final static String CHUNKPROVIDERSTRING = "RSsim's chunkprovider";
+	public final static String CHUNKPROVIDERSTRING = "SIM chunkprovider";
 	
 	// Files | folders
 	public final static String JOINEDSRG = "joined.srg";
@@ -29,7 +29,7 @@ public class Constants {
 
 	public final static String MINECRAFTFOLDER = "/.minecraft";
 	public final static String LIBRARYFOLDER = "/libraries";
-	public final static String MINECRAFTJAR = "/versions/1.7.10/1.7.10.jar";
+	public final static String MINECRAFTJAR = "/versions/1.8/1.8.jar";
 
 	/**
 	 * The following 2 final arrays are 2D arrays, this is however an option. The second array element is
@@ -37,19 +37,20 @@ public class Constants {
 	 */
 	public final static String[][] REQUIREDMETHODS = {
 		{"tickUpdates"}, {"getProviderForDimension"}, {"registerBlocks"}, {"getBlockById"},
-		{"getBlockMetadata", "Returns the block"}, {"getIdFromBlock"},
+		{"getStateFromMeta", "Convert the given metadata"}, {"getIdFromBlock"},
 		{"setBlock", "Sets the block ID and metadata at a given location"}, {"startSection"}, {"endSection"},
 		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"}, {"func_82738_a"},
 		{"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
 		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getIconString"}, {"getItemById"}, {"registerItems"},
 		{"getInventoryName"}, {"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
-		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"}};
+		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
+		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
-		{"provider"}, {"levelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
+		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
-		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isClient"}, {"loadedEntityList"},
+		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"field_147482_g"}, {"field_147484_a"}, {"field_147483_b"}, {"playerEntities"}, {"weatherEffects"},
 		{"entityIdMap"}, {"rand", "RNG for World."}, {"xCoord", "X position this tick is occuring at"},
 		{"yCoord", "Y position this tick is occuring at"}, {"zCoord", "Z position this tick is occuring at"}, {"scheduledTime"},
@@ -58,17 +59,25 @@ public class Constants {
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
-		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer"};
+		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "ChunkPrimer", "BlockPos", "IBlockState"};
 	
-	// These are exceptional names that can't be linked because they have indistinguishable duplicates or don't have a translation (yet) 
-	public final static String WORLD_GETBLOCK = "a";
-	public final static String WORLD_PROFILER = "C";
+	// Untranslated methods (new)
+	public final static String WORLD_GETBLOCKSTATE = "p";
+	public final static String WORLD_SETBLOCKSTATE = "a";
+	public final static String IBLOCKSTATE_GETBLOCK = "c";
+	
+	// Untranslated methods (old)
 	public final static String WORLD_ADDTICKENTRY = "b";
-	public final static String BOOTLOADER_REGISTER = "b";
-	public final static String NBTTAGCOMPOUND_LOAD = "a";			// {"load", "\"Read the actual data"}
+	public final static String NBTTAGCOMPOUND_LOAD = "a"; // Used to be {"load", "Read the actual data"} 
+	
+	// Untranslated fields (new)
+	public final static String CHUNKPRIMER_DATA = "a";
+	
+	// Untranslated fields (old)
+	public final static String WORLD_PROFILER = "C";
 	public final static String NEXTTICKLISTENTRY_BLOCK = "g";
 	
-	// All of these are properties of the World object
+	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";
 	public final static int WORLDTYPEID = 1;
 	public final static String APPNAME = "Simulator";

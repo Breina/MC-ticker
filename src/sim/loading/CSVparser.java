@@ -38,11 +38,12 @@ public class CSVparser {
 			// Iterate through all lines
 			while ((line = br.readLine()) != null) {
 
-				// {func_####_a , original name , 0=client 1=server}
-				String[] parsingLine = line.split(",");
+				// {func_####_a , original name , (0=client 1=server) 2=1.8}
+				String[] parsingLine = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 				
 				// are we dealing with client?
-				if (parsingLine[2].equals("0")) {
+				// UPDATE: changed from 0 to 2 since MCP version 9.10 (mc 1.8)
+				if (parsingLine[2].equals("2")) {
 					
 					// loop through requirements
 					for (int i = 0; i < length; i++) {
@@ -50,7 +51,6 @@ public class CSVparser {
 						// {name} or {name, part of description}
 						String[] requirement = requirements[i];
 
-						
 						// if
 						if (parsingLine[1].equals(requirement[0]) &&		// the line matches AND (
 								(requirement.length == 1 ||					// no description is given OR

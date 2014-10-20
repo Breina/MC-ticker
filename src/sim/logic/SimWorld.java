@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,12 +32,13 @@ public class SimWorld {
 	private RNBTTags rNBTTags;
 	private REntity rEntity;
 	private RNextTickListEntry rNextTickListEntry;
+	private RChunkPrimer rChunkPrimer;
 	
 	private WorldInstance world;
 	
 	public SimWorld(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
-			RTileEntity rTileEntity, RWorld rWorld) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		this.rBlock = rBlock;
 		this.rChunk = rChunk;
@@ -47,20 +49,74 @@ public class SimWorld {
 		this.rProfiler = rProfiler;
 		this.rTileEntity = rTileEntity;
 		this.rWorld = rWorld;
-		
-		createInstance();
+		this.rChunkPrimer = rChunkPrimer;
 	}
 	
-	private void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		Log.i("Creating new world");
 		world = rWorld.createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
 				Constants.SEED, Constants.WORLDPROVIDER, Constants.MAPFEATURESENABLED, Constants.HARDCOREENABLED, rChunk, rChunkProvider,
 				rProfiler);
 	}
 	
+	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+		
+		switch (worldTypeId) {
+			case 1:
+			case 2:
+			case 3:
+						Log.i("WorldType              id=" + worldTypeId + ", name=" + worldType);
+				break;
+				
+			default:
+						Log.w("Custom WordType:       id=" + worldTypeId + ", name=" + worldType);
+		}
+		
+						Log.i("GameType               " + gameType);
+						Log.i("Seed                   " + seed);
+						
+		switch (worldProvider) {
+			case -1:
+						Log.i("WorldProvider          Hell");
+				break;
+			case 0:
+						Log.i("WorldProvider          Surface");
+				break;
+			case 1:
+						Log.i("WorldProvider          End");
+				break;
+			default:
+						Log.i("Custom WorldProvider   " + worldProvider);
+		}
+		
+						Log.i("Hardcore               " + (hardcoreEnabled ? "Enabled" : "Disabled"));
+						
+		switch (difficulty) {
+			case 0:
+						Log.i("Difficulty             Peaceful");
+				break;
+			case 1:
+						Log.i("Difficulty             Easy");
+				break;
+			case 2:
+						Log.i("Difficulty             Normal");
+				break;
+			case 3:
+						Log.i("Difficulty             Hard");
+				break;
+			default:
+						Log.e("Custom Difficulty      " + difficulty);
+		}		
+		
+		Log.i("Creating new world");
+		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler); 
+	}
+	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int size = xSize * ySize * zSize;
+		
+		
 		
 		byte[] blockIds = new byte[size];
 		byte[] blockData = new byte[size];
@@ -179,47 +235,46 @@ public class SimWorld {
 				int worldXoffset = chunkX * 16;
 				int worldZoffset = chunkZ * 16;
 				
-				Object blocks = Array.newInstance(rBlock.getReflClass(), chunkSize);
-				byte[] data = new byte[chunkSize];
+				
+//				Object blocks = Array.newInstance(rBlock.getBlockClass(), chunkSize);
+//				byte[] dataOLD = new byte[chunkSize];
+				short[] data = new short[65536];
 				
 				if (Constants.DEBUG_SCHEMATIC_DATA) {
 					System.out.println("(" + chunkX + ", " + chunkZ + ")");
 					System.out.println("id\tx\ty\tz\tchIndex\tschIndex");
 				}
 				
-				for (int x = 0; x < 16; x++)
-					for (int z = 0; z < 16; z++)
-						for (int y = 0; y < height; y++) {
+				xLoop: for (int x = 0; x < 16; x++)
+					zLoop: for (int z = 0; z < 16; z++)
+						for (int y = 0; y < 256; y++) {
 							
-							int chunkIndex = x * height * 16 + z * height + y;
+							int chunkIndex = x << 12 | z << 8 | y;
 							int worldX = x + worldXoffset;
 							int worldZ = z + worldZoffset;
 							
-							byte blockId, blockData;
+							if (y >= ySize)
+								break;
 							
-							if (worldX >= xSize || worldZ >= zSize || y >= ySize) {
-								
-								blockId = 0;
-								blockData = 0;
-								
-							} else {
-								
-								int schematicIndex = y * xSize * zSize + worldZ * xSize + worldX;
-								
-								blockId = blockIds[schematicIndex];
-								blockData = blockDatas[schematicIndex];
-								
-								if (Constants.DEBUG_SCHEMATIC_DATA)
-									System.out.println(blockId + "\t" + worldX + "\t" + y + "\t" + worldZ + "\t" + chunkIndex + "\t" + schematicIndex);
-							}
+							if (worldZ >= zSize)
+								break zLoop;
 							
-							// TODO DEBUG
-							Object block = rBlock.getBlock(blockId);
-							Array.set(blocks, chunkIndex, block);
-							data[chunkIndex] = blockData;
+							if (worldX >= xSize)
+								break xLoop;
+							
+							// Any OoB blocks will be left null and will be given the default block (air) by the game
+								
+							int schematicIndex = y * xSize * zSize + worldZ * xSize + worldX;
+							
+							data[chunkIndex] = (short) (((short) blockIds[schematicIndex]) << 4 |
+											   blockDatas[schematicIndex]);
 						}
 				
-				Object chunk = rChunk.createChunk(world.getWorld(), blocks, data, chunkX, chunkZ);
+				Object chunkPrimer = rChunkPrimer.createChunkPrimer();
+				rChunkPrimer.setData(chunkPrimer, data);
+				
+				
+				Object chunk = rChunk.createChunk(world.getWorld(), chunkPrimer, chunkX, chunkZ);
 				
 				rChunkProvider.addChunk(chunk, chunkX, chunkZ);
 			}
@@ -290,7 +345,7 @@ public class SimWorld {
 			
 			int intBlock	= (int) tag.findNextTagByName("i", null).getValue();
 			byte byteBlock	= (byte) intBlock;
-			Object block	= rBlock.getBlock(byteBlock);
+			Object block	= rBlock.getBlockById(byteBlock);
 			
 			int time		= (int) tag.findNextTagByName("t", null).getValue();
 			int priority	= (int) tag.findNextTagByName("p", null).getValue();
@@ -343,7 +398,7 @@ public class SimWorld {
 		Log.i("Saving world");
 	}
 	
-	private byte[][] getWorldBlocks() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private byte[][] getWorldBlocks() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int size = world.getxSize() * world.getySize() * world.getzSize();
 		
@@ -360,13 +415,14 @@ public class SimWorld {
 			for (int z = 0; z < world.getzSize(); z++) {
 				for (int x = 0; x < world.getxSize(); x++) {
 					
-					byte blockId = (byte) rBlock.getIdFromBlock(rWorld.getBlock(world, x, y, z));
-					
-					blocks[0][i] = blockId;
-					blocks[1][i] = (byte) rWorld.getBlockMetaData(world, x, y, z);
+					Object blockState = rWorld.getBlockState(world, x, y, z);
+					Object block = rBlock.getBlockFromState(blockState);
+
+					blocks[0][i] = (byte) rBlock.getIdFromBlock(block);
+					blocks[1][i] = (byte) rBlock.getMetaFromState(block, blockState);
 					
 					if (Constants.DEBUG_SCHEMATIC_DATA)
-						System.out.println(blockId + "\t" + x + "\t" + y + "\t" + z + "\t" + i);
+						System.out.println(blocks[0][i] + "\t" + x + "\t" + y + "\t" + z + "\t" + i);
 					
 					i++;
 				}
@@ -488,15 +544,19 @@ public class SimWorld {
 	
 	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		Object block = rWorld.getBlock(world, x, y, z);
-		rBlock.onBlockActivated(block, world, x, y, z, null, 0, 0, 0, 0);
+		// TODO 1.8
+		
+//		Object blockState = rWorld.getBlockState(world, x, y, z);
+//		rBlock.onBlockActivated(block, world, x, y, z, null, 0, 0, 0, 0);
 	}
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		Object block = rBlock.getBlock(blockId);
+		// TODO 1.8
 		
-		rWorld.setBlock(world, x, y, z, block, blockData, true, true);
+//		Object block = rBlock.getBlock(blockId);
+//		
+//		rWorld.setBlock(world, x, y, z, block, blockData, true, true);
 	}
 	
 	/*

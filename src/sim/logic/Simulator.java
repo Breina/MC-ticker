@@ -1,28 +1,10 @@
 package sim.logic;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import logging.Log;
-import sim.constants.Constants;
-import sim.exceptions.SchematicException;
 import sim.loading.Linker;
-import sim.objects.WorldInstance;
-import sim.objects.WorldState;
-import utils.Tag;
-import utils.Tag.Type;
 
 public class Simulator {
 	
@@ -36,6 +18,7 @@ public class Simulator {
 	private RNBTTags rNBTTags;
 	private REntity rEntity;
 	private RNextTickListEntry rNextTickListEntry;
+	private RChunkPrimer rChunkPrimer;
 
 	public Simulator(String mcpFolder, String minecraftFolder) throws ClassNotFoundException, IOException, NoSuchFieldException, SecurityException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
 	
@@ -50,9 +33,11 @@ public class Simulator {
 		
 		rNBTTags = new RNBTTags(linker);
 		
-		rTileEntity = new RTileEntity(linker, rNBTTags.getReflClass());
+		rTileEntity = new RTileEntity(linker);
 		
-		rChunk = new RChunk(linker, rBlock, rTileEntity.getReflClass());
+		rChunk = new RChunk(linker, rBlock);
+		
+		rChunkPrimer = new RChunkPrimer(linker);
 		
 		// Our implementation of chunkProvider, which will basically be our block input
 		rChunkProvider = new RChunkProvider();
@@ -60,7 +45,7 @@ public class Simulator {
 		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
 		rWorld = new RWorld(linker, rProfiler.getInstance());
 		
-		rEntity = new REntity(linker, rNBTTags.getReflClass(), rWorld.getReflClass());
+		rEntity = new REntity(linker);
 		
 		new RBootstrap(linker).register();
 		
@@ -68,11 +53,11 @@ public class Simulator {
 	}
 	
 	public SimWorld createWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld);
+		
+		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld, rChunkPrimer);
 	}
 	
-	// Just so that I have at least one method here after refactoring
-	public String getBlockNameById(byte id) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		return rBlock.getBlockName(rBlock.getBlock(id));
-	}
+//	public String getBlockNameById(byte id) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+//		return rBlock.getBlockName(rBlock.getBlock(id));
+//	}
 }

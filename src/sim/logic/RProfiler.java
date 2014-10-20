@@ -11,7 +11,7 @@ import logging.Log;
 import sim.constants.Constants;
 import sim.loading.Linker;
 
-public class RProfiler implements ISimulated {
+public class RProfiler {
 	
 	private Class<?> Profiler;
 	private Object profiler;
@@ -75,11 +75,4 @@ public class RProfiler implements ISimulated {
 	public Object getInstance() {
 		return profiler;
 	}
-
-	@Override
-	public Class<?> getReflClass() {
-		
-		return Profiler;
-	}
-
 }
