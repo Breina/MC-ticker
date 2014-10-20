@@ -1,7 +1,5 @@
 package presentation;
 
-import java.util.List;
-
 import javax.swing.JInternalFrame;
 
 import presentation.controllers.MainController;

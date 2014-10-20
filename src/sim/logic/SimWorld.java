@@ -59,6 +59,16 @@ public class SimWorld {
 				rProfiler);
 	}
 	
+	/**
+	 * 
+	 * @param worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
+	 * @param worldType The name of the type of world this is.
+	 * @param gameType Should be either "NOT_SET", "SURVIVAL", "CREATIVE" or "ADVENTURE".
+	 * @param seed The seed of the world.
+	 * @param worldProvider -1=nether, 0=overworld, 1=end.
+	 * @param hardcoreEnabled true/false
+	 * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
+	 */
 	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		switch (worldTypeId) {

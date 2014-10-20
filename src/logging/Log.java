@@ -14,6 +14,8 @@ public class Log {
 	private static long lastTime;
 	private static boolean buffer = true;
 	
+	private static boolean isTest = false;
+	
 	public static void i(String s) {	addMsg(s, TimeString.Types.info);		}
 	public static void w(String s) {	addMsg(s, TimeString.Types.warning);	}
 	public static void e(String s) {	addMsg(s, TimeString.Types.error);		}
@@ -34,7 +36,8 @@ public class Log {
 		if (!Constants.LOG_IGNORE_WARNINGS || !(type == TimeString.Types.warning))
 			lastTime = curTime;
 		
-		System.out.println(ts);
+		if (!isTest)
+			System.out.println(ts);
 	}
 	
 	public static String getMessages() {
@@ -60,4 +63,7 @@ public class Log {
 		output = _output;
 	}
 
+	public static void setTest(boolean isTest) {
+		Log.isTest = isTest;
+	}
 }

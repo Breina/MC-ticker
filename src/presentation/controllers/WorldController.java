@@ -1,10 +1,8 @@
 package presentation.controllers;
 
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,6 @@ import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 import sim.logic.SimWorld;
 import utils.Tag;
-import logging.Log;
 
 /**
  * Controlls everything about one world

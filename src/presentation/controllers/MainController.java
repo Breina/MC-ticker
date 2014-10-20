@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import logging.Log;
 import presentation.DesktopPane;
 import presentation.RSFrame;
 import presentation.StatusPanel;
@@ -24,11 +24,10 @@ import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.ToolWindow;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
-import presentation.objects.ViewData;
 import presentation.tools.Tool;
-import logging.Log;
-import sim.logic.Simulator;
+import sim.constants.Globals;
 import sim.logic.SimWorld;
+import sim.logic.Simulator;
 
 public class MainController {
 	
@@ -116,22 +115,7 @@ public class MainController {
 //		}
 		
 		// Dumb windows attempt
-		String minecraftFolder = System.getenv("APPDATA") + sim.constants.Constants.MINECRAFTFOLDER;
-		
-		if (!new File(minecraftFolder).exists())
-			minecraftFolder = "minecraft";
-
-		if (!new File(minecraftFolder).exists()) {
-			
-			MinecraftFolderChooser minecraftDialog = new MinecraftFolderChooser();
-			int result = minecraftDialog.showDialog(mainframe, "Select");
-			
-			if (result != MinecraftFolderChooser.APPROVE_OPTION)
-				if (result == MinecraftFolderChooser.ERROR_OPTION)
-					Log.e("Something went wrong when finding .minecraft folder.");
-			
-			minecraftFolder = minecraftDialog.getSelectedFile().getAbsolutePath();
-		}
+		String minecraftFolder = Globals.getMinecraftFolder();
 		
 		try {
 			simulator = new Simulator(mcpFolder, minecraftFolder);
