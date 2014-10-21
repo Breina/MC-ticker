@@ -82,7 +82,7 @@ public class RBlock {
 			block = m_getBlockById.invoke(null, id);
 			bufferedBlocks.put(id, block);
 			
-			if (bufferedBlocks.size() > Byte.MAX_VALUE)
+			if (bufferedBlocks.size() > 256)
 				throw new IllegalStateException("Too many buffered blocks, how is this possible? xD");
 		}
 		

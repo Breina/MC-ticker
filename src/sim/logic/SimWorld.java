@@ -562,11 +562,45 @@ public class SimWorld {
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		// TODO 1.8
+		Object block = rBlock.getBlockById(blockId);
+		Object blockState = rBlock.getStateFromMeta(block, blockData);
 		
-//		Object block = rBlock.getBlock(blockId);
-//		
-//		rWorld.setBlock(world, x, y, z, block, blockData, true, true);
+		rWorld.setBlockState(world, x, y, z, blockState, true, true);
+	}
+	
+	public Object getBlockState(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+		
+		Object blockState = rWorld.getBlockState(world, x, y, z);
+		
+		return blockState;
+	}
+	
+	public Object getBlockFromState(Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		Object block = rBlock.getBlockFromState(state);
+		
+		return block;
+	}
+	
+	public byte getIdFromBlock(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		byte id = (byte) rBlock.getIdFromBlock(block);
+		
+		return id;
+	}
+	
+	public byte getDataFromState(Object block, Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		byte data = (byte) rBlock.getMetaFromState(block, state);
+		
+		return data;
+	}
+	
+	public String getNameFromBlock(Object block) throws IllegalArgumentException, IllegalAccessException {
+		
+		String name = rBlock.getBlockName(block);
+		
+		return name;
 	}
 	
 	/*

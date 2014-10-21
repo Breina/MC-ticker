@@ -90,7 +90,7 @@ public class Loading {
 					case 8:
 						continue;
 					default:
-						world.createInstance(i, "customWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY);
+						world.createInstance(i, UNICODETEST, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY);
 				}
 			
 		} catch (IllegalAccessException | IllegalArgumentException
@@ -274,11 +274,19 @@ public class Loading {
 	}
 
 	@Test
-	public void test15x15x15() {
+	public void testEmptyBox() {
 		
 		ensureWorldIsReady();
 		
-		openSchematic("15x15x15.schematic");
+		openSchematic("3x3x3-box.schematic");
+	}
+	
+	@Test
+	public void testMultiChunk() {
+		
+		ensureWorldIsReady();
+		
+		openSchematic("32x32x32-box.schematic");
 	}
 	
 	@Test
@@ -286,7 +294,7 @@ public class Loading {
 		
 		ensureWorldIsReady();
 		
-		openSchematic("alltileentities.schematic");
+		openSchematic("3x3x3-box-sign.schematic");
 	}
 	
 	@Test
@@ -294,6 +302,6 @@ public class Loading {
 		
 		ensureWorldIsReady();
 		
-		openSchematic("ORE.schematic");
+		openSchematic("3x3x3-box-chicken.schematic");
 	}
 }
