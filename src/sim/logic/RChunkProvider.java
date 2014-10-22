@@ -64,6 +64,7 @@ public class RChunkProvider implements InvocationHandler {
 
 	public Object getChunk(int x, int z) {
 
+		// TODO wtf was I thinking, use a long key for the hashmap!!
 		ChunkCord cord = new ChunkCord(x, z);
 		
 		if (Constants.DEBUG_CHUNKPROVIDER)
@@ -120,17 +121,18 @@ public class RChunkProvider implements InvocationHandler {
 		
 		if (returnType == void.class) {
 			
+			// void func_180514_a(Chunk p_180514_1_, int p_180514_2_, int p_180514_3_)
 			// void populate(IChunkProvider var1, int var2, int var3);
-			// void recreateStructures(int var1, int var2);
 			// void saveExtraData();
 			
 		} else if (returnType == boolean.class) {
 			
 			// boolean chunkExists(int var1, int var2);
 			if (paramSize == 2)
-				if (paramTypes[0] == int.class/* && paramTypes[1] == int.class*/)
+				if (paramTypes[0] == int.class && paramTypes[1] == int.class)
 					return chunkExists((int) args[0], (int) args[1]);
 			
+			// boolean func_177460_a(IChunkProvider p_177460_1_, Chunk p_177460_2_, int p_177460_3_, int p_177460_4_)
 			// boolean saveChunks(boolean var1, IProgressUpdate var2);
 				else
 					throw new UnimplementedException("boolean saveChunks(boolean var1, IProgressUpdate var2)");
@@ -154,10 +156,14 @@ public class RChunkProvider implements InvocationHandler {
 			// Chunk provideChunk(int var1, int var2);
 			// Chunk loadChunk(int var1, int var2);
 			if (paramSize == 2)
-				return getChunk((int) args[0], (int) args[1]);			
+				if (paramTypes[0] == int.class && paramTypes[1] == int.class)
+					return getChunk((int) args[0], (int) args[1]);
 			
-			// List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4);
-			// ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5);
+			// Chunk func_177459_a(BlockPos p_177459_1_);
+			if (paramSize == 1)
+				throw new UnimplementedException("Chunk func_177459_a(BlockPos p_177459_1_)");
+			
+			// BlockPos func_180513_a(World worldIn, String p_180513_2_, BlockPos p_180513_3_)
 			throw new UnimplementedException("List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4)\n" +
 					"ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5)");			
 		}

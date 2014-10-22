@@ -31,7 +31,8 @@ public class RWorld {
 		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState;
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isRemote,
 	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_loadedTileEntities, f_toLoadTileEntities, f_toUnloadTileEntities,
-	f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick;
+	f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
+	f_lightUpdateBlockList;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
 	private Enum<?> e_GameType;
 	
@@ -87,6 +88,7 @@ public class RWorld {
 		f_playerEntities					= linker.field("playerEntities", World);
 		f_weatherEffects					= linker.field("weatherEffects", World);
 		f_rand								= linker.field("rand", World);
+		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
@@ -112,11 +114,11 @@ public class RWorld {
 		// TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
+		f_theProfiler						= World.getField(Constants.WORLD_THEPROFILER);
+		f_theProfiler						.setAccessible(true);
 		
 		// TODO 1.8
 //		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
-//		f_theProfiler						= World.getField(Constants.WORLD_PROFILER);
-//		f_theProfiler						.setAccessible(true);
 	}
 	
 	/**
@@ -148,7 +150,7 @@ public class RWorld {
 		
 		f_levelSaving.setBoolean(worldServer, true);
 		
-//		f_theProfiler.set(worldServer, rProfiler.getInstance());
+		f_theProfiler.set(worldServer, rProfiler.getInstance());
 		
 		TreeSet<Object> pendingTickListEntriesTreeSet = new TreeSet<>();
 		HashSet<Object> pendingTickListEntriesHashSet = new HashSet<>();
@@ -191,6 +193,8 @@ public class RWorld {
 		
 		// TODO might want to play with this
 		f_rand.set(worldServer, new Random());
+		
+		f_lightUpdateBlockList.set(worldServer, new int[32768]);
 		
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		

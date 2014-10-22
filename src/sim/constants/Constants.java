@@ -54,7 +54,7 @@ public class Constants {
 		{"unloadedEntityList"}, {"field_147482_g"}, {"field_147484_a"}, {"field_147483_b"}, {"playerEntities"}, {"weatherEffects"},
 		{"entityIdMap"}, {"rand", "RNG for World."}, {"xCoord", "X position this tick is occuring at"},
 		{"yCoord", "Y position this tick is occuring at"}, {"zCoord", "Z position this tick is occuring at"}, {"scheduledTime"},
-		{"priority"}};
+		{"priority"}, {"lightUpdateBlockList"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
@@ -72,9 +72,9 @@ public class Constants {
 	
 	// Untranslated fields (new)
 	public final static String CHUNKPRIMER_DATA = "a";
+	public final static String WORLD_THEPROFILER = "B"; 
 	
 	// Untranslated fields (old)
-	public final static String WORLD_PROFILER = "C";
 	public final static String NEXTTICKLISTENTRY_BLOCK = "g";
 	
 	// Properties of the World object

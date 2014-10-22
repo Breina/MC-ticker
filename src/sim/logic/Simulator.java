@@ -35,9 +35,9 @@ public class Simulator {
 		
 		rTileEntity = new RTileEntity(linker);
 		
-		rChunk = new RChunk(linker, rBlock);
-		
 		rChunkPrimer = new RChunkPrimer(linker);
+		
+		rChunk = new RChunk(linker, rBlock, rChunkPrimer);
 		
 		// Our implementation of chunkProvider, which will basically be our block input
 		rChunkProvider = new RChunkProvider();

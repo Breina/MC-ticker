@@ -83,7 +83,10 @@ public class SetBlock {
 		
 		int errors = 0;
 		
-		for (int id = 0; id < 256; id++)
+		for (int id = 0; id < 256; id++) {
+			
+			boolean metaAllowedMessage = false;
+			
 			for (int data = 0; data < 16; data++) {
 				
 				try {
@@ -97,22 +100,40 @@ public class SetBlock {
 					byte getBlockId = world.getIdFromBlock(block);
 					byte getBlockData = world.getDataFromState(block, blockState);
 					
-					if (id != getBlockId || data != getBlockData) {
+					if (data != getBlockData) {
 						
-						StringBuilder sb = new StringBuilder();
+						if (id != getBlockId || getBlockData != 0) {
 						
-						sb.append("SetBlock / GetBlock mismatch (id/data): ");
-						sb.append(id >= 0 ? id : id + 128);
-						sb.append('/');
-						sb.append(data);
-						sb.append(" -> ");
-						sb.append(getBlockId);
-						sb.append('/');
-						sb.append(getBlockData);
-						
-						System.out.println(sb.toString());
-						
-						errors++;
+							StringBuilder sb = new StringBuilder();
+							
+							sb.append("SetBlock / GetBlock mismatch (id/data): ");
+							sb.append(id >= 0 ? id : id + 128);
+							sb.append('/');
+							sb.append(data);
+							sb.append(" -> ");
+							sb.append(getBlockId);
+							sb.append('/');
+							sb.append(getBlockData);
+							
+							System.out.println(sb.toString());
+							
+							errors++;
+							
+						} else {
+							
+							if (!metaAllowedMessage) {
+								
+								StringBuilder sb = new StringBuilder();
+								
+								sb.append("Meta data not allowed for id: ");
+								sb.append(id);
+								
+								System.out.println(sb.toString());
+								
+								errors++;
+								metaAllowedMessage = true;
+							}
+						}
 					}
 					
 				} catch (IllegalAccessException | IllegalArgumentException
@@ -135,6 +156,7 @@ public class SetBlock {
 					ensureWorldIsReady();
 				}
 			}
+		}
 		
 //		outerLoop:
 //		for (int x = 1; x < 32; x++)

@@ -18,11 +18,13 @@ public class RChunk {
 	private Constructor<?> c_chunk;
 	private Method m_genHeightMap, m_addTileEntity, m_onChunkLoad;
 	private RBlock rBlock;
+	private RChunkPrimer rChunkPrimer;
 	
-	public RChunk(Linker linker, RBlock rBlock) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public RChunk(Linker linker, RBlock rBlock, RChunkPrimer rChunkPrimer) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		prepareChunk(linker);
 		this.rBlock = rBlock;
+		this.rChunkPrimer = rChunkPrimer;
 		
 		Log.i("Preparing Chunks");
 	}
@@ -60,10 +62,15 @@ public class RChunk {
 	
 	public Object generateEmptyChunk(Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		// TODO 1.8
+		Object primer = rChunkPrimer.createChunkPrimer();
+		short[] data = new short[65536];
+		rChunkPrimer.setData(primer, data);
 		
-		return null;
+		Object emptyChunk = createChunk(world, primer, 0, 0);
 		
+		return emptyChunk;
+		
+		// TODO remove
 //		Object airBlock = rBlock.getBlock((byte) 0);
 //		
 //		Object blockArray = Array.newInstance(Block, 16);
