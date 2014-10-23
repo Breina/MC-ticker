@@ -30,9 +30,9 @@ public class RWorld {
 	private Method m_tickUpdates, m_tick, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
 		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState;
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isRemote,
-	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_loadedTileEntities, f_toLoadTileEntities, f_toUnloadTileEntities,
-	f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
-	f_lightUpdateBlockList;
+	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand,
+	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
+	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
 	private Enum<?> e_GameType;
 	
@@ -76,15 +76,17 @@ public class RWorld {
 		f_chunkProvider						= linker.field("chunkProvider", World);
 		f_worldInfo							= linker.field("worldInfo", World);
 		
-		// TODO 1.8
 		f_isRemote							= linker.field("isRemote", World);
 		
 		f_worldAccesses						= linker.field("worldAccesses", World);
 		f_loadedEntityList					= linker.field("loadedEntityList", World);
 		f_unloadedEntityList				= linker.field("unloadedEntityList", World);
-		f_loadedTileEntities				= linker.field("field_147482_g", World);
-		f_toLoadTileEntities				= linker.field("field_147484_a", World);
-		f_toUnloadTileEntities				= linker.field("field_147483_b", World);
+		
+		f_loadedTileEntityList				= linker.field("loadedTileEntityList", World);
+		f_tickableTileEntities				= linker.field("tickableTileEntities", World);
+		f_addedTileEntityList				= linker.field("addedTileEntityList", World);
+		f_tileEntitiesToBeRemoved			= linker.field("tileEntitiesToBeRemoved", World);
+		
 		f_playerEntities					= linker.field("playerEntities", World);
 		f_weatherEffects					= linker.field("weatherEffects", World);
 		f_rand								= linker.field("rand", World);
@@ -177,17 +179,18 @@ public class RWorld {
 //		f_entityIdMap.set(worldServer, entityIdMap);
 		
 		// TODO Make this available
-		ArrayList<Object> loadedTileEntities = new ArrayList<Object>();
-		ArrayList<Object> loadedEntities = new ArrayList<Object>();
+		ArrayList<Object> loadedTileEntities = new ArrayList<>();
+		ArrayList<Object> loadedEntities = new ArrayList<>();
 		
 		f_isRemote.setBoolean(worldServer, false);
 		
 		f_worldAccesses.set(worldServer, new ArrayList<>()); // No one's listening, go home worldAccesses
 		f_loadedEntityList.set(worldServer, loadedEntities);
 		f_unloadedEntityList.set(worldServer, new ArrayList<>());
-		f_loadedTileEntities.set(worldServer, loadedTileEntities);
-		f_toLoadTileEntities.set(worldServer, new ArrayList<>());
-		f_toUnloadTileEntities.set(worldServer, new ArrayList<>());
+		f_loadedTileEntityList.set(worldServer, loadedTileEntities);
+		f_tickableTileEntities.set(worldServer, new ArrayList<>());
+		f_addedTileEntityList.set(worldServer, new ArrayList<>());
+		f_tileEntitiesToBeRemoved.set(worldServer, new ArrayList<>());
 		f_playerEntities.set(worldServer, new ArrayList<>());
 		f_weatherEffects.set(worldServer, new ArrayList<>());
 		
@@ -314,7 +317,7 @@ public class RWorld {
 	
 	public List<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {
 		
-		List<Object> tileEntities = (List<Object>) f_loadedTileEntities.get(world.getWorld());
+		List<Object> tileEntities = (List<Object>) f_loadedTileEntityList.get(world.getWorld());
 		
 		return tileEntities;
 	}

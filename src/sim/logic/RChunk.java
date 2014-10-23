@@ -40,10 +40,7 @@ public class RChunk {
 		Class<?> ChunkPrimer = linker.getClass("ChunkPrimer");
 		
 		c_chunk = Chunk.getDeclaredConstructor(World, ChunkPrimer, int.class, int.class);
-		
-		// TODO remove
-//		c_chunk = Chunk.getDeclaredConstructor(World, BlockArray, byte[].class, int.class, int.class);
-		
+
 		m_genHeightMap = linker.method("generateSkylightMap", Chunk);
 		m_addTileEntity = linker.method("addTileEntity", Chunk, TileEntity);
 		m_onChunkLoad = linker.method("onChunkLoad", Chunk);
@@ -51,7 +48,7 @@ public class RChunk {
 	
 	public void addTileEntity(Object chunk, Object tileEntity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		m_addTileEntity.invoke(chunk,  tileEntity );
+		m_addTileEntity.invoke(chunk, tileEntity );
 		
 	}
 	
@@ -69,19 +66,6 @@ public class RChunk {
 		Object emptyChunk = createChunk(world, primer, 0, 0);
 		
 		return emptyChunk;
-		
-		// TODO remove
-//		Object airBlock = rBlock.getBlock((byte) 0);
-//		
-//		Object blockArray = Array.newInstance(Block, 16);
-//		
-//		for (int i = 0; i < 16; i++) {
-//			Array.set(blockArray, i, airBlock);
-//		}
-//		
-//		byte[] metaData = new byte[16];
-//		
-//		return createChunk(world, blockArray, metaData, 0, 0);
 	}
 	
 	/**

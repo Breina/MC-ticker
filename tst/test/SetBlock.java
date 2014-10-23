@@ -67,20 +67,6 @@ public class SetBlock {
 		
 		ensureWorldIsReady();
 		
-		// TODO remove try
-		try {
-			world.setBlock(1, 1, 1, (byte) 1, (byte) 0);
-			
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | InstantiationException e1) {
-			
-			System.out.println("FAAAAAAAAAAIIIIIIILLLLLLLLLLLLLL");
-			fail("FAAAAAAAAAAIIIIIIILLLLLLLLLLLLLL");
-		}
-		
-//		byte id = 0;
-//		byte data = 0;
-		
 		int errors = 0;
 		
 		for (int id = 0; id < 256; id++) {
@@ -130,7 +116,6 @@ public class SetBlock {
 								
 								System.out.println(sb.toString());
 								
-								errors++;
 								metaAllowedMessage = true;
 							}
 						}
@@ -157,63 +142,6 @@ public class SetBlock {
 				}
 			}
 		}
-		
-//		outerLoop:
-//		for (int x = 1; x < 32; x++)
-//			for (int y = 1; y < 32; y++)
-//				for (int z = 1; z < 32; z++) {
-//					
-//					try {
-//						// Set block
-//						world.setBlock(x, y, z, id, data);
-//						
-//						// Get block
-//						Object blockState = world.getBlockState(x, y, z);
-//						Object block = world.getBlockFromState(blockState);
-//						
-//						byte getBlockId = world.getIdFromBlock(block);
-//						byte getBlockData = world.getDataFromState(block, blockState);
-//						
-//						if (id != getBlockId || data != getBlockData) {
-//							sb.append("SetBlock / GetBlock mismatch (id/data): ");
-//							sb.append(id > 0 ? id : id + 128);
-//							sb.append('/');
-//							sb.append(data);
-//							sb.append(" -> ");
-//							sb.append(getBlockId);
-//							sb.append('/');
-//							sb.append(getBlockData);
-//							sb.append('\n');
-//							
-//							errors++;
-//						}
-//						
-//					} catch (IllegalAccessException | IllegalArgumentException
-//							| InvocationTargetException
-//							| InstantiationException e) {
-//						
-//						sb.append("Could not setBlock with id=");
-//						sb.append(id > 0 ? id : id + 128);
-//						sb.append(" data=");
-//						sb.append(data);
-//						sb.append('\n');
-//						
-//						errors++;
-//						
-//						ensureWorldIsReady();
-//					}
-//					
-//					if (data == (byte) 15) {
-//						
-//						id++;
-//						data = 0;
-//						
-//					} else
-//						data++;
-//					
-//					if (id == 0 && data == 0)
-//						break outerLoop;
-//				}
 		
 		if (errors != 0) {
 			

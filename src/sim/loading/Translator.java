@@ -1,6 +1,7 @@
 package sim.loading;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 // TODO Provide proper error handling for this entire class instead of returning null
 /**
@@ -38,6 +39,7 @@ public class Translator {
 	}
 	
 	public String getField(String original) {
+		
 		return fields.get(original);
 	}
 	

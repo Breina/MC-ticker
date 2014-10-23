@@ -51,10 +51,11 @@ public class Constants {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
 		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
-		{"unloadedEntityList"}, {"field_147482_g"}, {"field_147484_a"}, {"field_147483_b"}, {"playerEntities"}, {"weatherEffects"},
+		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"},
 		{"entityIdMap"}, {"rand", "RNG for World."}, {"xCoord", "X position this tick is occuring at"},
 		{"yCoord", "Y position this tick is occuring at"}, {"zCoord", "Z position this tick is occuring at"}, {"scheduledTime"},
-		{"priority"}, {"lightUpdateBlockList"}};
+		{"priority"}, {"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
+		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
