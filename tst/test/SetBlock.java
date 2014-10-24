@@ -13,6 +13,7 @@ import logging.Log;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import presentation.controllers.SimController;
@@ -24,6 +25,8 @@ import sim.logic.Simulator;
 import utils.Tag;
 
 public class SetBlock {
+	
+	private static final int MAXBLOCKID = 197;
 	
 	private Simulator simulator;
 	private SimWorld world;
@@ -69,7 +72,7 @@ public class SetBlock {
 		
 		int errors = 0;
 		
-		for (int id = 0; id < 256; id++) {
+		for (int id = 0; id < MAXBLOCKID; id++) {
 			
 			boolean metaAllowedMessage = false;
 			

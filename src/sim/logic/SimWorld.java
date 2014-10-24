@@ -33,12 +33,13 @@ public class SimWorld {
 	private REntity rEntity;
 	private RNextTickListEntry rNextTickListEntry;
 	private RChunkPrimer rChunkPrimer;
+	private RBlockPos rBlockPos;
 	
 	private WorldInstance world;
 	
 	public SimWorld(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
-			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer, RBlockPos rBlockPos) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		this.rBlock = rBlock;
 		this.rChunk = rChunk;
@@ -50,6 +51,7 @@ public class SimWorld {
 		this.rTileEntity = rTileEntity;
 		this.rWorld = rWorld;
 		this.rChunkPrimer = rChunkPrimer;
+		this.rBlockPos = rBlockPos;
 	}
 	
 	public void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -345,7 +347,7 @@ public class SimWorld {
 		}
 	}
 	
-	private void setWorldTileTicks(Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private void setWorldTileTicks(Tag[] tags) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		for (Tag tag : tags) {
 			
@@ -523,10 +525,11 @@ public class SimWorld {
 		while (tileTicksIterator.hasNext()) {
 			
 			Object tileTick = tileTicksIterator.next();
+			Object blockPos = rNextTickListEntry.getBlockPos(tileTick);
 			
-			Tag tXCoord		= new Tag(Type.TAG_Int, "x", rNextTickListEntry.getXCoord(tileTick));
-			Tag tYCoord		= new Tag(Type.TAG_Int, "y", rNextTickListEntry.getYCoord(tileTick));
-			Tag tZCoord		= new Tag(Type.TAG_Int, "z", rNextTickListEntry.getZCoord(tileTick));
+			Tag tXCoord		= new Tag(Type.TAG_Int, "x", rBlockPos.getX(blockPos));
+			Tag tYCoord		= new Tag(Type.TAG_Int, "y", rBlockPos.getY(blockPos));
+			Tag tZCoord		= new Tag(Type.TAG_Int, "z", rBlockPos.getZ(blockPos));
 			Tag tBlock		= new Tag(Type.TAG_Int, "i", rBlock.getIdFromBlock(rNextTickListEntry.getBlock(tileTick)));
 			Tag tTime		= new Tag(Type.TAG_Int, "t", (int) (rNextTickListEntry.getScheduledTime(tileTick) - world.getWorldTime()));
 			Tag tPriority	= new Tag(Type.TAG_Int, "p", rNextTickListEntry.getPriority(tileTick));

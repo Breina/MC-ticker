@@ -51,15 +51,14 @@ public class CSVparser {
 						// {name} or {name, part of description}
 						String[] requirement = requirements[i];
 						
-						if (parsingLine[1].equals("loadedTileEntityList") && requirement[0].equals("loadedTileEntityList"))
-							System.out.println("STOP THE PRESS!!");
+//						if (parsingLine[1].equals("loadedTileEntityList") && requirement[0].equals("loadedTileEntityList"))
+//							System.out.println("STOP THE PRESS!!");
 
 						// if
 						if (parsingLine[1].equals(requirement[0]) &&		// the line matches AND (
 								(requirement.length == 1 ||					// no description is given OR
 																			// the description is given and found)
 								(parsingLine.length >= 4 && parsingLine[3].contains(requirement[1]) && !parsingLine[3].isEmpty()))) {
-							
 								
 //								System.out.println("storing " + parsingLine[0] + ", " + requirement[0]);
 								
@@ -100,8 +99,8 @@ public class CSVparser {
 		}
 		
 		// Debug
-		for (String name : obfuscatedNames.keySet())
-			System.out.println(name);
+//		for (String name : obfuscatedNames.keySet())
+//			System.out.println(name);
 		
 		return obfuscatedNames;
 	}

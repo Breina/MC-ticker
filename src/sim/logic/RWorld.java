@@ -35,10 +35,13 @@ public class RWorld {
 	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
 	private Enum<?> e_GameType;
+	private RBlockPos rBlockPos;
 	
-	public RWorld(Linker linker, Object profiler) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
+	public RWorld(Linker linker, Object profiler, RBlockPos rBlockPos) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
 		
 		prepareWorld(linker, profiler);
+		
+		this.rBlockPos = rBlockPos;
 		
 		Log.i("Preparing the World");
 	}
@@ -59,6 +62,7 @@ public class RWorld {
 		BlockPos							= linker.getClass("BlockPos");
 		
 		Class<?> IBlockState				= linker.getClass("IBlockState");
+		Class<?> Block						= linker.getClass("Block");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
@@ -119,8 +123,7 @@ public class RWorld {
 		f_theProfiler						= World.getField(Constants.WORLD_THEPROFILER);
 		f_theProfiler						.setAccessible(true);
 		
-		// TODO 1.8
-//		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, int.class, int.class, int.class, linker.getClass("Block"), int.class, int.class);
+		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
 	}
 	
 	/**
@@ -230,8 +233,6 @@ public class RWorld {
 		advanceTicks(world, advanceTicks);
 		
 		m_tickUpdates.invoke(world.getWorld(), false);
-		
-		Log.i("Ticking updates");
 	}
 	
 	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -280,16 +281,9 @@ public class RWorld {
 		return succes;		
 	}
 	
-	private Object getBlockPos(int x, int y, int z) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object blockPos = c_blockPos.newInstance(x, y, z);
-		
-		return blockPos;
-	}
-	
 	public Object getBlockState(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		Object blockState = m_getBlockState.invoke(world.getWorld(), getBlockPos(x, y, z));
+		Object blockState = m_getBlockState.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z));
 		
 		return blockState;
 	}
@@ -298,7 +292,7 @@ public class RWorld {
 		
 		int flags = 4 | (sendChange ? 2 : 0) | (update ? 1 : 0);
 		
-		boolean succes = (boolean) m_setBlockState.invoke(world.getWorld(), getBlockPos(x, y, z), blockState, flags);
+		boolean succes = (boolean) m_setBlockState.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z), blockState, flags);
 		
 		if (!succes)
 			Log.w("Set block: no changes");
@@ -322,13 +316,9 @@ public class RWorld {
 		return tileEntities;
 	}
 	
-	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		Log.e("World addTickEntry TODO 1.8");
-		
-		return;
-		
-//		m_addTickEntry.invoke(world.getWorld(), x, y, z, block, scheduledTime, priority);
+		m_addTickEntry.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z), block, scheduledTime, priority);
 	}
 	
 	public void clearTileEntities(WorldInstance world) {

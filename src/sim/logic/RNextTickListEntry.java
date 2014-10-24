@@ -10,7 +10,7 @@ import logging.Log;
 public class RNextTickListEntry {
 	
 	private Class<?> NextTickListEntry;
-	private Field f_xCoord, f_yCoord, f_zCoord, f_scheduledTime, f_priority, f_block;
+	private Field f_blockPos, f_scheduledTime, f_priority, f_block;
 	
 	public RNextTickListEntry(Linker linker) throws NoSuchFieldException, SecurityException {
 		
@@ -23,29 +23,18 @@ public class RNextTickListEntry {
 		
 		NextTickListEntry = linker.getClass("NextTickListEntry");
 		
-		// TODO 1.8
-//		f_xCoord = linker.field("xCoord", NextTickListEntry);
-//		f_yCoord = linker.field("yCoord", NextTickListEntry);
-//		f_zCoord = linker.field("zCoord", NextTickListEntry);
-		
 		f_scheduledTime = linker.field("scheduledTime", NextTickListEntry);
 		f_priority = linker.field("priority", NextTickListEntry);
 		
-		// TODO 1.8
-//		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
-//		f_block.setAccessible(true);
+		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
+		f_block.setAccessible(true);
+		
+		f_blockPos = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCKPOS);
+		f_blockPos.setAccessible(true);
 	}
 	
-	public int getXCoord(Object instance) throws IllegalArgumentException, IllegalAccessException {
-		return f_xCoord.getInt(instance);
-	}
-	
-	public int getYCoord(Object instance) throws IllegalArgumentException, IllegalAccessException {
-		return f_yCoord.getInt(instance);
-	}
-	
-	public int getZCoord(Object instance) throws IllegalArgumentException, IllegalAccessException {
-		return f_zCoord.getInt(instance);
+	public int getBlockPos(Object instance) throws IllegalArgumentException, IllegalAccessException {
+		return f_blockPos.getInt(instance);
 	}
 	
 	public long getScheduledTime(Object instance) throws IllegalArgumentException, IllegalAccessException {
