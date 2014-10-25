@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class RWorld {
 	private Method m_tickUpdates, m_tick, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
 		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState;
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isRemote,
-	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entityIdMap, f_rand,
+	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entitiesById, f_entitiesByUuid, f_rand,
 	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
@@ -74,8 +75,8 @@ public class RWorld {
 		f_pendingTickListEntriesHashSet		= linker.field("pendingTickListEntriesHashSet", WorldServer);
 		f_pendingTickListEntriesThisTick	= linker.field("pendingTickListEntriesThisTick", WorldServer);
 		
-		// TODO 1.8
-//		f_entityIdMap						= linker.field("entityIdMap", WorldServer);
+		f_entitiesById						= linker.field("entitiesById", World);
+		f_entitiesByUuid					= linker.field("entitiesByUuid", WorldServer);
 		
 		f_chunkProvider						= linker.field("chunkProvider", World);
 		f_worldInfo							= linker.field("worldInfo", World);
@@ -106,11 +107,6 @@ public class RWorld {
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, new Class[]{boolean.class});
 		m_tick								= linker.method("tick", WorldServer, new Class[]{});
-		
-		// TODO 1.8
-//		m_getBlockMetadata					= linker.method("getBlockMetadata", World, int.class, int.class, int.class);
-//		m_setBlock							= linker.method("setBlock", World, int.class, int.class, int.class,
-//													linker.getClass("Block"), int.class, int.class);
 		
 		m_setWorldTime						= linker.method("func_82738_a", World, long.class );
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
@@ -177,15 +173,12 @@ public class RWorld {
 		
 		f_chunkProvider.set(worldServer, chunkProvider);
 		
-		// TODO 1.8 (Make this available)
-//		Object entityIdMap = IntHashMap.newInstance();
-//		f_entityIdMap.set(worldServer, entityIdMap);
+		f_isRemote.setBoolean(worldServer, false);
 		
 		// TODO Make this available
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
 		ArrayList<Object> loadedEntities = new ArrayList<>();
-		
-		f_isRemote.setBoolean(worldServer, false);
+		Object entityIdMap = IntHashMap.newInstance();
 		
 		f_worldAccesses.set(worldServer, new ArrayList<>()); // No one's listening, go home worldAccesses
 		f_loadedEntityList.set(worldServer, loadedEntities);
@@ -196,6 +189,8 @@ public class RWorld {
 		f_tileEntitiesToBeRemoved.set(worldServer, new ArrayList<>());
 		f_playerEntities.set(worldServer, new ArrayList<>());
 		f_weatherEffects.set(worldServer, new ArrayList<>());
+		f_entitiesById.set(worldServer, entityIdMap);
+		f_entitiesByUuid.set(worldServer, new HashMap<>());
 		
 		// TODO might want to play with this
 		f_rand.set(worldServer, new Random());

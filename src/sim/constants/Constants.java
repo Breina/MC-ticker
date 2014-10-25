@@ -52,7 +52,7 @@ public class Constants {
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
 		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"},
-		{"entityIdMap"}, {"rand", "RNG for World."}, {"scheduledTime"},
+		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"priority"}, {"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}};
 

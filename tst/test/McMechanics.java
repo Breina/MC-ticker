@@ -28,7 +28,7 @@ public class McMechanics {
 	private SimController controller;
 	
 	private static final int WATERSPREADSPEED = 3;
-	private static final int LAVASPREADSPEED = 30;
+	private static final int LAVASPREADSPEED = 15;
 
 	@Before
 	public void setUp() throws Exception {
