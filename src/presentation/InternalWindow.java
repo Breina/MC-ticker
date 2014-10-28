@@ -11,15 +11,15 @@ public class InternalWindow extends JInternalFrame {
 	
 	private MainController controller;
 	
-	public InternalWindow(MainController controller, String title) {
+	public InternalWindow(MainController controller, String title, boolean visibleByDefault) {
 		super(title, true, true, false, true);
 		
 		this.controller = controller;
 		
 		setLocation(spawnDelta, spawnDelta);
 //		spawnDelta += 50;
+		setVisible(visibleByDefault);
 		
-		setVisible(true);
 		controller.getDesktop().add(this);
 		moveToFront();
 	}

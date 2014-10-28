@@ -19,8 +19,8 @@ public class RBlock {
 	
 	private Class<?> Block, EntityPlayer;
 	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
-		m_getStateFromMeta, m_getMetaFromState, m_getBlock;
-	private Field f_unlocalizedNameBlock;
+		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName;
+	private Field f_unlocalizedName;
 	
 	 // A buffer for all blocks that were once obtained
 	private HashMap<Integer, Object> bufferedBlocks;
@@ -44,21 +44,29 @@ public class RBlock {
 		
 		Class<?> IBlockState = linker.getClass("IBlockState");
 		
-		// TODO broken 1.8
-//		f_unlocalizedNameBlock = linker.field("unlocalizedNameBlock", Block);
-		
 		m_getBlockById = linker.method("getBlockById", Block, int.class);
 		m_getStateFromMeta = linker.method("getStateFromMeta", Block, int.class);
 		m_getIdFromBlock = linker.method("getIdFromBlock", Block, Block);
 		m_getMetaFromState = linker.method("getMetaFromState", Block, IBlockState);
+		m_getBlockFromName = linker.method("getBlockFromName", Block, String.class);
 		
 		m_hasTileEntity = linker.method("hasTileEntity", Block);
 		
 		// TODO can't use linker yet
 		m_getBlock = IBlockState.getDeclaredMethod(Constants.IBLOCKSTATE_GETBLOCK);
 		
+		f_unlocalizedName = Block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
+		f_unlocalizedName.setAccessible(true);
+		
 		// TODO broken 1.8
 //		m_onBlockActivated = linker.method("onBlockActivated", Block, linker.getClass("World"), int.class, int.class, int.class, EntityPlayer, int.class, float.class, float.class, float.class);
+	}
+	
+	public Object getBlockFromName(String name) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		// TODO buffer with name as well
+		Object block = m_getBlockFromName.invoke(null, name);
+		
+		return block;
 	}
 	
 	/**
@@ -66,7 +74,6 @@ public class RBlock {
 	 * @param id The block id
 	 * @return The Block object
 	 */
-
 	public Object getBlockById(byte byteId) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 		
 		int id = compansateForJavasLackOfUnsignedBytes(byteId);
@@ -132,12 +139,9 @@ public class RBlock {
 	 */
 	public String getBlockName(Object block) throws IllegalArgumentException, IllegalAccessException  {
 		
-		Log.e("getBlockName TODO 1.8");
-		return null;
+		String blockName = (String) f_unlocalizedName.get(block);
 		
-//		Object blockName = f_unlocalizedNameBlock.get(block);
-//		
-//		return blockName.toString();
+		return blockName;
 	}
 	
 	public int getIdFromBlock(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

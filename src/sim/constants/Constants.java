@@ -45,27 +45,28 @@ public class Constants {
 		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getIconString"}, {"getItemById"}, {"registerItems"},
 		{"getInventoryName"}, {"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
 		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
-		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getX"}, {"getY"}, {"getZ"}};
+		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
-		{"unlocalizedNameBlock"}, {"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
+		{"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"},
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
-		{"priority"}, {"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
-		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}};
+		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
+		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
-		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "ChunkPrimer", "BlockPos", "IBlockState", "BlockPos$MutableBlockPos"};
+		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos"};
 	
 	// Untranslated methods (new)
 	public final static String WORLD_GETBLOCKSTATE = "p";
 	public final static String WORLD_SETBLOCKSTATE = "a";
 	public final static String IBLOCKSTATE_GETBLOCK = "c";
 	public final static String WORLD_ADDTICKENTRY = "b";
+	public final static String BLOCK_UNLOCALIZEDNAME = "N"; // ???
 	
 	// Untranslated methods (old)
 	public final static String NBTTAGCOMPOUND_LOAD = "a"; // Used to be {"load", "Read the actual data"} 
@@ -75,6 +76,7 @@ public class Constants {
 	public final static String WORLD_THEPROFILER = "B";
 	public final static String NEXTTICKLISTENTRY_BLOCK = "e";
 	public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
+	public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
 	
 	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";

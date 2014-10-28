@@ -55,7 +55,7 @@ public class TimeController implements Runnable {
 			WorldState state = simController.getState();
 			
 			viewData.setState(state);
-			worldController.updateWithNewData();
+			worldController.onSchematicUpdated();
 			
 			timeLine.init(state);
 			
@@ -80,7 +80,7 @@ public class TimeController implements Runnable {
 //			foundHashes.clear();
 			timeLine.set(state);
 			viewData.setState(state);
-			worldController.updateWithNewData();
+			worldController.onSchematicUpdated();
 			
 		} catch (SchematicException e) {
 			Log.e("Failed to update updated state: " + e.getMessage());
@@ -121,7 +121,7 @@ public class TimeController implements Runnable {
 					hasDelay = false;
 					
 					viewData.setState(timeLine.first());
-					worldController.updateWithNewData();
+					worldController.onSchematicUpdated();
 					window.setStep(0);
 					break;
 					
@@ -183,7 +183,7 @@ public class TimeController implements Runnable {
 					hasDelay = false;
 					
 					viewData.setState(timeLine.last());
-					worldController.updateWithNewData();
+					worldController.onSchematicUpdated();
 					window.setStep(maxCount);
 					window.setBackEnabled(true);
 			}
@@ -246,7 +246,7 @@ public class TimeController implements Runnable {
 						
 					
 				viewData.setState(state);
-				worldController.updateWithNewData();
+				worldController.onSchematicUpdated();
 				
 				window.setStep(tickCounter);
 				

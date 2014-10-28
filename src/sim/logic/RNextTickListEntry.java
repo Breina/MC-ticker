@@ -24,17 +24,18 @@ public class RNextTickListEntry {
 		NextTickListEntry = linker.getClass("NextTickListEntry");
 		
 		f_scheduledTime = linker.field("scheduledTime", NextTickListEntry);
-		f_priority = linker.field("priority", NextTickListEntry);
 		
 		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
 		f_block.setAccessible(true);
 		
 		f_blockPos = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCKPOS);
 		f_blockPos.setAccessible(true);
+		
+		f_priority = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_PRIORITY);
 	}
 	
-	public int getBlockPos(Object instance) throws IllegalArgumentException, IllegalAccessException {
-		return f_blockPos.getInt(instance);
+	public Object getBlockPos(Object instance) throws IllegalArgumentException, IllegalAccessException {
+		return f_blockPos.get(instance);
 	}
 	
 	public long getScheduledTime(Object instance) throws IllegalArgumentException, IllegalAccessException {

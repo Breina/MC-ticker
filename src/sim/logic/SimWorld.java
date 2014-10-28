@@ -355,9 +355,8 @@ public class SimWorld {
 			int yCoord		= (int) tag.findNextTagByName("y", null).getValue();
 			int zCoord		= (int) tag.findNextTagByName("z", null).getValue();
 			
-			int intBlock	= (int) tag.findNextTagByName("i", null).getValue();
-			byte byteBlock	= (byte) intBlock;
-			Object block	= rBlock.getBlockById(byteBlock);
+			String blockStr	= (String) tag.findNextTagByName("i", null).getValue();
+			Object block	= rBlock.getBlockFromName(blockStr);
 			
 			int time		= (int) tag.findNextTagByName("t", null).getValue();
 			int priority	= (int) tag.findNextTagByName("p", null).getValue();
@@ -367,6 +366,14 @@ public class SimWorld {
 	}
 	
 	public void getWorld(OutputStream os) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+		
+		getWorldTag().writeTo(os);
+		
+		Log.i("Saving world");
+	}
+	
+	// TODO do buffering here instead of getting tags out of the sim several times
+	public Tag getWorldTag() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, IOException {
 		
 		byte[][] blocks = getWorldBlocks();
 		
@@ -384,7 +391,7 @@ public class SimWorld {
 			Tag tTileTicks = getWorldTileTicks();
 			
 			Tag tEnd = new Tag(Tag.Type.TAG_End, "", null);
-			
+		
 		Tag tSchematic;
 		
 		tSchematic = new Tag(Tag.Type.TAG_Compound, "Schematic", new Tag[]{tHeight, tLength, tWidth, tMaterials, tData, tBlocks, tEnd});
@@ -404,10 +411,8 @@ public class SimWorld {
 			System.out.println("GET:");
 			tSchematic.print();
 		}
-								
-		tSchematic.writeTo(os);
 		
-		Log.i("Saving world");
+		return tSchematic;
 	}
 	
 	private byte[][] getWorldBlocks() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -527,10 +532,12 @@ public class SimWorld {
 			Object tileTick = tileTicksIterator.next();
 			Object blockPos = rNextTickListEntry.getBlockPos(tileTick);
 			
+			String blockName = "minecraft:" + rBlock.getBlockName(rNextTickListEntry.getBlock(tileTick));
+			
 			Tag tXCoord		= new Tag(Type.TAG_Int, "x", rBlockPos.getX(blockPos));
 			Tag tYCoord		= new Tag(Type.TAG_Int, "y", rBlockPos.getY(blockPos));
 			Tag tZCoord		= new Tag(Type.TAG_Int, "z", rBlockPos.getZ(blockPos));
-			Tag tBlock		= new Tag(Type.TAG_Int, "i", rBlock.getIdFromBlock(rNextTickListEntry.getBlock(tileTick)));
+			Tag tBlock		= new Tag(Type.TAG_String, "i", blockName);
 			Tag tTime		= new Tag(Type.TAG_Int, "t", (int) (rNextTickListEntry.getScheduledTime(tileTick) - world.getWorldTime()));
 			Tag tPriority	= new Tag(Type.TAG_Int, "p", rNextTickListEntry.getPriority(tileTick));
 			Tag tEnd		= new Tag(Tag.Type.TAG_End, "", null);

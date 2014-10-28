@@ -14,7 +14,7 @@ public class WorldWindow extends InternalWindow {
 	private LinkedCheckbox checkbox;
 
 	public WorldWindow(WorldController controller, String title, boolean visibleByDefault) {
-		super(controller.getMainController(), title);
+		super(controller.getMainController(), title, visibleByDefault);
 		
 		this.controller = controller;
 		

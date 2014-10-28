@@ -45,12 +45,9 @@ public class SimController {
 		
 		try {
 			
-			CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-			saveWorld(cbb.getOutputStream());
+			return simWorld.getWorldTag();
 			
-			return Tag.readFrom(cbb.getInputStream());
-			
-		} catch (NoSuchAlgorithmException | IOException e) {
+		} catch (IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 
 			Log.e("Could not get schematic from the simulator" + analyseException(e));
 			return null;

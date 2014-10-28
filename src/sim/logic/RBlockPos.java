@@ -1,6 +1,7 @@
 package sim.logic;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -10,24 +11,25 @@ import sim.loading.Linker;
 
 public class RBlockPos {
 	
-	private Class<?> MutableBlockPos;
-	private Method m_getX, m_getY, m_getZ;
+	private Class<?> MutableBlockPos, Vec3i;
+	private Field f_x, f_y, f_z;
 	private Constructor<?> c_MutableBlockPos;
 
-	public RBlockPos(Linker linker) throws NoSuchMethodException, SecurityException {
+	public RBlockPos(Linker linker) throws NoSuchMethodException, SecurityException, NoSuchFieldException {
 		
 		prepareBlockPos(linker);
 		
 		Log.i("Preparing BlockPos");
 	}
 	
-	private void prepareBlockPos(Linker linker) throws NoSuchMethodException, SecurityException {
+	private void prepareBlockPos(Linker linker) throws NoSuchMethodException, SecurityException, NoSuchFieldException {
 		
+		Vec3i = linker.getClass("Vec3i");
 		MutableBlockPos = linker.getClass("BlockPos$MutableBlockPos");
 		
-		m_getX = linker.method("getX", MutableBlockPos);
-		m_getY = linker.method("getY", MutableBlockPos);
-		m_getZ = linker.method("getZ", MutableBlockPos);
+		f_x = linker.field("x", Vec3i);
+		f_y = linker.field("y", Vec3i);
+		f_z = linker.field("z", Vec3i);
 		
 		c_MutableBlockPos = MutableBlockPos.getDeclaredConstructor(int.class, int.class, int.class);
 		c_MutableBlockPos.setAccessible(true);
@@ -39,14 +41,14 @@ public class RBlockPos {
 	}
 	
 	public int getX(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) m_getX.invoke(instance);
+		return f_x.getInt(instance);
 	}
 	
 	public int getY(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) m_getY.invoke(instance);
+		return f_y.getInt(instance);
 	}
 	
 	public int getZ(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) m_getZ.invoke(instance);
+		return f_z.getInt(instance);
 	}
 }

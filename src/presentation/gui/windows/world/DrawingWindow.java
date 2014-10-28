@@ -33,7 +33,7 @@ public class DrawingWindow extends InternalWindow {
 	 * @param levelOLD A reference to the level.
 	 */
 	public DrawingWindow(WorldController controller, Orientation orientation) {
-		super(controller.getMainController(), "Loading window...");
+		super(controller.getMainController(), "Loading window...", true);
 		
 		this.worldController = controller;
 		

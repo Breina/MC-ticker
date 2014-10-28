@@ -55,10 +55,15 @@ public class CSVparser {
 //							System.out.println("STOP THE PRESS!!");
 
 						// if
-						if (parsingLine[1].equals(requirement[0]) &&		// the line matches AND (
-								(requirement.length == 1 ||					// no description is given OR
-																			// the description is given and found)
-								(parsingLine.length >= 4 && parsingLine[3].contains(requirement[1]) && !parsingLine[3].isEmpty()))) {
+						if (parsingLine[1].equals(requirement[0]) &&
+								(requirement.length == 1 ||
+									(parsingLine.length >= 4 &&
+									 parsingLine[3].contains(requirement[1]) &&
+									 !parsingLine[3].isEmpty()
+									)
+								)
+							)
+						{
 								
 //								System.out.println("storing " + parsingLine[0] + ", " + requirement[0]);
 								

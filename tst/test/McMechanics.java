@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 
+import junit.framework.Assert;
+
 import logging.Log;
 
 import org.junit.After;
@@ -68,7 +70,7 @@ public class McMechanics {
 	@Test
 	public void testCobbleGenerator() {
 		
-		loadWorld("13x3x3-cobble-gen.schematic");
+		loadWorld("cobble-gen.schematic");
 		
 		try {
 			world.setBlock(10, 1, 1, (byte) 0, (byte) 0);
@@ -119,7 +121,7 @@ public class McMechanics {
 	@Test
 	public void testEntityCreation() {
 		
-		loadWorld("13x3x3-cobble-gen.schematic");
+		loadWorld("cobble-gen.schematic");
 		
 		try {
 			world.setBlock(4, 1, 1, (byte) 30, (byte) 0);
@@ -131,6 +133,34 @@ public class McMechanics {
 				| InvocationTargetException | InstantiationException e) {
 
 			fail("Torch did not survive popping");
+		}
+	}
+	
+	/**
+	 * Tests if a clock still runs after loading
+	 */
+	@Test
+	public void testTileTick() {
+		
+		loadWorld("repeater-clock.schematic");
+		
+		try {
+			byte prevId = world.getIdFromBlock(
+					world.getBlockFromState(
+					world.getBlockState(1, 1, 1)));
+			
+			world.tickWorld();
+			
+			byte nextId = world.getIdFromBlock(
+					world.getBlockFromState(
+					world.getBlockState(1, 1, 1)));
+			
+			Assert.assertEquals(prevId, nextId);
+			
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | InstantiationException e) {
+
+			fail("Clock does not seem to be running");
 		}
 	}
 }

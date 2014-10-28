@@ -11,6 +11,7 @@ import presentation.exceptions.SchematicException;
 import presentation.gui.editor.EditorPanel;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
+import presentation.gui.windows.world.NBTviewer;
 import presentation.gui.windows.world.TimeWindow;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
@@ -34,6 +35,9 @@ public class WorldController {
 	private MainController mainController;
 	private SimController simController;
 	
+	private NBTviewer nbtViewer;
+	private NBTController nbtController;
+	
 //	private Cord3S selection;
 	
 	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
@@ -50,6 +54,9 @@ public class WorldController {
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
 		time = new TimeWindow(this);
+		
+		nbtViewer = new NBTviewer(this);
+		nbtController = new NBTController(this, nbtViewer);
 		
 		timeController.setTimeWindow(time);
 		
@@ -97,30 +104,11 @@ public class WorldController {
 		time.dispose();
 		timeController.stopThread();
 		
+		nbtViewer.dispose();
+		
 		mainController.getWindowMenu().removeWorldMenu(worldMenu);
 		mainController.onWorldRemoved(this);
 	}
-	
-	// TODO remove
-//	public void onEditorClicked(int button) {
-//		
-//		Cord3S selection = mainController.getSelectedCord();
-//		
-//		try {
-//			switch (button) {			
-//				case MouseEvent.BUTTON1:
-//					setBlock(selection.x, selection.y, selection.z, Block.B_AIR);
-//					break;
-//					
-//				case MouseEvent.BUTTON3:
-//					setBlock(selection.x, selection.y, selection.z, mainController.getBlock());
-//					break;
-//			}
-//		} catch (NullPointerException e) {
-//			Log.e("Setting the block failed, I don't know why this happens sometimes. Try again and good luck next time :)");
-//			e.printStackTrace();
-//		}
-//	}
 	
 	public void setBlock(final int x, final int y, final int z, final Block block) {
 		
@@ -131,7 +119,9 @@ public class WorldController {
 		timeController.updateCurrentSchematic();
 	}
 	
-	public void updateWithNewData() {
+	public void onSchematicUpdated() {
+		
+		nbtController.onSchematicUpdated();
 		
 		for (DrawingWindow window : windows)
 			window.getEditor().updateWithNewData();

@@ -14,7 +14,7 @@ public class MainWindow extends InternalWindow {
 	private LinkedCheckbox checkbox;
 
 	public MainWindow(MainController controller, String title, boolean visibleByDefault) {
-		super(controller, title);
+		super(controller, title, visibleByDefault);
 		
 		this.controller = controller;
 		
