@@ -22,7 +22,7 @@ public class RNBTTags {
 	private Constructor<?> c_NBTTagCompound, c_NBTSizeTracker;
 	private Method m_load, m_write;
 	
-	private final static long MAXSIZE = 512l;
+	private final static long MAXSIZE = 2097152L;
 	
 	// DEBUG
 	private Method m_getTagList, m_getCompoundTagAt;

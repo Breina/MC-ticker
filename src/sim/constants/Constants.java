@@ -38,12 +38,12 @@ public class Constants {
 	public final static String[][] REQUIREDMETHODS = {
 		{"tickUpdates"}, {"getProviderForDimension"}, {"registerBlocks"}, {"getBlockById"},
 		{"getStateFromMeta", "Convert the given metadata"}, {"getIdFromBlock"},
-		{"setBlock", "Sets the block ID and metadata at a given location"}, {"startSection"}, {"endSection"},
-		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"}, {"func_82738_a"},
+		{"startSection"}, {"endSection"}, {"setWorldTime", "ets the wo"},
+		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"},
 		{"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
-		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getIconString"}, {"getItemById"}, {"registerItems"},
-		{"getInventoryName"}, {"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
+		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
+		{"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
 		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"}};
 	
@@ -66,7 +66,7 @@ public class Constants {
 	public final static String WORLD_SETBLOCKSTATE = "a";
 	public final static String IBLOCKSTATE_GETBLOCK = "c";
 	public final static String WORLD_ADDTICKENTRY = "b";
-	public final static String BLOCK_UNLOCALIZEDNAME = "N"; // ???
+	public final static String TILEENTITY_READFROMNBT = "b";
 	
 	// Untranslated methods (old)
 	public final static String NBTTAGCOMPOUND_LOAD = "a"; // Used to be {"load", "Read the actual data"} 
@@ -77,6 +77,7 @@ public class Constants {
 	public final static String NEXTTICKLISTENTRY_BLOCK = "e";
 	public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
 	public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
+	public final static String BLOCK_UNLOCALIZEDNAME = "N";
 	
 	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";

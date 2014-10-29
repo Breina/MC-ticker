@@ -461,8 +461,6 @@ public class SimWorld {
 		Tag[] payload = new Tag[tileEntities.size()];
 		Iterator<Object> i = tileEntities.iterator();
 		
-		System.out.println("GET");
-		
 		int j = 0;
 		while (i.hasNext()) {
 			
@@ -470,8 +468,6 @@ public class SimWorld {
 			Object mcTag = rNBTTags.newInstance();
 			
 			rTileEntity.getNBTFromTileEntity(mcTileEntity, mcTag);
-			
-			System.out.println(mcTag);
 			
 			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
 			

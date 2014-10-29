@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import logging.Log;
+import sim.constants.Constants;
+import sim.loading.ClassTester;
 import sim.loading.Linker;
 
 public class RTileEntity {
@@ -32,9 +34,7 @@ public class RTileEntity {
 		Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
 		
 		m_createAndLoadEntity = linker.method("createAndLoadEntity", TileEntity, NBTTagCompound);
-		
-		// TODO 1.8
-//		m_writeToNBT = TileEntity.getMethod("b", NBTTagCompound);
+		m_writeToNBT = TileEntity.getMethod(Constants.TILEENTITY_READFROMNBT, NBTTagCompound);
 		
 		// DEBUG
 //		m_getInventoryName = linker.method("getInventoryName", IInventory);
@@ -73,8 +73,6 @@ public class RTileEntity {
 //	}
 	
 	public void getNBTFromTileEntity(Object tileEntity, Object mcTag) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Log.e("getNBTFromTileEntity TODO 1.8");
 		
 		m_writeToNBT.invoke(tileEntity, mcTag);
 		

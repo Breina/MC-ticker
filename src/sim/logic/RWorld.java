@@ -108,7 +108,7 @@ public class RWorld {
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, new Class[]{boolean.class});
 		m_tick								= linker.method("tick", WorldServer, new Class[]{});
 		
-		m_setWorldTime						= linker.method("func_82738_a", World, long.class );
+		m_setWorldTime						= linker.method("setWorldTime", World, long.class );
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
 		m_updateEntities					= linker.method("updateEntities", World);
