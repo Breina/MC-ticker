@@ -105,6 +105,7 @@ public class RBlock {
 	
 	public void onBlockActivated(Object block, WorldInstance world, int x, int y, int z, Object player, int side, float vecX, float vexY, float vecZ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
+		// TODO 1.8
 		Log.e("onBlockActivated TODO 1.8");
 		
 //		m_onBlockActivated.invoke(block, world.getWorld(), x, y, z, player, side, vecX, vexY, vecZ);

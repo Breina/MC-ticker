@@ -165,21 +165,22 @@ public class BlockLogic {
 	
 	private byte increaseData(byte data, byte mask, byte increase, byte min, byte max) {
 		
-		byte increasedData = (byte) ((data + increase) & mask);
+		byte increasedData = (byte) (data + increase);
 		
 		if (increasedData > max)
 			increasedData = min;
 		
-		return (byte) ((data & ~mask) | increasedData);
+		return (byte) (data & ~mask | increasedData & mask);
 	}
 	
 	private byte decreaseData(byte data, byte mask, byte decrease, byte min, byte max) {
-		byte decreasedData = (byte) ((data - decrease) & mask);
+		
+		byte decreasedData = (byte) (data - decrease);
 		
 		if (decreasedData < min)
 			decreasedData = max;
 		
-		return (byte) ((data & ~mask) | decreasedData);
+		return (byte) (data & ~mask | decreasedData & mask);
 	}
 	
 	public byte rotate(byte data, boolean forward) {
@@ -200,6 +201,7 @@ public class BlockLogic {
 				if (sideIndex < 0)
 					sideIndex = sides.length - 1;
 			}
+			
 			return decreaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
 			
 		}

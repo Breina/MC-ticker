@@ -1,12 +1,21 @@
 package presentation.gui.windows.world;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import presentation.controllers.WorldController;
 import utils.Tag;
@@ -34,6 +43,8 @@ public class NBTviewer extends WorldWindow {
 		
 		tree = new JTree(top);
 		model = (DefaultTreeModel) tree.getModel();
+		
+		tree.addTreeExpansionListener(new TreeExpansionHandler());
 		
 		add(new JScrollPane(tree));
 	}
@@ -180,6 +191,26 @@ public class NBTviewer extends WorldWindow {
 				node = new DefaultMutableTreeNode("unknown " + tag.getName());
 				break;
 		}
+		
+		
+	}
+	
+	protected class TreeExpansionHandler implements TreeExpansionListener {
+
+		@Override
+		public void treeExpanded(TreeExpansionEvent event) {
+			
+			TreePath path = event.getPath();
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+			
+			if (node.getChildCount() == 1)				
+				tree.expandPath(path);
+		}
+
+		@Override
+		public void treeCollapsed(TreeExpansionEvent event) {
+		}
+		
 	}
 	
 	public void updateNBTContents(Tag schematic) {

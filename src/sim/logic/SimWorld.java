@@ -306,7 +306,6 @@ public class SimWorld {
 			int z = (int) schematicTag.findTagByName("z").getValue();
 			
 			Object mcTag = rNBTTags.getMinecraftTagFromTag(schematicTag);
-			System.out.println(mcTag);
 			
 			Object chunk = rChunkProvider.getChunk(x, z);
 			

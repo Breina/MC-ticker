@@ -17,7 +17,7 @@ public class RSFrame extends JFrame {
 	public RSFrame(MainController controller) {
 		super(Constants.APPLICATIONTITLE);
 		setExtendedState(MAXIMIZED_BOTH);
-		setSize(1024, 1024);
+		setSize(1200, 800);
 		
 		this.controller = controller;
 
