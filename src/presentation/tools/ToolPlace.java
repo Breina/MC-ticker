@@ -1,12 +1,10 @@
 package presentation.tools;
 
-import java.awt.event.MouseEvent;
-
-import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
-import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+
+import java.awt.event.MouseEvent;
 
 public class ToolPlace extends Tool {
 	
@@ -55,14 +53,10 @@ public class ToolPlace extends Tool {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

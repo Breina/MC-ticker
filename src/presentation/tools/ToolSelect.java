@@ -1,8 +1,8 @@
 package presentation.tools;
 
-import java.awt.event.MouseEvent;
-
 import presentation.controllers.MainController;
+
+import java.awt.event.MouseEvent;
 
 public class ToolSelect extends Tool {
 
@@ -12,32 +12,22 @@ public class ToolSelect extends Tool {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

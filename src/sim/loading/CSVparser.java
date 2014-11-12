@@ -1,13 +1,13 @@
 package sim.loading;
 
+import logging.Log;
+import sim.constants.Constants;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-
-import logging.Log;
-import sim.constants.Constants;
 
 /**
  * This class is used to parse fields.csv and methods.csv in MCP's conf folder
@@ -23,13 +23,13 @@ public class CSVparser {
 	 */
 	public HashMap<String, String> readDeobfuscation(File csvFile, String[][] requirements) throws IOException {
 		
-		HashMap<String, String> obfuscatedNames = new HashMap<String, String>();
+		HashMap<String, String> obfuscatedNames = new HashMap<>();
 		
 		int length = requirements.length;
 		boolean[] foundArray = new boolean[length];
 		
 		BufferedReader br = null;
-		String line = "";
+		String line;
 		
 		try {
 	 
@@ -50,9 +50,6 @@ public class CSVparser {
 						
 						// {name} or {name, part of description}
 						String[] requirement = requirements[i];
-						
-//						if (parsingLine[1].equals("loadedTileEntityList") && requirement[0].equals("loadedTileEntityList"))
-//							System.out.println("STOP THE PRESS!!");
 
 						// if
 						if (parsingLine[1].equals(requirement[0]) &&
@@ -64,9 +61,7 @@ public class CSVparser {
 								)
 							)
 						{
-								
-//								System.out.println("storing " + parsingLine[0] + ", " + requirement[0]);
-								
+
 								// store the obfuscated name
 								if (requirement.length != 3)
 									obfuscatedNames.put(parsingLine[0], requirement[0]);
@@ -78,7 +73,7 @@ public class CSVparser {
 				}
 					// if dealing with server, we can abort since the list is sorted client first
 //				} else
-//					break; // TODO commented this because the first line is commented				
+//					break; // TODO commented this because the first line is commented
 			}
 			
 			// Check for what is not found

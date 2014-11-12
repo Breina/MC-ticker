@@ -1,10 +1,10 @@
 package sim.logic;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import logging.Log;
 import sim.loading.Linker;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class REntity {
 	
@@ -23,7 +23,7 @@ public class REntity {
 		Entity = linker.getClass("Entity");
 		EntityList = linker.getClass("EntityList");
 		Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
-		Class<?> World = linker.getClass("World"); // TODO check this
+		Class<?> World = linker.getClass("World");
 		
 		m_writeToNBT = linker.method("writeToNBT", Entity, NBTTagCompound);
 		m_createEntityFromNBT = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);

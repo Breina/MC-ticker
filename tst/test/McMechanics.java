@@ -1,6 +1,15 @@
 package test;
 
-import static org.junit.Assert.fail;
+import logging.Log;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import presentation.controllers.SimController;
+import sim.constants.Constants;
+import sim.constants.Globals;
+import sim.logic.SimWorld;
+import sim.logic.Simulator;
+import utils.Tag;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,20 +17,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 
-import junit.framework.Assert;
-
-import logging.Log;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import presentation.controllers.SimController;
-import sim.constants.Constants;
-import sim.constants.Globals;
-import sim.logic.SimWorld;
-import sim.logic.Simulator;
-import utils.Tag;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 public class McMechanics {
 	
@@ -154,8 +151,8 @@ public class McMechanics {
 			byte nextId = world.getIdFromBlock(
 					world.getBlockFromState(
 					world.getBlockState(1, 1, 1)));
-			
-			Assert.assertEquals(prevId, nextId);
+
+			assertNotEquals(prevId, nextId);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {

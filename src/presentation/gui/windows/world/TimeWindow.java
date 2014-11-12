@@ -1,23 +1,14 @@
 package presentation.gui.windows.world;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-
 import presentation.DesktopPane;
 import presentation.Util;
 import presentation.controllers.TimeController;
 import presentation.controllers.WorldController;
 import presentation.gui.time.PlayState;
 
-// TODO hook this class up to TimeController
+import javax.swing.*;
+import java.awt.*;
+
 public class TimeWindow extends WorldWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
 
@@ -94,85 +85,58 @@ public class TimeWindow extends WorldWindow {
 		contentPanel.add(btnEnd);
 		contentPanel.add(lblStep);
 
-		btnStart.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setPaused(true);
-				setBackEnabled(false);
+		btnStart.addActionListener(ae -> {
+			setPaused(true);
+			setBackEnabled(false);
 
-				timeController.setPlaystate(PlayState.START);
-			}
+			timeController.setPlaystate(PlayState.START);
 		});
 
-		btnRushBack.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnRushBack.addActionListener(ae -> {
 				setPaused(false);
 
 				timeController.setPlaystate(PlayState.RUSHBACK);
-			}
 		});
 
-		btnPlayBack.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnPlayBack.addActionListener(ae -> {
 				setPaused(false);
 
 				timeController.setPlaystate(PlayState.PLAYBACK);
-			}
 		});
 
-		btnStepBack.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnStepBack.addActionListener(ae -> {
 
 				timeController.setPlaystate(PlayState.STEPBACK);
-			}
 		});
 
-		btnPause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnPause.addActionListener(ae -> {
 				setPaused(btnPause.isSelected());
 
 				timeController.setPlaystate(PlayState.PAUSED);
-			}
 		});
 
-		btnStepForward.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnStepForward.addActionListener(ae -> {
 				setBackEnabled(true);
 
 				timeController.setPlaystate(PlayState.STEPFORWARD);
-			}
 		});
 
-		btnPlayForward.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnPlayForward.addActionListener(ae -> {
 				setPaused(false);
 
 				timeController.setPlaystate(PlayState.PLAYFORWARD);
-			}
 		});
 
-		btnRushForward.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnRushForward.addActionListener(ae -> {
 				setPaused(false);
 
 				timeController.setPlaystate(PlayState.RUSHFORWARD);
-			}
 		});
 
-		btnEnd.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		btnEnd.addActionListener(ae -> {
 				setPaused(true);
 
 				timeController.setPlaystate(PlayState.END);
-			}
 		});
 
 		add(contentPanel);

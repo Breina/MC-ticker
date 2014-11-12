@@ -1,6 +1,6 @@
 package sim.objects;
 
-/**
+/**TODO remove entire class
  * Simple ChunkCord system to use as key in a HashSet.
  * Minecraft makes their own kind of LongHashmap, but our worlds won't nearly get as big so that should be redundant.
  */

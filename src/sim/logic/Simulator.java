@@ -1,10 +1,10 @@
 package sim.logic;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import logging.Log;
 import sim.loading.Linker;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Simulator {
 	
@@ -40,7 +40,7 @@ public class Simulator {
 		
 		rChunkPrimer = new RChunkPrimer(linker);
 		
-		rChunk = new RChunk(linker, rBlock, rChunkPrimer);
+		rChunk = new RChunk(linker, rChunkPrimer);
 		
 		// Our implementation of chunkProvider, which will basically be our block input
 		rChunkProvider = new RChunkProvider();

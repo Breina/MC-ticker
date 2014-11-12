@@ -1,19 +1,16 @@
 package presentation.gui.windows.world;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JMenuBar;
-import javax.swing.JScrollPane;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-
 import presentation.InternalWindow;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.EditorPanel;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DrawingWindow extends InternalWindow {
 	private static final long serialVersionUID = 3840583251430475315L;
@@ -27,11 +24,6 @@ public class DrawingWindow extends InternalWindow {
 	
 	private JButton up, down;
 
-	/**
-	 * Instances a new drawing window.
-	 * @param orientation The perspective that's being drawn; TOP, RIGHT or FRONT.
-	 * @param levelOLD A reference to the level.
-	 */
 	public DrawingWindow(WorldController controller, Orientation orientation) {
 		super(controller.getMainController(), "Loading window...", true);
 		
@@ -83,7 +75,6 @@ public class DrawingWindow extends InternalWindow {
 		LayerHandler layerHandler = new LayerHandler();
 		up.addActionListener(layerHandler);
 		down.addActionListener(layerHandler);
-		layerHandler = null;		
 		
 		JButton zoomIn = new JButton("+");
 		JButton zoomOut = new JButton("-");
@@ -91,7 +82,6 @@ public class DrawingWindow extends InternalWindow {
 		ZoomHandler zoomHandler = new ZoomHandler();
 		zoomIn.addActionListener(zoomHandler);
 		zoomOut.addActionListener(zoomHandler);
-		zoomHandler = null;
 		
 		menuBar.add(zoomIn);
 		menuBar.add(zoomOut);
@@ -102,15 +92,10 @@ public class DrawingWindow extends InternalWindow {
 		add(new JScrollPane(editor));
 		
 		addInternalFrameListener(new InternalFrameHandler());
-		
-		// TODO Update layer markers
-//		updateLayerOnAllWindows();
-		
+
 		pack();
 		
 		setLocation(164, 109);
-		
-//		editor.repaintAll();
 	}
 	
 	/**
@@ -121,7 +106,6 @@ public class DrawingWindow extends InternalWindow {
 		public void actionPerformed(ActionEvent ae) {			
 			JButton btn = (JButton) ae.getSource();
 			boolean b = btn.getText().equals("+");
-			btn = null;
 			
 			editor.setScale(editor.getScale() * (b ? 1.25f : 0.8f));
 			

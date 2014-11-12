@@ -15,7 +15,8 @@ public class ClassPathHack {
 	private static final Class[] PARAMETERS = new Class[] {URL.class};
 	
 	public static void addFolder(File file) throws IOException {
-		
+	    assert file != null;
+
 		if (file.isDirectory())
 			for (File f : file.listFiles())
 				addFolder(f);	
@@ -37,7 +38,7 @@ public class ClassPathHack {
         try {
             Method method = sysclass.getDeclaredMethod("addURL", PARAMETERS);
             method.setAccessible(true);
-            method.invoke(sysloader, new Object[] {u});
+            method.invoke(sysloader, u);
             
         } catch (Throwable t) {
             t.printStackTrace();

@@ -1,21 +1,14 @@
 package presentation.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
+import logging.Log;
+import sim.logic.SimWorld;
+import sim.objects.WorldState;
+import utils.Tag;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
-
-import presentation.exceptions.SchematicException;
-import presentation.objects.ViewData;
-import logging.Log;
-import sim.logic.Simulator;
-import sim.logic.SimWorld;
-import sim.objects.WorldState;
-import utils.CircularByteBuffer;
-import utils.Tag;
 
 /**
  * Largely responsible for catching errors and giving meaningful messages back
@@ -128,32 +121,32 @@ public class SimController {
 	}
 	
 	public static String analyseException(Exception e) {
-		
+
 		String msg;
-		
+
 		if (e instanceof IllegalAccessException
 				|| e instanceof SecurityException
 				|| e instanceof InstantiationException
 				|| e instanceof ArrayIndexOutOfBoundsException
 				|| e instanceof NoSuchFieldException)
-			
+
 			msg = "Internal reflection error, are we using the correct version? " + e.getCause();
-		
+
 		else if (e instanceof IllegalArgumentException
 				|| e instanceof NoSuchMethodException)
-			
+
 			msg = "Internal reflection error, are we using the correct version? " + e.getMessage();
-		
+
 		else if (e instanceof ClassNotFoundException)
-			
+
 			msg = "One or more classes were not found, are we using the right version? " + e.getMessage();
-		
+
 		else if (e instanceof IOException)
-			
+
 			msg = "File exception: " + e.getMessage();
-		
+
 		else if (e instanceof InvocationTargetException) {
-			
+
 			Throwable cause = e.getCause();
 
 			if (cause == null)
@@ -170,21 +163,11 @@ public class SimController {
 		} else {
 			msg = "Other error: " + e.getClass();
 		}
-		
+
 		e.printStackTrace();
-		
+
 		return ":\n" + msg;
 	}
-	
-	// TODO testing
-//	public static void main(String[] args) throws FileNotFoundException {
-//		
-//		Sim sim = new Sim();
-//		
-//		sim.initialize(Constants.MCPCONFFOLDER, new File(Constants.JARPATH));
-//		sim.loadWorld("test", new FileInputStream(new File("C:/temp/schems/comptest.schematic")));
-//		sim.setBlock("test", 2, 1, 2, (byte) 76, (byte) 5);
-//	}
 
 	public void setState(WorldState state) {
 		

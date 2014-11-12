@@ -1,29 +1,26 @@
 
 package sim.logic;
 
-import java.lang.reflect.Array;
+import logging.Log;
+import sim.loading.Linker;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import logging.Log;
-import sim.loading.Linker;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Chunk's reflection
  */
 public class RChunk {
 	
-	private Class<?> Chunk, Block;
+	private Class<?> Chunk;
 	private Constructor<?> c_chunk;
 	private Method m_genHeightMap, m_addTileEntity, m_onChunkLoad;
-	private RBlock rBlock;
 	private RChunkPrimer rChunkPrimer;
 	
-	public RChunk(Linker linker, RBlock rBlock, RChunkPrimer rChunkPrimer) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public RChunk(Linker linker, RChunkPrimer rChunkPrimer) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		prepareChunk(linker);
-		this.rBlock = rBlock;
 		this.rChunkPrimer = rChunkPrimer;
 		
 		Log.i("Preparing Chunks");
@@ -63,20 +60,9 @@ public class RChunk {
 		short[] data = new short[65536];
 		rChunkPrimer.setData(primer, data);
 		
-		Object emptyChunk = createChunk(world, primer, 0, 0);
-		
-		return emptyChunk;
+		return createChunk(world, primer, 0, 0);
 	}
-	
-	/**
-	 * Generates a new chunk from its constructor
-	 * @param world The World object where this chunk will be a part of
-	 * @param blockArray An array containing all block objects (dividable by 256 (16x16))
-	 * @param metaData An array of the same size containing the block data
-	 * @param xPos The X chunk position
-	 * @param zPos The Y chunk position
-	 * @return The Chunk object
-	 */
+
 	public Object createChunk(Object world, Object chunkPrimer, int xPos, int zPos) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		Object chunk = c_chunk.newInstance(world, chunkPrimer, xPos, zPos);
@@ -84,12 +70,9 @@ public class RChunk {
 		// TODO might be optional
 		m_genHeightMap.invoke(chunk);
 		
-		// TODO if ever doing unloading, this needs to be in ChunkProvider (there will be a bug to fix then as well)
+		// If ever doing unloading, this needs to be in ChunkProvider
 		onChunkLoad(chunk);
 		
 		return chunk;
-		
-		// TODO remove
-//		Object chunk = c_chunk.newInstance(world, blockArray, metaData, xPos, zPos);
 	}
 }

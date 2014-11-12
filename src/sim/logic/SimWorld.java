@@ -1,18 +1,5 @@
 package sim.logic;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import logging.Log;
 import sim.constants.Constants;
 import sim.exceptions.SchematicException;
@@ -20,6 +7,13 @@ import sim.objects.WorldInstance;
 import sim.objects.WorldState;
 import utils.Tag;
 import utils.Tag.Type;
+
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class SimWorld {
 	
@@ -219,14 +213,7 @@ public class SimWorld {
 		if (tileTicks != null)
 			setWorldTileTicks((Tag[]) tileTicks.getValue());
 	}
-	
-	/**
-	 * Loads up a world from the SharedWorld object.
-	 * 
-	 * Assumes SharedWorld.blockIds has a constant width, height and length.
-	 * Assumes SharedWorld.blockData has the exact same dimensions as SharedWorld.blockIds.
-	 * @param world The world object to load in
-	 */
+
 	private void setWorldBlocks(int xSize, int ySize, int zSize, byte[] blockIds, byte[] blockDatas) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
 		
 		rChunkProvider.clear();
@@ -326,9 +313,6 @@ public class SimWorld {
 			}
 
 			rChunk.addTileEntity(chunk, tileEntity);
-			
-			// TODO remove this line
-//			rWorld.addTileEntity(world, tileEntity);
 		}
 	}
 	
@@ -546,11 +530,7 @@ public class SimWorld {
 		
 		return tTileTicks;
 	}
-	
-	/**
-	 * Ticks the given world 2 gameticks into the future.
-	 * @param id The name of the world.
-	 */
+
 	public void tickWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		rWorld.tickUpdates(world, 2l);

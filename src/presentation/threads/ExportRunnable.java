@@ -1,28 +1,24 @@
 package presentation.threads;
 
+import logging.Log;
+import presentation.controllers.WorldController;
+import presentation.gui.editor.EditorPanel;
+import presentation.main.GifSequenceWriter;
+import presentation.objects.Orientation;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
-import javax.swing.JButton;
-
-import presentation.controllers.WorldController;
-import presentation.gui.editor.EditorPanel;
-import presentation.main.GifSequenceWriter;
-import presentation.objects.Orientation;
-import presentation.objects.ViewData;
-import logging.Log;
 
 public class ExportRunnable implements Runnable {
 
@@ -55,7 +51,7 @@ public class ExportRunnable implements Runnable {
 			albumExecutor = null;
 		}
 
-		imgCodes = new ArrayList<ImgCode>();
+		imgCodes = new ArrayList<>();
 	}
 
 	@Override
@@ -86,8 +82,8 @@ public class ExportRunnable implements Runnable {
 
 					Orientation prevSide = Orientation.UNDEFINED;
 					Orientation curSide;
-					List<String> albumImgBuffer = new ArrayList<String>();
-					List<AlbumCode> albums = new ArrayList<AlbumCode>();
+					List<String> albumImgBuffer = new ArrayList<>();
+					List<AlbumCode> albums = new ArrayList<>();
 
 					for (ImgCode imgCode : imgCodes) {
 
@@ -102,7 +98,9 @@ public class ExportRunnable implements Runnable {
 									: imgCode.getSide() == Orientation.RIGHT ? "Right L" : "Front L"
 											+ imgCode.getLayer(), imageArray);
 							albums.add(albumCode);
-							albumExecutor.execute(new AlbumRunnable(albumCode));
+
+							// TODO
+//							albumExecutor.execute(new AlbumRunnable(albumCode));
 						}
 						/*
 						 * if (imgCode.getSide() >= 4)
