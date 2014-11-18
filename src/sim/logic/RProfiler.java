@@ -17,10 +17,14 @@ public class RProfiler {
 	private Object profiler;
 	private Field f_profilingMap;
 	private Method m_startSection, m_stopSection;
+
+	private static RProfiler instance;
 	
 	public RProfiler(Linker linker) throws NoSuchFieldException, SecurityException, InstantiationException, IllegalAccessException, NoSuchMethodException {
 		
 		prepareProfiler(linker);
+
+		instance = this;
 		
 		Log.i("Preparing MC's Profiler");
 	}
@@ -41,6 +45,18 @@ public class RProfiler {
 	public void testProfiler(String msg) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		m_startSection.invoke(profiler, msg);
 		m_stopSection.invoke(profiler);
+	}
+
+	public static void print() {
+
+		try {
+			instance.printOutput();
+
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+
+			Log.e("Failed to print MC profiler: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

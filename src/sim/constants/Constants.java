@@ -45,13 +45,14 @@ public class Constants {
 		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
 		{"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
 		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
-		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"}};
+		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
+		{"incrementTotalWorldTime"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
 		{"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
-		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"},
+		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"}, {"worldInfo"},
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"}};
@@ -142,45 +143,3 @@ public class Constants {
 //	
 //	return key;
 //}
-
-//getworld
-//int minX = 16 * rChunkProvider.getMinX();
-//int maxX = 16 * rChunkProvider.getMaxX();
-//int minZ = 16 * rChunkProvider.getMinZ();
-//int maxZ = 16 * rChunkProvider.getMaxZ();
-//
-//int xSize = maxX - minX;
-//int zSize = maxZ - minZ;
-//
-//byte[][][] blockIds = new byte[xSize][128][zSize];
-//byte[][][] blockData = new byte[xSize][128][zSize];
-//
-//int y;
-//
-//for (y = 0; y < 128; y++) {
-//	
-//	boolean foundNotAir = false;
-//	
-//	for (int x = minX; x < maxX; x++) {
-//		for (int z = minZ; z < maxZ; z++) {
-//			
-//			byte blockId = (byte) rBlock.getIdFromBlock(rWorld.getBlock(x, y, z));
-//			blockIds[x][y][z] = blockId;
-//			blockData[x][y][z] = (byte) rWorld.getBlockMetaData(x, y, z);
-//			
-//			if (blockId != 0)
-//				foundNotAir = true;
-//		}
-//	}
-//	
-//	if (!foundNotAir) {
-//		y--;
-//		break;
-//	}
-//}
-//
-//int maxY = y;
-//
-//SharedWorld sharedWorld = new SharedWorld();
-//
-//return null;

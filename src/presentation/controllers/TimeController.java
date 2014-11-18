@@ -1,19 +1,18 @@
 package presentation.controllers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
+import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.time.PlayState;
 import presentation.gui.time.TimeLine;
 import presentation.gui.windows.world.TimeWindow;
 import presentation.objects.ViewData;
-import logging.Log;
 import sim.objects.WorldState;
 
-
+/**
+ * Throughout this class you'll find the remains of hashes,
+ * it was once used to find the end of changes in a schematic
+ * and stop the auto-play modes of the timeController.
+ */
 public class TimeController implements Runnable {
 	
 	private TimeLine<WorldState> timeLine; 
@@ -70,20 +69,6 @@ public class TimeController implements Runnable {
 			
 		} catch (SchematicException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	public void updateCurrentSchematic() {
-		
-		try {
-			WorldState state = simController.getState();
-//			foundHashes.clear();
-			timeLine.set(state);
-			viewData.setState(state);
-			worldController.onSchematicUpdated();
-			
-		} catch (SchematicException e) {
-			Log.e("Failed to update updated state: " + e.getMessage());
 		}
 	}
 	
@@ -268,6 +253,20 @@ public class TimeController implements Runnable {
 			return;
 
 		simController.setState(timeLine.get());
+	}
+
+	public void updateCurrentSchematic() {
+
+		try {
+			WorldState state = simController.getState();
+//			foundHashes.clear();
+			timeLine.set(state);
+			viewData.setState(state);
+			worldController.onSchematicUpdated();
+
+		} catch (SchematicException e) {
+			Log.e("Failed to update updated state: " + e.getMessage());
+		}
 	}
 	
 	public void setTimeWindow(TimeWindow window) {

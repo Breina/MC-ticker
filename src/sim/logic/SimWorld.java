@@ -155,14 +155,7 @@ public class SimWorld {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Loads in a schematic
-	 * @param input A schematic-format inputstream (like FileInputStream from a .schematic)
-	 * @return The id of the loaded world
-	 * @throws IOException
-	 * @throws NoSuchAlgorithmException 
-	 */
+
 	public void setWorld(InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
 		
 		Tag schematicTag = Tag.readFrom(input);
@@ -226,8 +219,6 @@ public class SimWorld {
 		while (ySize > height)
 			height *= 2;
 		
-		int chunkSize = 256 * height;		
-		
 		for (int chunkX = 0; chunkX < chunksX; chunkX++)
 			for (int chunkZ = 0; chunkZ < chunksZ; chunkZ++) {
 				
@@ -285,14 +276,12 @@ public class SimWorld {
 	 */
 	private void setWorldTileEntities(Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
-		for (int i = 0; i < tags.length; i++) {
+		for (Tag tag : tags) {
 			
-			Tag schematicTag = tags[i];
+			int x = (int) tag.findTagByName("x").getValue();
+			int z = (int) tag.findTagByName("z").getValue();
 			
-			int x = (int) schematicTag.findTagByName("x").getValue();
-			int z = (int) schematicTag.findTagByName("z").getValue();
-			
-			Object mcTag = rNBTTags.getMinecraftTagFromTag(schematicTag);
+			Object mcTag = rNBTTags.getMinecraftTagFromTag(tag);
 			
 			Object chunk = rChunkProvider.getChunk(x, z);
 			
@@ -318,11 +307,9 @@ public class SimWorld {
 	
 	private void setWorldEntities(Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
-		for (int i = 0; i < tags.length; i++) {
+		for (Tag tag : tags) {
 			
-			Tag schematicTag = tags[i];
-			
-			Object mcTag = rNBTTags.getMinecraftTagFromTag(schematicTag);
+			Object mcTag = rNBTTags.getMinecraftTagFromTag(tag);
 			
 			Object entity = rEntity.createEntityFromNBT(mcTag, world.getWorld());
 			
@@ -456,10 +443,8 @@ public class SimWorld {
 			
 			j++;			
 		}
-		
-		Tag tTileEntities = new Tag(Tag.Type.TAG_List, "TileEntities", payload);
-		
-		return tTileEntities;		
+
+		return new Tag(Type.TAG_List, "TileEntities", payload);
 	}
 	
 	private Tag getWorldEntities() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
@@ -486,10 +471,8 @@ public class SimWorld {
 			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
 			j++;
 		}
-		
-		Tag tEntities = new Tag(Tag.Type.TAG_List, "Entities", payload);
-		
-		return tEntities;
+
+		return new Tag(Type.TAG_List, "Entities", payload);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -525,16 +508,17 @@ public class SimWorld {
 			
 			tTileTickArray[index++] = tTileTick;
 		}
-		
-		Tag tTileTicks = new Tag(Type.TAG_List, "TileTicks", tTileTickArray);
-		
-		return tTileTicks;
+
+		return new Tag(Type.TAG_List, "TileTicks", tTileTickArray);
 	}
 
-	public void tickWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
-		rWorld.tickUpdates(world, 2l);
+	public boolean tickWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+
+		boolean reachedEnd = !rWorld.tickUpdates(world, 2l);
 //		rWorld.tickEntities(world);
+//		rWorld.tick(world);
+
+		return reachedEnd;
 	}
 	
 	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -554,38 +538,28 @@ public class SimWorld {
 	}
 	
 	public Object getBlockState(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
-		Object blockState = rWorld.getBlockState(world, x, y, z);
-		
-		return blockState;
+
+		return rWorld.getBlockState(world, x, y, z);
 	}
 	
 	public Object getBlockFromState(Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object block = rBlock.getBlockFromState(state);
-		
-		return block;
+
+		return rBlock.getBlockFromState(state);
 	}
 	
 	public byte getIdFromBlock(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		byte id = (byte) rBlock.getIdFromBlock(block);
-		
-		return id;
+
+		return (byte) rBlock.getIdFromBlock(block);
 	}
 	
 	public byte getDataFromState(Object block, Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		byte data = (byte) rBlock.getMetaFromState(block, state);
-		
-		return data;
+
+		return (byte) rBlock.getMetaFromState(block, state);
 	}
 	
 	public String getNameFromBlock(Object block) throws IllegalArgumentException, IllegalAccessException {
-		
-		String name = rBlock.getBlockName(block);
-		
-		return name;
+
+		return rBlock.getBlockName(block);
 	}
 	
 	/*
@@ -612,11 +586,9 @@ public class SimWorld {
 	public WorldState getState() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		byte[][] blocks = getWorldBlocks();
-		
-		WorldState state = new WorldState(world.getWorldTime(), blocks[0], blocks[1],
+
+		return new WorldState(world.getWorldTime(), blocks[0], blocks[1],
 				world.getLoadedTileEntities(), world.getLoadedEntities(),
 				world.getPendingTickListEntries(), world.getPendingTickListHashSet());
-		
-		return state;
 	}
 }

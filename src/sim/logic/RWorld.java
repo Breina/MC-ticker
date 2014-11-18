@@ -1,26 +1,14 @@
 package sim.logic;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.TreeSet;
-
 import logging.Log;
-
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
-
 import sim.constants.Constants;
-import sim.loading.ClassTester;
 import sim.loading.Linker;
 import sim.objects.WorldInstance;
+
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of World's reflection
@@ -29,10 +17,11 @@ public class RWorld {
 	
 	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap, BlockPos;
 	private Method m_tickUpdates, m_tick, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
-		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState;
-	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_worldInfo, f_chunkProvider, f_isRemote,
+		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
+		m_incrementTotalWorldTime;
+	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider, f_isRemote,
 	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entitiesById, f_entitiesByUuid, f_rand,
-	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
+	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick, f_worldInfo,
 	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
 	private Enum<?> e_GameType;
@@ -105,10 +94,12 @@ public class RWorld {
 		c_blockPos							= BlockPos.getDeclaredConstructor(int.class, int.class, int.class);
 		
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
-		m_tickUpdates						= linker.method("tickUpdates", WorldServer, new Class[]{boolean.class});
-		m_tick								= linker.method("tick", WorldServer, new Class[]{});
+		m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
+		m_tick								= linker.method("tick", WorldServer);
 		
-		m_setWorldTime						= linker.method("setWorldTime", World, long.class );
+		m_setWorldTime 						= linker.method("setWorldTime", World, long.class );
+		m_incrementTotalWorldTime			= linker.method("incrementTotalWorldTime", WorldInfo, long.class);
+
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
 		m_updateEntities					= linker.method("updateEntities", World);
@@ -211,23 +202,25 @@ public class RWorld {
 	
 	
 	public void tick(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
+
 		m_tick.invoke(world.getWorld());
-		
-		world.setDoTimeUpdate(true);
 	}
 	
 	/**
 	 * This invokes the relevant function once
 	 */
-	public void tickUpdates(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public boolean tickUpdates(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		if (Constants.DEBUG_WORLD)
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
 		
 		advanceTicks(world, advanceTicks);
 		
-		m_tickUpdates.invoke(world.getWorld(), false);
+		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
+
+		world.setDoTimeUpdate(true);
+
+		return moreUpdatesExist;
 	}
 	
 	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -251,8 +244,11 @@ public class RWorld {
 		
 		if (Constants.DEBUG_WORLD)
 			System.out.println("Changing time form " + world.getWorldTime() + " to " + time);
-		
+
 		m_setWorldTime.invoke(world.getWorld(), time);
+
+		Object worldInfo = f_worldInfo.get(world.getWorld());
+		m_incrementTotalWorldTime.invoke(worldInfo, time);
 		
 		world.setWorldTime(time);
 	}

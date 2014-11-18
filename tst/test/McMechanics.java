@@ -32,7 +32,7 @@ public class McMechanics {
 	@Before
 	public void setUp() throws Exception {
 		
-		Log.setTest(true);
+//		Log.setTest(true);
 		simulator = new Simulator(Constants.MCPCONFFOLDER, Globals.getMinecraftFolder());
 	}
 	
@@ -142,17 +142,15 @@ public class McMechanics {
 		loadWorld("repeater-clock.schematic");
 		
 		try {
-			byte prevId = world.getIdFromBlock(
-					world.getBlockFromState(
-					world.getBlockState(1, 1, 1)));
+			Object prevState = world.getBlockState(1, 1, 1);
+			byte prevData = world.getDataFromState(world.getBlockFromState(prevState), prevState);
 			
 			world.tickWorld();
-			
-			byte nextId = world.getIdFromBlock(
-					world.getBlockFromState(
-					world.getBlockState(1, 1, 1)));
 
-			assertNotEquals(prevId, nextId);
+			Object nextState = world.getBlockState(1, 1, 1);
+			byte nextData = world.getDataFromState(world.getBlockFromState(nextState), nextState);
+
+			assertNotEquals(prevData, nextData);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {

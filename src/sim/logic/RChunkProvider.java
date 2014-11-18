@@ -1,13 +1,13 @@
 package sim.logic;
 
+import sim.constants.Constants;
+import sim.exceptions.UnimplementedException;
+import sim.objects.ChunkCord;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
-import sim.constants.Constants;
-import sim.exceptions.UnimplementedException;
-import sim.objects.ChunkCord;
 
 /**
  * This is basically our input into the world. World will get blocks from here.
@@ -72,7 +72,6 @@ public class RChunkProvider implements InvocationHandler {
 		
 		if (!chunkExists(cord)) {
 			return emptyChunk;
-//			throw new IllegalStateException("Non-existing chunk was requested at " + cord);
 		}
 		
 		Object chunk = chunks.get(cord);

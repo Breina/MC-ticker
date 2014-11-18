@@ -84,16 +84,18 @@ public class SimController {
 		}
 	}
 	
-	public void tick() {
+	public boolean tick() {
 		
 		try {
 			
-			simWorld.tickWorld();
+			return simWorld.tickWorld();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			
 			Log.e("Could not tick world" + analyseException(e));
 		}
+
+		return false;
 	}
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) {
