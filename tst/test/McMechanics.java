@@ -158,4 +158,83 @@ public class McMechanics {
 			fail("Clock does not seem to be running");
 		}
 	}
+
+	/**
+	 * Test activators
+	 */
+	@Test
+	public void testActivation() {
+
+		loadWorld("activators.schematic");
+/*
+			activator		lamp
+			1,1,1 button	2,1,1
+			1,1,2 lever		2,1,2
+			2,2,3 plate		2,1,3
+*/
+		try {
+			// Get prev data
+			Object prevBtnState = world.getBlockState(1, 1, 1);
+			byte prevBtnData = world.getDataFromState(world.getBlockFromState(prevBtnState), prevBtnState);
+
+			Object prevBtnLampState = world.getBlockState(2, 1, 1);
+			byte prevBtnLampData = world.getDataFromState(world.getBlockFromState(prevBtnLampState), prevBtnLampState);
+
+			Object prevLvrState = world.getBlockState(1, 1, 2);
+			byte prevLvrData = world.getDataFromState(world.getBlockFromState(prevLvrState), prevLvrState);
+
+			Object prevLvrLampState = world.getBlockState(2, 1, 2);
+			byte prevLvrLampData = world.getDataFromState(world.getBlockFromState(prevLvrLampState), prevLvrLampState);
+
+			Object prevPltState = world.getBlockState(2, 2, 3);
+			byte prevPltData = world.getDataFromState(world.getBlockFromState(prevPltState), prevPltState);
+
+			Object prevPltLampState = world.getBlockState(2, 1, 3);
+			byte prevPltLampData = world.getDataFromState(world.getBlockFromState(prevPltLampState), prevPltLampState);
+
+			// Activate
+			world.onBlockActivated(1, 1, 1);
+			world.onBlockActivated(1, 1, 2);
+			world.onBlockActivated(2, 2, 3);
+
+			/* copy paste for visibility
+			activator		lamp
+			1,1,1 button	2,1,1
+			1,1,2 lever		2,1,2
+			2,2,3 plate		2,1,3
+			*/
+
+			// Get new data
+			Object nextBtnState = world.getBlockState(1, 1, 1);
+			byte nextBtnData = world.getDataFromState(world.getBlockFromState(nextBtnState), nextBtnState);
+
+			Object nextBtnLampState = world.getBlockState(2, 1, 1);
+			byte nextBtnLampData = world.getDataFromState(world.getBlockFromState(nextBtnLampState), nextBtnLampState);
+
+			Object nextLvrState = world.getBlockState(1, 1, 2);
+			byte nextLvrData = world.getDataFromState(world.getBlockFromState(nextLvrState), nextLvrState);
+
+			Object nextLvrLampState = world.getBlockState(2, 1, 2);
+			byte nextLvrLampData = world.getDataFromState(world.getBlockFromState(nextLvrLampState), nextLvrLampState);
+
+			Object nextPltState = world.getBlockState(2, 2, 3);
+			byte nextPltData = world.getDataFromState(world.getBlockFromState(nextPltState), nextPltState);
+
+			Object nextPltLampState = world.getBlockState(2, 1, 3);
+			byte nextPltLampData = world.getDataFromState(world.getBlockFromState(nextPltLampState), nextPltLampState);
+
+			// Compare
+			assertNotEquals(prevBtnData		  ,	nextBtnData		);
+			assertNotEquals(prevBtnLampData   ,	nextBtnLampData	);
+			assertNotEquals(prevLvrData  	  ,	nextLvrLampData	);
+			assertNotEquals(prevLvrLampData   ,	nextLvrLampData	);
+			assertNotEquals(prevPltData  	  ,	nextPltData		);
+			assertNotEquals(prevPltLampData   ,	nextPltLampData	);
+
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | InstantiationException e) {
+
+			fail("Activation did not succeed");
+		}
+	}
 }
