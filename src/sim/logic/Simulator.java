@@ -29,10 +29,10 @@ public class Simulator {
 		Linker linker = new Linker(mcpFolder, minecraftFolder);
 		
 		rProfiler = new RProfiler(linker);
-		
-		rBlock = new RBlock(linker);
-		
+
 		rBlockPos = new RBlockPos(linker);
+		
+		rBlock = new RBlock(linker, rBlockPos);
 		
 		rNBTTags = new RNBTTags(linker);
 		

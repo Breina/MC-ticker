@@ -111,14 +111,13 @@ public class SimController {
 	}
 	
 	public void activateBlock(int x, int y, int z) {
-		
+
 		try {
-			
 			simWorld.onBlockActivated(x, y, z);
-			
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			
-			Log.e("Could not activate block" + analyseException(e));
+
+		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+
+			Log.e("Could not activate block (" + x + ", " + y + ", " + z + "): " + analyseException(e));
 		}
 	}
 	

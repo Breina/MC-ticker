@@ -521,12 +521,11 @@ public class SimWorld {
 		return reachedEnd;
 	}
 	
-	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		// TODO 1.8
-		
-//		Object blockState = rWorld.getBlockState(world, x, y, z);
-//		rBlock.onBlockActivated(block, world, x, y, z, null, 0, 0, 0, 0);
+		Object blockState = rWorld.getBlockState(world, x, y, z);
+
+		rBlock.onBlockActivated(blockState, world, x, y, z, null, 0, 0, 0);
 	}
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
