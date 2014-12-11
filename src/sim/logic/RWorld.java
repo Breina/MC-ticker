@@ -1,5 +1,6 @@
 package sim.logic;
 
+import com.mojang.authlib.GameProfile;
 import logging.Log;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
@@ -15,15 +16,15 @@ import java.util.*;
  */
 public class RWorld {
 	
-	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap, BlockPos;
-	private Method m_tickUpdates, m_tick, m_getBlockMetadata, m_setBlock, m_setWorldTime, m_getWorldTime,
+	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap, BlockPos, WorldBorder;
+	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime,
 		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
 		m_incrementTotalWorldTime;
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider, f_isRemote,
 	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entitiesById, f_entitiesByUuid, f_rand,
-	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick, f_worldInfo,
+	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick, f_worldInfo, f_worldBorder,
 	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
-	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_blockPos;
+	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_gameProfile, c_worldBorder;
 	private Enum<?> e_GameType;
 	private RBlockPos rBlockPos;
 	
@@ -47,12 +48,19 @@ public class RWorld {
 		WorldType							= linker.getClass("WorldType");
 		WorldSettings						= linker.getClass("WorldSettings");
 		WorldInfo							= linker.getClass("WorldInfo");
+		WorldBorder							= linker.getClass("WorldBorder");
 		IChunkProvider						= linker.getClass("IChunkProvider");
 		IntHashMap							= linker.getClass("IntHashMap");
 		BlockPos							= linker.getClass("BlockPos");
 		
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
+
+		// TODO remove
+//		Class<?> GameProfile				= linker.getClass("GameProfile");
+//		Class<?> EntityPlayer				= linker.getClass("EntityPlayer");
+
+		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
@@ -85,14 +93,19 @@ public class RWorld {
 		f_weatherEffects					= linker.field("weatherEffects", World);
 		f_rand								= linker.field("rand", World);
 		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
+		f_worldBorder						= linker.field("worldBorder", World);
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
 		c_worldSettings						= WorldSettings.getConstructor(long.class, GameType, boolean.class, boolean.class,
-													WorldType);
-		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);		
-		c_blockPos							= BlockPos.getDeclaredConstructor(int.class, int.class, int.class);
-		
+				WorldType);
+		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);
+
+		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
+//		c_gameProfile						= GameProfile.getDeclaredConstructor(String.class, String.class);
+
+		c_worldBorder						= WorldBorder.getDeclaredConstructor();
+
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
 		m_tick								= linker.method("tick", WorldServer);
@@ -158,7 +171,9 @@ public class RWorld {
 		
 		Object worldInfo = c_worldInfo.newInstance(worldSettings, Constants.APPNAME);
 		f_worldInfo.set(worldServer, worldInfo);
-		
+
+		f_worldBorder.set(worldServer, c_worldBorder.newInstance());
+
 		Object chunkProvider = Proxy.newProxyInstance(IChunkProvider.getClassLoader(),
 				new Class[]{IChunkProvider}, rChunkProvider);		
 		
@@ -187,7 +202,13 @@ public class RWorld {
 		f_rand.set(worldServer, new Random());
 		
 		f_lightUpdateBlockList.set(worldServer, new int[32768]);
-		
+
+		// UUID.fromString("4865726f-6272-696e-6520-3d207265616c")
+		GameProfile gameProfile = new GameProfile(null, Constants.PLAYERNAME);
+//		Object gameProfile = c_gameProfile.newInstance("4865726f-6272-696e-6520-3d207265616c", Constants.PLAYERNAME);
+
+		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile); // TODO fix this
+
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		
 		WorldInstance world = new WorldInstance();
@@ -197,6 +218,7 @@ public class RWorld {
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
+			world.setPlayer(entityPlayer); // TODO uncomment accordingly
 		return world;
 	}
 	

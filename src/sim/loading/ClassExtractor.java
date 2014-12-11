@@ -1,5 +1,8 @@
 package sim.loading;
 
+import logging.Log;
+import sim.constants.Constants;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -8,8 +11,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import logging.Log;
 
 /**
  * Extracts the classes from minecraft.jar
@@ -34,45 +35,59 @@ public class ClassExtractor {
 
 		try {
 			jarFile = new JarFile(_jarFile);
-		jarEntries = jarFile.entries();
+			jarEntries = jarFile.entries();
 
-		URL[] urls = { new URL("jar:file:" + _jarFile.getPath() + "!/") };
-		cl = URLClassLoader.newInstance(urls);
+			URL[] urls = { new URL("jar:file:" + _jarFile.getPath() + "!/") };
+			cl = URLClassLoader.newInstance(urls);
 
-		while (jarEntries.hasMoreElements()) {
+			while (jarEntries.hasMoreElements()) {
 
-			String className = null;
-			
-			try {
-				JarEntry jarEntry = jarEntries.nextElement();
-				if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class"))
-					continue;
+				String className = null;
 
-				// -6 because of .class
-				className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
-				
-				if (reqClasses.containsKey(className)) {
-					String original = reqClasses.get(className);
-					classes.put(original, cl.loadClass(className));
+				try {
+					JarEntry jarEntry = jarEntries.nextElement();
+					if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class"))
+						continue;
+
+					// -6 because of .class
+					className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
+
+					if (reqClasses.containsKey(className)) {
+						String original = reqClasses.get(className);
+						classes.put(original, cl.loadClass(className));
+					}
+
+				} catch (ClassNotFoundException e) {
+
+					if (className != null)
+						Log.e("Class " + className + " was not found.");
+					else
+						Log.e("Some class was not found");
+
+					throw e;
 				}
-			
-			} catch (ClassNotFoundException e) {
-				
-				if (className != null)
-					Log.e("Class " + className + " was not found.");
-				else
-					Log.e("Some class was not found");
-				
-				throw e;				
 			}
-		}
 			
 		} finally {
 				
 			jarFile.close();
-				
 		}
 		
 		return classes;
+	}
+
+	/**
+	 * Hacky way to get the GameProfile class out of authlib
+	 * @return
+	 */
+	@Deprecated
+	public Class<?> getGameProfile(String mcLocation) throws ClassNotFoundException, IOException {
+
+		File file = new File(mcLocation + Constants.HACK_AUTHLIB_LOCATION);
+
+		URL[] urls = { new URL("jar:file:" + file.getPath() + "!/") };
+		URLClassLoader cl = URLClassLoader.newInstance(urls);
+
+		return cl.loadClass(Constants.HACK_GAMEPROFILE_PACKAGE);
 	}
 }

@@ -7,10 +7,13 @@ import java.util.Set;
 public class WorldInstance {
 
 	private Object world;
+	private Object player;
 	// Where all future updates are stored as PendingTickListEntry objects
 	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
 	private List<Object> loadedTileEntities, loadedEntities;
 	private long worldTime;
+
+	 // TODO make this so time is only updated when time changes, doesn't need to setTime when ticking
 	private boolean doTimeUpdate;
 	
 	private int xSize, ySize, zSize;
@@ -25,6 +28,14 @@ public class WorldInstance {
 
 	public void setWorld(Object world) {
 		this.world = world;
+	}
+
+	public Object getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Object player) {
+		this.player = player;
 	}
 	
 	public void clearLoadedTileEntities() {

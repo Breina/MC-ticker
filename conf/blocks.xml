@@ -58,8 +58,8 @@
 			<name>Redstone block</name>
 		</block>
 		
-		<block id="33">
 			<name>Piston</name>
+		<block id="33">
 			
 			<icon data="2" />
 			<rotation mask="7" max="5" />

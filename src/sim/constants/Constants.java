@@ -5,7 +5,6 @@ public class Constants {
 	public final static boolean DEBUG_WORLD = false;
 	public final static boolean DEBUG_CHUNKPROVIDER = false;
 	public final static boolean DEBUG_MC_SCHEMATICS = false;
-	public final static boolean DEBUG_TAG_SCHEMATICS = false;
 	public final static boolean DEBUG_SCHEMATIC_DATA = false;
 	public final static boolean DEBUG_TAG_COMPOUND = false;
 	
@@ -17,6 +16,7 @@ public class Constants {
 	
 	// The name that will be returned should it ever be called
 	public final static String CHUNKPROVIDERSTRING = "SIM chunkprovider";
+	public final static String PLAYERNAME = "SIM player";
 	
 	// Files | folders
 	public final static String JOINEDSRG = "joined.srg";
@@ -55,15 +55,15 @@ public class Constants {
 		{"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"}, {"worldInfo"},
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
-		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"},
+		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
-		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
-		"EnumFacing", "PropertyDirection", "IProperty"};
-	
+		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
+		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder"};
+
 	// Untranslated methods (new)
 	public final static String WORLD_GETBLOCKSTATE = "p";
 	public final static String WORLD_SETBLOCKSTATE = "a";
@@ -81,7 +81,11 @@ public class Constants {
 	public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
 	public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
 	public final static String BLOCK_UNLOCALIZEDNAME = "N";
-	
+
+	// The following is a hacky way to extract the GameProfile class for EntityPlayer
+	public final static String HACK_AUTHLIB_LOCATION = "/libraries/com/mojang/authlib/1.5.17/authlib-1.5.17.jar";
+	public final static String HACK_GAMEPROFILE_PACKAGE = "com.mojang.authlib.GameProfile";
+
 	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";
 	public final static int WORLDTYPEID = 1;

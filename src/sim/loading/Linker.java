@@ -1,13 +1,13 @@
 package sim.loading;
 
+import logging.Log;
+import sim.constants.Constants;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
-import logging.Log;
-import sim.constants.Constants;
 
 /**
  * Just an intermediate class once again that makes writing high level Simulation code more elegant, so we can avoid some reflection
@@ -44,7 +44,12 @@ public class Linker {
 		// Extracts and buffers the required classes from minecraft.jar
 		ClassExtractor extractor = new ClassExtractor();
 		classes = extractor.extractClasses(new File(minecraftFolder + Constants.MINECRAFTJAR), translator.getClasses());
-		
+
+		// Hacky way to get GameProfile
+//		classes.put("GameProfile", extractor.getGameProfile(minecraftFolder));
+
+
+
 		Log.i("Parsing and extracting");
 	}
 	

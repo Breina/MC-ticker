@@ -1,21 +1,10 @@
 package presentation.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import logging.Log;
 import presentation.DesktopPane;
 import presentation.RSFrame;
 import presentation.StatusPanel;
 import presentation.exceptions.SchematicException;
-import presentation.gui.choosers.MinecraftFolderChooser;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
 import presentation.gui.windows.main.BlockWindow;
@@ -28,6 +17,14 @@ import presentation.tools.Tool;
 import sim.constants.Globals;
 import sim.logic.SimWorld;
 import sim.logic.Simulator;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainController {
 	
@@ -147,6 +144,7 @@ public class MainController {
 			
 		} catch (SchematicException | IOException | NoSuchAlgorithmException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			Log.e("Failed to load schematic: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	

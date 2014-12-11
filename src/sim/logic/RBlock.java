@@ -109,12 +109,12 @@ public class RBlock {
 	}
 
 	// World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
-	public void onBlockActivated(Object blockState, WorldInstance world, int x, int y, int z, Object player, float vecX, float vexY, float vecZ) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+	public void onBlockActivated(Object blockState, WorldInstance world, int x, int y, int z, float vecX, float vexY, float vecZ) throws InvocationTargetException, IllegalAccessException, InstantiationException {
 
 		Object block = getBlockFromState(blockState);
 		Object blockPos = rBlockPos.createInstance(x, y, z);
 
-		m_onBlockActivated.invoke(block, world.getWorld(), blockPos, blockState, player, null, vecX, vexY, vecZ);
+		m_onBlockActivated.invoke(block, world.getWorld(), blockPos, blockState, world.getPlayer(), null, vecX, vexY, vecZ);
 	}
 	
 	private int compansateForJavasLackOfUnsignedBytes(byte b) {

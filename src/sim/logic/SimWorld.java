@@ -525,7 +525,7 @@ public class SimWorld {
 		
 		Object blockState = rWorld.getBlockState(world, x, y, z);
 
-		rBlock.onBlockActivated(blockState, world, x, y, z, null, 0, 0, 0);
+		rBlock.onBlockActivated(blockState, world, x, y, z, 0, 0, 0);
 	}
 	
 	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

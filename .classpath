@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="img"/>
 	<classpathentry kind="src" path="tst"/>
+	<classpathentry kind="src" path="minecraft"/>
+	<classpathentry kind="src" path="schems"/>
+	<classpathentry kind="src" path="schems/tests"/>
+	<classpathentry kind="src" path="conf"/>
 	<classpathentry exported="true" kind="lib" path="lib/objenesis-2.1.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/org.hamcrest:hamcrest-core:1.4-atlassian-1"/>
+	<classpathentry kind="lib" path="lib/authlib-1.5.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
