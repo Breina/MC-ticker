@@ -24,7 +24,7 @@ public class RWorld {
 	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entitiesById, f_entitiesByUuid, f_rand,
 	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick, f_worldInfo, f_worldBorder,
 	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
-	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_gameProfile, c_worldBorder;
+	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder;
 	private Enum<?> e_GameType;
 	private RBlockPos rBlockPos;
 	
@@ -55,11 +55,6 @@ public class RWorld {
 		
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
-
-		// TODO remove
-//		Class<?> GameProfile				= linker.getClass("GameProfile");
-//		Class<?> EntityPlayer				= linker.getClass("EntityPlayer");
-
 		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
@@ -102,7 +97,6 @@ public class RWorld {
 		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);
 
 		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
-//		c_gameProfile						= GameProfile.getDeclaredConstructor(String.class, String.class);
 
 		c_worldBorder						= WorldBorder.getDeclaredConstructor();
 
@@ -205,9 +199,8 @@ public class RWorld {
 
 		// UUID.fromString("4865726f-6272-696e-6520-3d207265616c")
 		GameProfile gameProfile = new GameProfile(null, Constants.PLAYERNAME);
-//		Object gameProfile = c_gameProfile.newInstance("4865726f-6272-696e-6520-3d207265616c", Constants.PLAYERNAME);
 
-		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile); // TODO fix this
+		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
 
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		

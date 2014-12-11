@@ -156,12 +156,14 @@ public class MainController {
 		exportWindow.onWorldRemoved(worldController);
 	}
 	
-	public void onSelectionUpdated(WorldController source, Cord3S cord) {
+	public void onSelectionUpdated(WorldController source, Cord3S cord, boolean dragTools) {
 		selectionController = source;
 		selectionCord = cord;
 		
 		statusPanel.updateSelection(source, cord);
-		tool.onSelectionChanged();
+
+		if (dragTools)
+			tool.onSelectionChanged();
 	}
 	
 	public void saveAll() {

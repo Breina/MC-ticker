@@ -1,6 +1,17 @@
 package presentation.controllers;
 
-import java.awt.Graphics2D;
+import logging.Log;
+import org.xml.sax.SAXException;
+import presentation.gui.tiles.Graphic;
+import presentation.gui.tiles.Mirror;
+import presentation.gui.tiles.TileSet;
+import presentation.gui.tiles.TilesXml;
+import presentation.main.Constants;
+import presentation.objects.Orientation;
+
+import javax.imageio.ImageIO;
+import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -8,20 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.xml.parsers.ParserConfigurationException;
-
-import logging.Log;
-
-import org.xml.sax.SAXException;
-
-import presentation.gui.tiles.Graphic;
-import presentation.gui.tiles.Mirror;
-import presentation.gui.tiles.TileSet;
-import presentation.gui.tiles.TilesXml;
-import presentation.main.Constants;
-import presentation.objects.Orientation;
 
 public class TileController {
 
@@ -55,7 +52,7 @@ public class TileController {
 				break;
 			}
 		
-		if (g.getName().isEmpty()) {
+		if (sim.constants.Constants.DEBUG_TILE_IMAGES && g.getName().isEmpty()) {
 			Log.w("Tile image not found for id=" + id + ", data=" + data + ", orientation= " + orientation);
 			return null;
 		}
@@ -93,7 +90,10 @@ public class TileController {
 	    
 	    g.transform(xform);
 	    g.drawImage(img, 0, 0, w, h, null, null);
-	    ///	    g.setColor(Color.BLUE);///	    char[] chars = new String(String.valueOf(angle)).toCharArray();///	    g.drawChars(chars, 0, chars.length, 0, 10);
+	    
+///	    g.setColor(Color.BLUE);
+///	    char[] chars = new String(String.valueOf(angle)).toCharArray();
+///	    g.drawChars(chars, 0, chars.length, 0, 10);
 	    
 	    return rot;
 	}
@@ -180,7 +180,8 @@ public class TileController {
 			image = getImage(file);
 			
 		} catch (IOException e) {
-			Log.w("Could not read tile image: " + file.getPath() + ", id=" + id + ", data=" + data + ", orientation" + orientation);
+			if (sim.constants.Constants.DEBUG_TILE_IMAGES)
+				Log.w("Could not read tile image: " + file.getPath() + ", id=" + id + ", data=" + data + ", orientation" + orientation);
 			return null;
 		}
 		

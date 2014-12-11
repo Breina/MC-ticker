@@ -1,7 +1,6 @@
 package sim.loading;
 
 import logging.Log;
-import sim.constants.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,20 +73,5 @@ public class ClassExtractor {
 		}
 		
 		return classes;
-	}
-
-	/**
-	 * Hacky way to get the GameProfile class out of authlib
-	 * @return
-	 */
-	@Deprecated
-	public Class<?> getGameProfile(String mcLocation) throws ClassNotFoundException, IOException {
-
-		File file = new File(mcLocation + Constants.HACK_AUTHLIB_LOCATION);
-
-		URL[] urls = { new URL("jar:file:" + file.getPath() + "!/") };
-		URLClassLoader cl = URLClassLoader.newInstance(urls);
-
-		return cl.loadClass(Constants.HACK_GAMEPROFILE_PACKAGE);
 	}
 }

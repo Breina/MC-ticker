@@ -1,8 +1,8 @@
 package presentation.blocks;
 
+import logging.Log;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
-import logging.Log;
 
 public class BlockLogic {
 	
@@ -164,8 +164,8 @@ public class BlockLogic {
 	}
 	
 	private byte increaseData(byte data, byte mask, byte increase, byte min, byte max) {
-		
-		byte increasedData = (byte) (data + increase);
+
+		byte increasedData = (byte) ((data & mask) + increase);
 		
 		if (increasedData > max)
 			increasedData = min;
@@ -174,8 +174,8 @@ public class BlockLogic {
 	}
 	
 	private byte decreaseData(byte data, byte mask, byte decrease, byte min, byte max) {
-		
-		byte decreasedData = (byte) (data - decrease);
+
+		byte decreasedData = (byte) ((data & mask)- decrease);
 		
 		if (decreasedData < min)
 			decreasedData = max;

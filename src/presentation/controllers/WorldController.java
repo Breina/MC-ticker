@@ -1,12 +1,5 @@
 package presentation.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
 import presentation.exceptions.SchematicException;
 import presentation.gui.editor.EditorPanel;
 import presentation.gui.menu.WorldMenu;
@@ -19,6 +12,13 @@ import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 import sim.logic.SimWorld;
 import utils.Tag;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controlls everything about one world
@@ -178,7 +178,7 @@ public class WorldController {
 	public void onSelectionUpdated(Cord3S cord, EditorPanel source) {
 		
 //		selection = cord;
-		mainController.onSelectionUpdated(this, cord);
+		mainController.onSelectionUpdated(this, cord, true);
 		
 		if (source != null)
 			for (DrawingWindow dw : windows) {

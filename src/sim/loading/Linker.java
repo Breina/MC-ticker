@@ -45,11 +45,6 @@ public class Linker {
 		ClassExtractor extractor = new ClassExtractor();
 		classes = extractor.extractClasses(new File(minecraftFolder + Constants.MINECRAFTJAR), translator.getClasses());
 
-		// Hacky way to get GameProfile
-//		classes.put("GameProfile", extractor.getGameProfile(minecraftFolder));
-
-
-
 		Log.i("Parsing and extracting");
 	}
 	

@@ -1,12 +1,12 @@
 package presentation.tools;
 
-import java.awt.event.MouseEvent;
-
 import presentation.blocks.BlockLogic;
 import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+
+import java.awt.event.MouseEvent;
 
 public class ToolRotate extends Tool {
 	
@@ -40,6 +40,8 @@ public class ToolRotate extends Tool {
 		
 		block.setData(blockLogic.rotate(block.getData(), dragButton == MouseEvent.BUTTON1));
 		getWorldController().setBlock(c.x, c.y, c.z, block);
+
+		getWorldController().getMainController().onSelectionUpdated(getWorldController(), c, false);
 	}
 
 	@Override

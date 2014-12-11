@@ -1,10 +1,10 @@
 package presentation.tools;
 
-import java.awt.event.MouseEvent;
-
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
+
+import java.awt.event.MouseEvent;
 
 public class ToolActivate extends Tool {
 	
@@ -38,16 +38,7 @@ public class ToolActivate extends Tool {
 		worldController.getSimController().activateBlock(c.x, c.y, c.z);
 		
 		worldController.getTimeController().updateCurrentSchematic();
-		
-//		Cord3S c = getSelectionCord();
-//		Block block = getWorldController().getWorldData().getBlock(c.x, c.y, c.z);
-//
-//		BlockLogic blockLogic = blockController.getBlock(block.getId());
-//		if (blockLogic == null)
-//			return;
-//		
-//		block.setData(blockLogic.click(block.getData(), dragButton == MouseEvent.BUTTON1));
-//		getWorldController().setBlock(c.x, c.y, c.z, block);
+		worldController.getMainController().onSelectionUpdated(worldController, c, false);
 	}
 
 	@Override
