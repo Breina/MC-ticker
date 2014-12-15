@@ -1,7 +1,9 @@
 package sim.logic;
 
+import logging.Log;
 import sim.constants.Constants;
 import sim.exceptions.UnimplementedException;
+import sim.loading.Linker;
 import sim.objects.ChunkCord;
 
 import java.lang.reflect.InvocationHandler;
@@ -18,9 +20,15 @@ public class RChunkProvider implements InvocationHandler {
 	private HashMap<ChunkCord, Object> chunks;
 	private Object emptyChunk;
 
-	public RChunkProvider() {
+	private Class<?> BlockPos;
+	private RBlockPos rBlockPos;
+
+	public RChunkProvider(Linker linker, RBlockPos rBlockPos) {
 		
 		chunks = new HashMap<ChunkCord, Object>();
+		this.rBlockPos = rBlockPos;
+
+		BlockPos = linker.getClass("BlockPos");
 	}
 	
 	/** Possible TODO
@@ -77,6 +85,21 @@ public class RChunkProvider implements InvocationHandler {
 		Object chunk = chunks.get(cord);
 
 		return chunk;
+	}
+
+	public Object getChunk(Object blockPos) {
+
+		try {
+			int x = rBlockPos.getX(blockPos) << 4;
+			int z = rBlockPos.getZ(blockPos) << 4;
+
+			return getChunk(x, z);
+
+		} catch (IllegalAccessException | InvocationTargetException e) {
+
+			Log.e("Failed to provide chunk for " + blockPos);
+			return null;
+		}
 	}
 
 	public String makeString() {
@@ -157,16 +180,15 @@ public class RChunkProvider implements InvocationHandler {
 			if (paramSize == 2)
 				if (paramTypes[0] == int.class && paramTypes[1] == int.class)
 					return getChunk((int) args[0], (int) args[1]);
-			
-			// Chunk func_177459_a(BlockPos p_177459_1_);
+
 			if (paramSize == 1)
-				throw new UnimplementedException("Chunk func_177459_a(BlockPos p_177459_1_)");
+				return getChunk(args[0]);
 			
 			// BlockPos func_180513_a(World worldIn, String p_180513_2_, BlockPos p_180513_3_)
-			throw new UnimplementedException("List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4)\n" +
-					"ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5)");			
+			throw new UnimplementedException("METHBOD: " + method + "\nList getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4)\n" +
+					"ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5)");
 		}
-		
+
 		throw new IllegalStateException("Should have thrown a NotImplementedException, but that obviously didn't happen... :/");
 	}
 }

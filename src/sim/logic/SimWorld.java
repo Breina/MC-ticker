@@ -255,9 +255,12 @@ public class SimWorld {
 							// Any OoB blocks will be left null and will be given the default block (air) by the game
 								
 							int schematicIndex = y * xSize * zSize + worldZ * xSize + worldX;
+
+							short blockId = blockIds[schematicIndex];
+							if (blockId < 0)
+								blockId += 256;
 							
-							data[chunkIndex] = (short) (((short) blockIds[schematicIndex]) << 4 |
-											   blockDatas[schematicIndex]);
+							data[chunkIndex] = (short) (blockId << 4 | blockDatas[schematicIndex]);
 						}
 				
 				Object chunkPrimer = rChunkPrimer.createChunkPrimer();

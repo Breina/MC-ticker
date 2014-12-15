@@ -200,8 +200,7 @@ public class TimeController implements Runnable {
 							window.setPaused(true);
 							continue;
 						}
-					}
-					else
+					} else
 						state = timeLine.next();
 					
 					tickCounter++;
@@ -249,6 +248,7 @@ public class TimeController implements Runnable {
 	}
 	
 	public void loadCurrentTimeIntoSchematic(boolean ignoreIfAtEnd) {
+
 		if (ignoreIfAtEnd && timeLine.atEnd())
 			return;
 

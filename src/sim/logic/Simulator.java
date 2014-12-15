@@ -43,7 +43,7 @@ public class Simulator {
 		rChunk = new RChunk(linker, rChunkPrimer);
 		
 		// Our implementation of chunkProvider, which will basically be our block input
-		rChunkProvider = new RChunkProvider();
+		rChunkProvider = new RChunkProvider(linker, rBlockPos);
 		
 		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
 		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos);

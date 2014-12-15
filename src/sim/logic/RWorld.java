@@ -271,7 +271,7 @@ public class RWorld {
 	public long getWorldTime(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		if (world.doTimeUpdate()) {
-			
+
 			world.setWorldTime((long) m_getWorldTime.invoke(world.getWorld()));
 			world.setDoTimeUpdate(false);
 			

@@ -41,14 +41,14 @@ public class RBlockPos {
 	}
 	
 	public int getX(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return f_x.getInt(instance);
+		return (int) f_x.getInt(instance);
 	}
 	
 	public int getY(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return f_y.getInt(instance);
+		return (int) f_y.getInt(instance);
 	}
 	
 	public int getZ(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return f_z.getInt(instance);
+		return (int) f_z.getInt(instance);
 	}
 }
