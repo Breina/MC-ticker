@@ -64,7 +64,7 @@ public class Constants {
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
-		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder"};
+		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList"};
 
 	// Untranslated methods (new)
 	public final static String WORLD_GETBLOCKSTATE = "p";
@@ -83,6 +83,7 @@ public class Constants {
 	public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
 	public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
 	public final static String BLOCK_UNLOCALIZEDNAME = "N";
+	public final static String WORLDSERVER_SERVERBLOCKEVENTLIST = "S";
 
 	// The following is a hacky way to extract the GameProfile class for EntityPlayer
 	public final static String HACK_AUTHLIB_LOCATION = "/libraries/com/mojang/authlib/1.5.17/authlib-1.5.17.jar";

@@ -37,13 +37,8 @@ public class ToolPlace extends Tool {
 	
 	private void setBlock() {
 		Cord3S c = getSelectionCord();
-//		WorldController worldController = getWorldController();
 		
 		getWorldController().setBlock(c.x, c.y, c.z, dragBlock);
-		
-//		worldController.getTimeController().loadCurrentTimeIntoSchematic(true);
-//		worldController.getSimController().setBlock(c.x, c.y, c.z, dragBlock.getId(), dragBlock.getData());
-//		worldController.getTimeController().updateCurrentSchematic();
 	}
 
 	@Override

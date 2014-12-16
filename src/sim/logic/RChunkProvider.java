@@ -3,7 +3,6 @@ package sim.logic;
 import logging.Log;
 import sim.constants.Constants;
 import sim.exceptions.UnimplementedException;
-import sim.loading.Linker;
 import sim.objects.ChunkCord;
 
 import java.lang.reflect.InvocationHandler;
@@ -20,15 +19,12 @@ public class RChunkProvider implements InvocationHandler {
 	private HashMap<ChunkCord, Object> chunks;
 	private Object emptyChunk;
 
-	private Class<?> BlockPos;
 	private RBlockPos rBlockPos;
 
-	public RChunkProvider(Linker linker, RBlockPos rBlockPos) {
+	public RChunkProvider(RBlockPos rBlockPos) {
 		
 		chunks = new HashMap<ChunkCord, Object>();
 		this.rBlockPos = rBlockPos;
-
-		BlockPos = linker.getClass("BlockPos");
 	}
 	
 	/** Possible TODO

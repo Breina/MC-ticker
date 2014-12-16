@@ -1,25 +1,16 @@
 package presentation.gui.windows.world;
 
-import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import presentation.controllers.WorldController;
+import presentation.gui.TreeUtil;
+import utils.Tag;
 
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
+import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-
-import presentation.controllers.WorldController;
-import utils.Tag;
-import utils.Tag.Type;
+import java.awt.*;
 
 public class NBTviewer extends WorldWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
@@ -27,6 +18,7 @@ public class NBTviewer extends WorldWindow {
 	private DefaultMutableTreeNode top;
 	private DefaultTreeModel model;
 	private JTree tree;
+	private JScrollPane scrollPane;
 	
 	public NBTviewer(WorldController controller) {
 		super(controller, "NBTviewer", false);
@@ -41,13 +33,30 @@ public class NBTviewer extends WorldWindow {
 		
 		top = new DefaultMutableTreeNode(controller.getWorldData().getName());
 		
-		tree = new JTree(top);
+		tree = new JTree(top) {
+			@Override
+			public boolean getScrollableTracksViewportHeight() {
+				return false;
+			}
+
+			@Override
+			public boolean getScrollableTracksViewportWidth() {
+				return false;
+			}
+		};
 		model = (DefaultTreeModel) tree.getModel();
 		
 		tree.addTreeExpansionListener(new TreeExpansionHandler());
-		
-		add(new JScrollPane(tree));
+
+		scrollPane = new JScrollPane(tree);
+		scrollPane.setBackground(Color.WHITE);
+
+		add(scrollPane);
 	}
+
+//	protected class DontScrollScrollPane extends JScrollPane {
+//		getVer
+//	}
 	
 	private void createNodes(DefaultMutableTreeNode parent, Tag tag) {
 		
@@ -214,11 +223,35 @@ public class NBTviewer extends WorldWindow {
 	}
 	
 	public void updateNBTContents(Tag schematic) {
-		
+
+		Point prevScroll = scrollPane.getViewport().getViewPosition();
+
+		String prevState = TreeUtil.getExpansionState(tree, 0);
 		top.removeAllChildren();
-		
+
 		createNodes(top, schematic);
-		
+
 		model.reload(top);
+
+		TreeUtil.restoreExpanstionState(tree, 0, prevState);
+
+		SwingUtilities.invokeLater(new LaterUpdater(prevScroll));
+	}
+
+	/**
+	 * Oh noes everything here is hack just to make the scrollbar remember where it was
+	 * after updating. Not pretty but it works 99% of the time.
+	 * http://stackoverflow.com/questions/2039373/maintaing-jtextarea-scroll-position
+ 	 */
+	class LaterUpdater implements Runnable {
+		private Point o;
+
+		public LaterUpdater(Point o) {
+			this.o = o;
+		}
+
+		public void run() {
+			NBTviewer.this.scrollPane.getViewport().setViewPosition(o);
+		}
 	}
 }

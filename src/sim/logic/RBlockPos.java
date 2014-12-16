@@ -1,13 +1,11 @@
 package sim.logic;
 
+import logging.Log;
+import sim.loading.Linker;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import logging.Log;
-
-import sim.loading.Linker;
 
 public class RBlockPos {
 	
@@ -41,14 +39,14 @@ public class RBlockPos {
 	}
 	
 	public int getX(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) f_x.getInt(instance);
+		return f_x.getInt(instance);
 	}
 	
 	public int getY(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) f_y.getInt(instance);
+		return f_y.getInt(instance);
 	}
 	
 	public int getZ(Object instance) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return (int) f_z.getInt(instance);
+		return f_z.getInt(instance);
 	}
 }

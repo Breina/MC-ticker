@@ -16,16 +16,24 @@ import java.util.*;
  */
 public class RWorld {
 	
-	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World, IntHashMap, BlockPos, WorldBorder;
-	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime,
-		m_getProviderForDimension, m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
-		m_incrementTotalWorldTime;
-	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider, f_isRemote,
-	f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects, f_entitiesById, f_entitiesByUuid, f_rand,
-	f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick, f_worldInfo, f_worldBorder,
-	f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList, f_addedTileEntityList, f_tileEntitiesToBeRemoved;
-	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder;
+	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World,
+			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList;
+
+	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
+			m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
+			m_incrementTotalWorldTime;
+
+	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
+			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
+			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
+			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
+
+	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
+			c_serverBlockEvents;
+
 	private Enum<?> e_GameType;
+
 	private RBlockPos rBlockPos;
 	
 	public RWorld(Linker linker, Object profiler, RBlockPos rBlockPos) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
@@ -52,6 +60,7 @@ public class RWorld {
 		IChunkProvider						= linker.getClass("IChunkProvider");
 		IntHashMap							= linker.getClass("IntHashMap");
 		BlockPos							= linker.getClass("BlockPos");
+		ServerBlockEventList				= linker.getClass("WorldServer$ServerBlockEventList");
 		
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
@@ -95,10 +104,11 @@ public class RWorld {
 		c_worldSettings						= WorldSettings.getConstructor(long.class, GameType, boolean.class, boolean.class,
 				WorldType);
 		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);
-
 		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
-
 		c_worldBorder						= WorldBorder.getDeclaredConstructor();
+
+		c_serverBlockEvents					= ServerBlockEventList.getDeclaredConstructor();
+		c_serverBlockEvents					.setAccessible(true);
 
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
@@ -114,10 +124,13 @@ public class RWorld {
 		// TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
+		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
+
 		f_theProfiler						= World.getField(Constants.WORLD_THEPROFILER);
 		f_theProfiler						.setAccessible(true);
-		
-		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
+
+		f_serverBlockEvents					= WorldServer.getDeclaredField(Constants.WORLDSERVER_SERVERBLOCKEVENTLIST);
+		f_serverBlockEvents					.setAccessible(true);
 	}
 	
 	/**
@@ -174,6 +187,11 @@ public class RWorld {
 		f_chunkProvider.set(worldServer, chunkProvider);
 		
 		f_isRemote.setBoolean(worldServer, false);
+
+		Object blockEventArray = Array.newInstance(ServerBlockEventList, 2);
+		Array.set(blockEventArray, 0, c_serverBlockEvents.newInstance());
+		Array.set(blockEventArray, 1, c_serverBlockEvents.newInstance());
+		f_serverBlockEvents.set(worldServer, blockEventArray);
 		
 		// TODO Make this available
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();

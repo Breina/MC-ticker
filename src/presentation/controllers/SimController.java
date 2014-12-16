@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import logging.Log;
+import sim.constants.Constants;
 import sim.logic.SimWorld;
 import sim.objects.WorldState;
 import utils.Tag;
@@ -173,6 +174,8 @@ public class SimController {
 	public void setState(WorldState state) {
 		
 		try {
+			if (Constants.DEBUG_STATE)
+				Log.i("Setting state to time " + state.getWorldTime());
 			
 			simWorld.setState(state);
 			
@@ -186,6 +189,8 @@ public class SimController {
 	public WorldState getState() {
 		
 		try {
+			if (Constants.DEBUG_STATE)
+				Log.i("Getting state from time " + simWorld.getState().getWorldTime());
 			
 			return simWorld.getState();
 			

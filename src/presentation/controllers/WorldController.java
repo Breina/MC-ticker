@@ -172,7 +172,6 @@ public class WorldController {
 				ep.unSelect();
 			}
 		}
-		
 	}
 	
 	public void onSelectionUpdated(Cord3S cord, EditorPanel source) {
