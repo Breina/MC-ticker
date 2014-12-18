@@ -21,13 +21,13 @@ public class RWorld {
 
 	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
 			m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
-			m_incrementTotalWorldTime, m_getTileEntity;
+			m_incrementTotalWorldTime, m_getTileEntity, m_update;
 
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
 			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
-			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents, f_processingLoadedTiles;
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
 			c_serverBlockEvents;
@@ -65,6 +65,7 @@ public class RWorld {
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
 		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
+		Class<?> IUpdatePlayerListBox		= linker.getClass("IUpdatePlayerListBox");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
@@ -98,7 +99,6 @@ public class RWorld {
 		f_rand								= linker.field("rand", World);
 		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
 		f_worldBorder						= linker.field("worldBorder", World);
-		f_processingLoadedTiles				= linker.field("processingLoadedTiles", World);
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
@@ -122,6 +122,7 @@ public class RWorld {
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
 		m_updateEntities					= linker.method("updateEntities", World);
 		m_getTileEntity						= linker.method("getTileEntity", World, BlockPos);
+		m_update							= linker.method("update", IUpdatePlayerListBox);
 
 				// TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
@@ -252,15 +253,21 @@ public class RWorld {
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
 		
 		advanceTicks(world, advanceTicks);
-		// TODO remove
-//		f_processingLoadedTiles.setBoolean(world.getWorld(), true);
 		
 		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
 
-//		f_processingLoadedTiles.setBoolean(world.getWorld(), false);
+		tickTileEntities(world);
 		world.setDoTimeUpdate(true);
 
 		return moreUpdatesExist;
+	}
+
+	public void tickTileEntities(WorldInstance world) throws InvocationTargetException, IllegalAccessException {
+
+		List<Object> tileEntities = world.getTickableTileEntities();
+
+		for (Object tileEntity : tileEntities)
+			m_update.invoke(tileEntity);
 	}
 	
 	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

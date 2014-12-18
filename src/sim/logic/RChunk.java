@@ -45,8 +45,7 @@ public class RChunk {
 	
 	public void addTileEntity(Object chunk, Object tileEntity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		m_addTileEntity.invoke(chunk, tileEntity );
-		
+		m_addTileEntity.invoke(chunk, tileEntity);
 	}
 	
 	public void onChunkLoad(Object chunk) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

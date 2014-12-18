@@ -14,7 +14,7 @@ public class StartSim {
 		
 		MainController app = new MainController();
 
-		if (args.length >= 0) {
+		if (args.length > 0) {
 
 			app.openSchematic(new File(args[0]));
 		}

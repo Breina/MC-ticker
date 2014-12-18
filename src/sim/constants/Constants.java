@@ -49,7 +49,7 @@ public class Constants {
 		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
-		{"getProperties", "Get all properties"}, {"getTileEntity"}};
+		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -59,13 +59,14 @@ public class Constants {
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
-		{"processingLoadedTiles"}};
+		};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
-		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList"};
+		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
+		"IUpdatePlayerListBox"};
 
 	// Untranslated methods (new)
 	public final static String WORLD_GETBLOCKSTATE = "p";

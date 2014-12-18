@@ -1052,16 +1052,19 @@
 	</entry>
 	
 	<entry>
-		<name>comparator</name>
-	
 		<condition id="149">
-			<name>off</name>
+			<name>comparator</name>
 		</condition>
-		
-		<condition id="150">
+
+		<condition data="8" mask="8">
 			<name>on</name>
 		</condition>
-		
+
+		<condition data="0" mask="8">
+			<name>off</name>
+		</condition>
+
+
 		<condition data="0" mask="4">
 			<name>comp</name>
 		</condition>

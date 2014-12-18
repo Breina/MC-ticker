@@ -165,6 +165,11 @@ public class McMechanics {
 		return world.getDataFromState(world.getBlockFromState(state), state);
 	}
 
+	private byte getId(int x, int y, int z) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+
+		return world.getIdFromBlock(world.getBlockFromState(world.getBlockState(x, y, z)));
+	}
+
 	/**
 	 * Test activators
 	 */
@@ -182,11 +187,11 @@ public class McMechanics {
 			int[][] coords = {
 //					{2,1,1}, // Button Lamp (not activated)
 //					{2,1,2}, // Lever Lamp (not activated)
-//					{1,2,1}, // Button
+					{1,2,1}, // Button
 					{1,2,2}, // Lever
 //					{1,1,3}, // Door
 					{1,1,4}, // Repeater
-//					{1,1,5}, // Comparator
+					{1,1,5}, // Comparator
 					{1,1,6}, // Trapdoor
 					{1,1,7}, // Fence
 //					{1,1,8} //  Redstone ore
@@ -224,6 +229,29 @@ public class McMechanics {
 			System.out.println(e.getCause());
 
 			fail("Activation did not succeed");
+		}
+	}
+
+	@Test
+	public void testTileEntities() {
+
+		loadWorld("hopper-clock.schematic");
+
+		try {
+			byte prev = getData(1, 1, 0);
+
+			for (int i = 0; i < 7; i++)
+				world.tickWorld();
+
+			byte next = getData(1, 1, 0);
+
+			assertNotEquals(prev, next);
+
+		} catch (InstantiationException| IllegalAccessException | InvocationTargetException e) {
+
+			System.out.println(e.getCause());
+
+			fail("Hopper clock failed");
 		}
 	}
 }
