@@ -282,29 +282,19 @@ public class SimWorld {
 		for (Tag tag : tags) {
 			
 			int x = (int) tag.findTagByName("x").getValue();
+			int y = (int) tag.findTagByName("y").getValue();
 			int z = (int) tag.findTagByName("z").getValue();
 			
 			Object mcTag = rNBTTags.getMinecraftTagFromTag(tag);
-			
-			Object chunk = rChunkProvider.getChunk(x, z);
-			
+
+			Object chunk = rChunkProvider.getChunk(x >> 4, z >> 4);
 			Object tileEntity = rTileEntity.createTileEntityFromNBT(mcTag);
-			
-			try {
-//				rTileEntity.debug(tileEntity);
-//				Object itemsTag = rNBTTags.getTagList(mcTag, "Items");
-//				Object itemTag = rNBTTags.getCompoundTagAtObject(itemsTag, 0);
-//				System.out.println("Loading item: " + itemTag);
-//				Object itemStack = rTileEntity.readFromNBT(itemTag);
-//				System.out.println("Loaded item:  " + itemStack);
-//				Object itemStack = rTileEntity.loadItemStackFromNBT(itemTag);
-//				System.out.println(item);
-			} catch (Exception e) {
-				System.out.println("No inventory");
-				e.printStackTrace();
-			}
 
 			rChunk.addTileEntity(chunk, tileEntity);
+
+			Object testEntity = rWorld.getTileEntity(world, rBlockPos.createInstance(x, y, z));
+			Object postTag = rNBTTags.newInstance();
+			rTileEntity.getNBTFromTileEntity(testEntity, postTag);
 		}
 	}
 	
@@ -453,8 +443,6 @@ public class SimWorld {
 	private Tag getWorldEntities() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		List<Object> entities = world.getLoadedEntities();
 		
-//		System.out.println("GET " + entities.size());
-		
 		if (entities.size() == 0)
 			return null;
 		
@@ -468,8 +456,6 @@ public class SimWorld {
 			Object mcTag = rNBTTags.newInstance();
 			
 			rEntity.getNBTFromEntity(entity, mcTag);
-
-//			System.out.println(mcTag);
 			
 			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
 			j++;
@@ -576,10 +562,12 @@ public class SimWorld {
 		
 		world.getLoadedTileEntities().clear();
 		world.getLoadedEntities().clear();
+		world.getTickableTileEntities().clear();
 		world.getPendingTickListEntries().clear();
 		world.getPendingTickListHashSet().clear();
 		
 		world.getLoadedTileEntities().addAll(state.getTileEntities());
+		world.getTickableTileEntities().addAll(state.getTickableEntities());
 		world.getLoadedEntities().addAll(state.getEntities());
 		world.getPendingTickListEntries().addAll(state.getTileTicks());
 		world.getPendingTickListHashSet().addAll(state.getTileTickHashes());
@@ -590,7 +578,19 @@ public class SimWorld {
 		byte[][] blocks = getWorldBlocks();
 
 		return new WorldState(world.getWorldTime(), blocks[0], blocks[1],
-				world.getLoadedTileEntities(), world.getLoadedEntities(),
-				world.getPendingTickListEntries(), world.getPendingTickListHashSet());
+				world.getLoadedTileEntities(), world.getTickableTileEntities(),
+				world.getLoadedEntities(), world.getPendingTickListEntries(),
+				world.getPendingTickListHashSet());
+	}
+
+	public void debug(int x, int y, int z) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+
+		Object tileEntity = rWorld.getTileEntity(world, rBlockPos.createInstance(x, y, z));
+
+		Object mcTag = rNBTTags.newInstance();
+
+		rTileEntity.getNBTFromTileEntity(tileEntity, mcTag);
+
+		Log.i("TileEntity: " + mcTag.toString());
 	}
 }

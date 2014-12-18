@@ -121,6 +121,17 @@ public class SimController {
 			Log.e("Could not activate block (" + x + ", " + y + ", " + z + "): " + analyseException(e));
 		}
 	}
+
+	public void debug(int x, int y, int z) {
+
+		try {
+			simWorld.debug(x, y, z);
+
+		} catch (Exception e) {
+
+			Log.e("Could not debug block (" + x + ", " + y + ", " + z + "): " + analyseException(e));
+		}
+	}
 	
 	public static String analyseException(Exception e) {
 

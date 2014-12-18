@@ -21,13 +21,13 @@ public class RWorld {
 
 	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
 			m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
-			m_incrementTotalWorldTime;
+			m_incrementTotalWorldTime, m_getTileEntity;
 
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
 			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
-			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents, f_processingLoadedTiles;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
 			c_serverBlockEvents;
@@ -98,6 +98,7 @@ public class RWorld {
 		f_rand								= linker.field("rand", World);
 		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
 		f_worldBorder						= linker.field("worldBorder", World);
+		f_processingLoadedTiles				= linker.field("processingLoadedTiles", World);
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
@@ -120,8 +121,9 @@ public class RWorld {
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
 		m_updateEntities					= linker.method("updateEntities", World);
-		
-		// TODO can't use linker yet for these
+		m_getTileEntity						= linker.method("getTileEntity", World, BlockPos);
+
+				// TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
 		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
@@ -195,6 +197,7 @@ public class RWorld {
 		
 		// TODO Make this available
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
+		ArrayList<Object> tickableTileEntities = new ArrayList<>();
 		ArrayList<Object> loadedEntities = new ArrayList<>();
 		Object entityIdMap = IntHashMap.newInstance();
 		
@@ -202,7 +205,7 @@ public class RWorld {
 		f_loadedEntityList.set(worldServer, loadedEntities);
 		f_unloadedEntityList.set(worldServer, new ArrayList<>());
 		f_loadedTileEntityList.set(worldServer, loadedTileEntities);
-		f_tickableTileEntities.set(worldServer, new ArrayList<>());
+		f_tickableTileEntities.set(worldServer, tickableTileEntities);
 		f_addedTileEntityList.set(worldServer, new ArrayList<>());
 		f_tileEntitiesToBeRemoved.set(worldServer, new ArrayList<>());
 		f_playerEntities.set(worldServer, new ArrayList<>());
@@ -225,6 +228,7 @@ public class RWorld {
 		WorldInstance world = new WorldInstance();
 			world.setWorld(worldServer);
 			world.setLoadedTileEntities(loadedTileEntities);
+			world.setTickableTileEntities(tickableTileEntities);
 			world.setLoadedEntities(loadedEntities);
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
@@ -248,9 +252,12 @@ public class RWorld {
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
 		
 		advanceTicks(world, advanceTicks);
+		// TODO remove
+//		f_processingLoadedTiles.setBoolean(world.getWorld(), true);
 		
 		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
 
+//		f_processingLoadedTiles.setBoolean(world.getWorld(), false);
 		world.setDoTimeUpdate(true);
 
 		return moreUpdatesExist;
@@ -338,6 +345,10 @@ public class RWorld {
 		List<Object> tileEntities = (List<Object>) f_loadedTileEntityList.get(world.getWorld());
 		
 		return tileEntities;
+	}
+
+	public Object getTileEntity(WorldInstance world, Object blockPos) throws InvocationTargetException, IllegalAccessException {
+		return m_getTileEntity.invoke(world.getWorld(), blockPos);
 	}
 	
 	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

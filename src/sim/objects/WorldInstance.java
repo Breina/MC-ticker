@@ -10,7 +10,7 @@ public class WorldInstance {
 	private Object player;
 	// Where all future updates are stored as PendingTickListEntry objects
 	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
-	private List<Object> loadedTileEntities, loadedEntities;
+	private List<Object> loadedTileEntities, loadedEntities, tickableTileEntities;
 	private long worldTime;
 
 	 // TODO make this so time is only updated when time changes, doesn't need to setTime when ticking
@@ -81,6 +81,14 @@ public class WorldInstance {
 
 	public void setLoadedEntities(ArrayList<Object> loadedEntities) {
 		this.loadedEntities = loadedEntities;
+	}
+
+	public List<Object> getTickableTileEntities() {
+		return tickableTileEntities;
+	}
+
+	public void setTickableTileEntities(List<Object> tickableTileEntities) {
+		this.tickableTileEntities = tickableTileEntities;
 	}
 
 	public long getWorldTime() {

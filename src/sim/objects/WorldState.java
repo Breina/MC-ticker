@@ -1,25 +1,23 @@
 package sim.objects;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class WorldState {
 	
 	private long worldTime;
 	private byte[] ids, data;
-	private List<Object> tileEntities, entities;
+	private List<Object> tileEntities, tickableTileEntities, entities;
 	private Set<Object> tileTicks, tileTickHashes;
 	
-	public WorldState(long worldTime, byte[] ids, byte[] data, List<Object> tileEntities, List<Object> entities, Set<Object> tileTicks, Set<Object> tileTickHashes) {
+	public WorldState(long worldTime, byte[] ids, byte[] data, List<Object> tileEntities,
+					  List<Object> tickableTileEntities, List<Object> entities, Set<Object> tileTicks,
+					  Set<Object> tileTickHashes) {
 		
 		this.worldTime = worldTime;
 		this.ids = ids;
 		this.data = data;
 		this.tileEntities = new ArrayList<>(tileEntities);
+		this.tickableTileEntities = tickableTileEntities;
 		this.entities = new ArrayList<>(entities);
 		this.tileTicks = new TreeSet<>(tileTicks);
 		this.tileTickHashes = new HashSet<>(tileTickHashes);
@@ -39,6 +37,10 @@ public class WorldState {
 
 	public List<Object> getTileEntities() {
 		return tileEntities;
+	}
+
+	public List<Object> getTickableEntities() {
+		return tickableTileEntities;
 	}
 
 	public List<Object> getEntities() {

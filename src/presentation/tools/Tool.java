@@ -1,10 +1,10 @@
 package presentation.tools;
 
-import java.awt.event.MouseListener;
-
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
+
+import java.awt.event.MouseListener;
 
 public abstract class Tool implements MouseListener {
 	
@@ -42,7 +42,8 @@ public abstract class Tool implements MouseListener {
 	protected Cord3S getSelectionCord() {
 		return mainController.getSelectedCord();
 	}
-	
+
+	// TODO find a fix for when there is no world
 	protected WorldController getWorldController() {
 		return mainController.getSelectedWorld();
 	}

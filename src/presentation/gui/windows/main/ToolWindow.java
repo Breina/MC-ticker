@@ -1,29 +1,18 @@
 package presentation.gui.windows.main;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JToggleButton;
-
 import presentation.DesktopPane;
 import presentation.Util;
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.EditorPanel;
 import presentation.gui.windows.world.DrawingWindow;
-import presentation.tools.Tool;
-import presentation.tools.ToolActivate;
-import presentation.tools.ToolPlace;
-import presentation.tools.ToolRotate;
-import presentation.tools.ToolSelect;
-import logging.Log;
+import presentation.tools.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseMotionListener;
 
 public class ToolWindow extends MainWindow {
 	private static final long serialVersionUID = 5371809301081276026L;
@@ -52,6 +41,7 @@ public class ToolWindow extends MainWindow {
 		addTool(group, new ToolSelect(mainController));
 		addTool(group, new ToolPlace(mainController));
 		addTool(group, new ToolRotate(mainController));
+		addTool(group, new ToolDebug(mainController));
 		
 		pack();
 		

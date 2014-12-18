@@ -49,7 +49,7 @@ public class Constants {
 		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
-		{"getProperties", "Get all properties"}};
+		{"getProperties", "Get all properties"}, {"getTileEntity"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -58,7 +58,8 @@ public class Constants {
 		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"}, {"worldInfo"},
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
-		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"}};
+		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
+		{"processingLoadedTiles"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",

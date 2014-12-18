@@ -206,6 +206,11 @@ public class WorldController {
 			}
 		}
 	}
+
+	public void debug(int x, int y, int z) {
+
+		simController.debug(x, y, z);
+	}
 	
 	@Override
 	public String toString() {
