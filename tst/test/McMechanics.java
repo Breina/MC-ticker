@@ -129,7 +129,7 @@ public class McMechanics {
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
 
-			fail("Torch did not survive popping");
+         			fail("Torch did not survive popping");
 		}
 	}
 	
@@ -252,6 +252,32 @@ public class McMechanics {
 			System.out.println(e.getCause());
 
 			fail("Hopper clock failed");
+		}
+	}
+
+	@Test
+	public void testDispenser() {
+
+		loadWorld("dispenser.schematic");
+
+		try {
+			byte prev = getId(4, 1, 1);
+
+			world.onBlockActivated(1, 1, 1);
+
+			int attempts = 0;
+			byte next = prev;
+
+			while (attempts++ < 15 && prev == (next = getId(4, 1, 1)))
+				world.tickWorld();
+
+			assertNotEquals(prev, next);
+
+		} catch (InstantiationException| IllegalAccessException | InvocationTargetException e) {
+
+			System.out.println(e.getCause());
+
+			fail("Dispenser failed");
 		}
 	}
 }

@@ -52,11 +52,10 @@ public class SimWorld {
 		Log.i("Creating new world");
 		world = rWorld.createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
 				Constants.SEED, Constants.WORLDPROVIDER, Constants.MAPFEATURESENABLED, Constants.HARDCOREENABLED, rChunk, rChunkProvider,
-				rProfiler);
+				rProfiler, Constants.CANSPAWNANIMALS, Constants.CANSPAWNNPCS);
 	}
 	
 	/**
-	 * 
 	 * @param worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
 	 * @param worldType The name of the type of world this is.
 	 * @param gameType Should be either "NOT_SET", "SURVIVAL", "CREATIVE" or "ADVENTURE".
@@ -65,7 +64,7 @@ public class SimWorld {
 	 * @param hardcoreEnabled true/false
 	 * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
 	 */
-	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty, boolean canSpawnAnimals, boolean canSpawnNPCs) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		switch (worldTypeId) {
 			case 1:
@@ -112,18 +111,19 @@ public class SimWorld {
 				break;
 			default:
 						Log.e("Custom Difficulty      " + difficulty);
-		}		
+		}
+
+						Log.i("Can spawn animals	  " + canSpawnAnimals);
+						Log.i("Can spawn NPCs		  " + canSpawnNPCs);
 		
 		Log.i("Creating new world");
-		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler); 
+		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler, canSpawnAnimals, canSpawnNPCs);
 	}
 	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int size = xSize * ySize * zSize;
-		
-		
-		
+
 		byte[] blockIds = new byte[size];
 		byte[] blockData = new byte[size];
 		
@@ -196,9 +196,9 @@ public class SimWorld {
 		// Entities
 		Tag entities = schematicTag.findNextTagByName("Entities", null);
 		rWorld.clearEntities(world);
-		// TODO
-//		if (entities != null)
-//			setWorldEntities(world, (Tag[]) entities.getValue());
+
+		if (entities != null)
+			setWorldEntities((Tag[]) entities.getValue());
 		
 		// TileTicks
 		Tag tileTicks = schematicTag.findNextTagByName("TileTicks", null);
@@ -291,17 +291,13 @@ public class SimWorld {
 			Object tileEntity = rTileEntity.createTileEntityFromNBT(mcTag);
 
 			rChunk.addTileEntity(chunk, tileEntity);
-
-			Object testEntity = rWorld.getTileEntity(world, rBlockPos.createInstance(x, y, z));
-			Object postTag = rNBTTags.newInstance();
-			rTileEntity.getNBTFromTileEntity(testEntity, postTag);
 		}
 	}
 	
 	private void setWorldEntities(Tag[] tags) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		for (Tag tag : tags) {
-			
+
 			Object mcTag = rNBTTags.getMinecraftTagFromTag(tag);
 			
 			Object entity = rEntity.createEntityFromNBT(mcTag, world.getWorld());

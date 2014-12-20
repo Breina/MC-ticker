@@ -66,6 +66,20 @@ public class ClassExtractor {
 					throw e;
 				}
 			}
+
+			// TODO remove
+//			System.out.println("LOADING RAW CLASSES");
+//
+//			for (String unobfClass : Constants.UNOBFUSCATEDCLASSES) {
+//
+//				System.out.println("CLASS: " + unobfClass);
+//
+//				Class<?> clazzMeister = cl.loadClass(unobfClass);
+//
+//				System.out.println("clazzMeister= " + clazzMeister);
+//
+//				classes.put(unobfClass, clazzMeister);
+//			}
 			
 		} finally {
 				

@@ -17,17 +17,17 @@ import java.util.*;
 public class RWorld {
 	
 	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World,
-			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList;
+			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList, MinecraftServer;
 
 	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
-			m_spawnEntityInWorld, m_updateEntities, m_addTickEntry, m_getBlockState, m_setBlockState,
-			m_incrementTotalWorldTime, m_getTileEntity, m_update;
+			m_spawnEntityInWorld, m_onUpdate, m_addTickEntry, m_getBlockState, m_setBlockState,
+			m_incrementTotalWorldTime, m_getTileEntity, m_update, m_setCanSpawnAnimals, m_setCanSpawnNPCs;
 
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
 			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
-			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents, f_mcServer;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
 			c_serverBlockEvents;
@@ -61,11 +61,13 @@ public class RWorld {
 		IntHashMap							= linker.getClass("IntHashMap");
 		BlockPos							= linker.getClass("BlockPos");
 		ServerBlockEventList				= linker.getClass("WorldServer$ServerBlockEventList");
+		MinecraftServer						= linker.getClass("net.minecraft.server.MinecraftServer");
 		
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
 		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
 		Class<?> IUpdatePlayerListBox		= linker.getClass("IUpdatePlayerListBox");
+		Class<?> Entity						= linker.getClass("Entity");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
@@ -120,9 +122,13 @@ public class RWorld {
 
 		m_getWorldTime						= linker.method("getTotalWorldTime", World);
 		m_spawnEntityInWorld				= linker.method("spawnEntityInWorld", World, linker.getClass("Entity"));
-		m_updateEntities					= linker.method("updateEntities", World);
+		m_onUpdate							= linker.method("onUpdate", Entity);
 		m_getTileEntity						= linker.method("getTileEntity", World, BlockPos);
 		m_update							= linker.method("update", IUpdatePlayerListBox);
+
+		// TODO remove
+//		m_setCanSpawnAnimals				= linker.method("setCanSpawnAnimals", MinecraftServer, boolean.class);
+//		m_setCanSpawnNPCs					= linker.method("setCanSpawnNPCs", MinecraftServer, boolean.class);
 
 				// TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
@@ -134,6 +140,8 @@ public class RWorld {
 
 		f_serverBlockEvents					= WorldServer.getDeclaredField(Constants.WORLDSERVER_SERVERBLOCKEVENTLIST);
 		f_serverBlockEvents					.setAccessible(true);
+
+		f_mcServer							= WorldServer.getDeclaredField(Constants.WORLDSERVER_MCSERVER);
 	}
 	
 	/**
@@ -153,12 +161,18 @@ public class RWorld {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public WorldInstance createInstance(int _worldTypeId, String _worldType, String _gameType, long _seed, int _worldProvider,
 			boolean _mapFeaturesEnabled, boolean _hardcoreEnabled, RChunk rChunk, RChunkProvider rChunkProvider,
-			RProfiler rProfiler)
+			RProfiler rProfiler, boolean canSpawnAnimals, boolean canSpawnNPCs)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
+
 		Objenesis objenesis = new ObjenesisStd(false); // <3 I LOVE YOU OBJENESIS <3
-		
+
 		Object worldServer = objenesis.newInstance(WorldServer);
+
+		// TODO remove
+//		Object mcServer = objenesis.newInstance(MinecraftServer); // YES YES YES :D
+//		m_setCanSpawnAnimals.invoke(mcServer, canSpawnAnimals);
+//		m_setCanSpawnNPCs.invoke(mcServer, canSpawnNPCs);
+//		f_mcServer.set(worldServer, mcServer);
 		
 		Object worldProvider = m_getProviderForDimension.invoke(null, _worldProvider);
 		f_provider.set(worldServer, worldProvider);
@@ -255,8 +269,9 @@ public class RWorld {
 		advanceTicks(world, advanceTicks);
 		
 		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
-
 		tickTileEntities(world);
+		tickEntities(world);
+
 		world.setDoTimeUpdate(true);
 
 		return moreUpdatesExist;
@@ -269,10 +284,11 @@ public class RWorld {
 		for (Object tileEntity : tileEntities)
 			m_update.invoke(tileEntity);
 	}
-	
+
 	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		m_updateEntities.invoke(world.getWorld());
+
+		for (Object entity : world.getLoadedEntities())
+			m_onUpdate.invoke(entity);
 	}
 	
 	public void advanceTicks(WorldInstance world, long amount) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

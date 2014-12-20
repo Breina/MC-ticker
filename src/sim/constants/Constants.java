@@ -44,12 +44,13 @@ public class Constants {
 		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"},
 		{"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
-		{"updateEntities"}, {"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
-		{"getUnlocalizedName", ""}, {"getStackInSlot"}, {"getSizeInventory"}, {"getTagList"}, {"getCompoundTagAt"},
-		{"loadItemStackFromNBT"}, {"readFromNBT", "Read the stack fields"}, {"onBlockActivated"},
+		{"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
+		{"getUnlocalizedName", ""}, {"getTagList"}, {"getCompoundTagAt"},
+		{"onBlockActivated"}, {"setCanSpawnAnimals"}, {"setCanSpawnNPCs"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
-		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"}};
+		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
+		{"onUpdate", "Called to update the entity"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -63,22 +64,25 @@ public class Constants {
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
-		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "IInventory", "ItemStack", "NBTTagList",
+		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
 		"IUpdatePlayerListBox"};
 
-	// Untranslated methods (new)
+	// TODO remove
+	// net/minecraft/server/MinecraftServer
+	public final static String[] UNOBFUSCATEDCLASSES = {"net.minecraft.server.MinecraftServer"};
+
+	// Untranslated methods
 	public final static String WORLD_GETBLOCKSTATE = "p";
 	public final static String WORLD_SETBLOCKSTATE = "a";
 	public final static String IBLOCKSTATE_GETBLOCK = "c";
 	public final static String WORLD_ADDTICKENTRY = "b";
 	public final static String TILEENTITY_READFROMNBT = "b";
+	public final static String NBTTAGCOMPOUND_LOAD = "a";
+	public final static String WORLDSERVER_MCSERVER = "a";
 	
-	// Untranslated methods (old)
-	public final static String NBTTAGCOMPOUND_LOAD = "a"; // Used to be {"load", "Read the actual data"} 
-	
-	// Untranslated fields (new)
+	// Untranslated fields
 	public final static String CHUNKPRIMER_DATA = "a";
 	public final static String WORLD_THEPROFILER = "B";
 	public final static String NEXTTICKLISTENTRY_BLOCK = "e";
@@ -99,7 +103,9 @@ public class Constants {
 	public final static long SEED = 420l;
 	public final static boolean MAPFEATURESENABLED = false;
 	public final static boolean HARDCOREENABLED = false;
-	public final static int WORLDPROVIDER = 0; // -1=nether, 0=overworld, 1=end
+	public final static int WORLDPROVIDER = 0;
+	public final static boolean CANSPAWNANIMALS = true;
+	public final static boolean CANSPAWNNPCS = true;
 	
 	// Unused and I think we'll maybe need these in the future
 	public final static int DIFFICULTY = 0;
