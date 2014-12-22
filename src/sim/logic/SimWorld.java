@@ -1,6 +1,8 @@
 package sim.logic;
 
 import logging.Log;
+import presentation.objects.Block;
+import presentation.objects.Entity;
 import sim.constants.Constants;
 import sim.exceptions.SchematicException;
 import sim.objects.WorldInstance;
@@ -121,20 +123,15 @@ public class SimWorld {
 	}
 	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
-		int size = xSize * ySize * zSize;
 
-		byte[] blockIds = new byte[size];
-		byte[] blockData = new byte[size];
-		
-		for (int x = 0; x < xSize; x++)
-			for (int y = 0; y < ySize; y++)
-				for (int z = 0; z < zSize; z++) {
-					blockIds[size] = 0;
-					blockData[size] = 0;
-				}
+		Block[][][] blocks = new Block[xSize][ySize][zSize];
+
+		for (short y = 0; y < ySize; y++)
+			for (short z = 0; z < zSize; z++)
+				for (short x = 0; x < xSize; x++)
+					blocks[x][y][z] = Block.B_AIR;
 			
-		setWorldBlocks(xSize, ySize, zSize, blockIds, blockData);	
+		setWorldBlocks(xSize, ySize, zSize, blocks);
 	}
 
 	public void setWorldFromFile(File schematicFile) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
@@ -175,17 +172,31 @@ public class SimWorld {
 		
 		if (!schematicTag.findNextTagByName("Materials", null).getValue().equals("Alpha"))
 			Log.w("The schematic is encoded for Minecraft classic or something else, which is not supported, but I'll try.");
-		
+
+		short xSize = (short) schematicTag.findNextTagByName("Width", null).getValue();
+		short ySize = (short) schematicTag.findNextTagByName("Height", null).getValue();
+		short zSize = (short) schematicTag.findNextTagByName("Length", null).getValue();
+
 		// Size
-		world.setxSize((int) ((short) schematicTag.findNextTagByName("Width", null).getValue()));
-		world.setySize((int) ((short) schematicTag.findNextTagByName("Height", null).getValue()));
-		world.setzSize((int) ((short) schematicTag.findNextTagByName("Length", null).getValue()));
+		world.setxSize((int) xSize);
+		world.setySize((int) ySize);
+		world.setzSize((int) zSize);
 		
 		// Blocks
 		byte[] idsArray = (byte[]) schematicTag.findNextTagByName("Blocks", null).getValue();
 		byte[] dataArray = (byte[]) schematicTag.findNextTagByName("Data", null).getValue();
+
+		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];
+
+		int i = 0;
+		for (short y = 0; y < ySize; y++)
+			for (short z = 0; z < zSize; z++)
+				for (short x = 0; x < xSize; x++) {
+					blocks[x][y][z] = new Block(idsArray[i], dataArray[i]);
+					i++;
+				}
 		
-		setWorldBlocks(world.getxSize(), world.getySize(), world.getzSize(), idsArray, dataArray);
+		setWorldBlocks(world.getxSize(), world.getySize(), world.getzSize(), blocks);
 		
 		// TileEntities
 		Tag tileEntities = schematicTag.findNextTagByName("TileEntities", null);
@@ -207,7 +218,7 @@ public class SimWorld {
 			setWorldTileTicks((Tag[]) tileTicks.getValue());
 	}
 
-	private void setWorldBlocks(int xSize, int ySize, int zSize, byte[] blockIds, byte[] blockDatas) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+	private void setWorldBlocks(int xSize, int ySize, int zSize, Block[][][] blocks) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
 		
 		rChunkProvider.clear();
 		
@@ -256,16 +267,18 @@ public class SimWorld {
 								
 							int schematicIndex = y * xSize * zSize + worldZ * xSize + worldX;
 
-							short blockId = blockIds[schematicIndex];
-							if (blockId < 0)
-								blockId += 256;
-							
-							data[chunkIndex] = (short) (blockId << 4 | blockDatas[schematicIndex]);
+							// TODO use Block.toShort and check if ids>128 still work
+//							short blockId = blocks[worldXoffset + x][y][worldZoffset + z].getId();
+//							if (blockId < 0)
+//								blockId += 256;
+//
+//							data[chunkIndex] = (short) (blockId << 4 | blocks[worldXoffset + x][y][worldZoffset + z].getData());
+
+							data[chunkIndex] = blocks[worldXoffset + x][y][worldZoffset + z].toShort();
 						}
 				
 				Object chunkPrimer = rChunkPrimer.createChunkPrimer();
 				rChunkPrimer.setData(chunkPrimer, data);
-				
 				
 				Object chunk = rChunk.createChunk(world.getWorld(), chunkPrimer, chunkX, chunkZ);
 				
@@ -334,15 +347,31 @@ public class SimWorld {
 	// TODO do buffering here instead of getting tags out of the sim several times
 	public Tag getWorldTag() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, IOException {
 		
-		byte[][] blocks = getWorldBlocks();
+		Block[][][] blocks = getWorldBlocks();
+
+		int size = world.getxSize() * world.getySize() * world.getzSize();
+
+		byte[] ids = new byte[size];
+		byte[] data = new byte[size];
+
+		int i = 0;
+		for (short y = 0; y < world.getySize(); y++)
+			for (short z = 0; z < world.getzSize(); z++)
+				for (short x = 0; x < world.getxSize(); x++) {
+
+					Block block = blocks[x][y][z];
+					ids[i] = block.getId();
+					data[i] = block.getData();
+					i++;
+				}
 		
 			Tag tWidth	= new Tag(Tag.Type.TAG_Short, "Width" , (short) world.getxSize());
 			Tag tHeight = new Tag(Tag.Type.TAG_Short, "Height", (short) world.getySize());
 			Tag tLength = new Tag(Tag.Type.TAG_Short, "Length", (short) world.getzSize());
 			
-			Tag tMaterials = new Tag(Tag.Type.TAG_String, "Materials", "Alpha");				
-			Tag tBlocks = new Tag(Tag.Type.TAG_Byte_Array, "Blocks", blocks[0]);
-			Tag tData = new Tag(Tag.Type.TAG_Byte_Array, "Data", blocks[1]);
+			Tag tMaterials = new Tag(Tag.Type.TAG_String, "Materials", "Alpha");
+			Tag tBlocks = new Tag(Tag.Type.TAG_Byte_Array, "Blocks", ids);
+			Tag tData = new Tag(Tag.Type.TAG_Byte_Array, "Data", data);
 			
 			// Both of these can be null
 			Tag tTileEntities = getWorldTileEntities();
@@ -374,13 +403,11 @@ public class SimWorld {
 		return tSchematic;
 	}
 	
-	private byte[][] getWorldBlocks() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	private Block[][][] getWorldBlocks() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int size = world.getxSize() * world.getySize() * world.getzSize();
 		
-		byte[][] blocks = new byte[2][];
-		blocks[0] = new byte[size];
-		blocks[1] = new byte[size];
+		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];
 		
 		int i = 0;
 		
@@ -394,17 +421,16 @@ public class SimWorld {
 					Object blockState = rWorld.getBlockState(world, x, y, z);
 					Object block = rBlock.getBlockFromState(blockState);
 
-					blocks[0][i] = (byte) rBlock.getIdFromBlock(block);
-					blocks[1][i] = (byte) rBlock.getMetaFromState(block, blockState);
+					blocks[x][y][z] = new Block((byte) rBlock.getIdFromBlock(block),
+							(byte) rBlock.getMetaFromState(block, blockState));
 					
 					if (Constants.DEBUG_SCHEMATIC_DATA)
-						System.out.println(blocks[0][i] + "\t" + x + "\t" + y + "\t" + z + "\t" + i);
+						System.out.println(blocks[i] + "\t" + x + "\t" + y + "\t" + z + "\t" + i);
 					
 					i++;
 				}
 			}
 		}
-		
 		
 		return blocks;
 	}
@@ -554,7 +580,7 @@ public class SimWorld {
 		
 		rWorld.setWorldTime(world, state.getWorldTime());
 		
-		setWorldBlocks(world.getxSize(), world.getySize(), world.getzSize(), state.getIds(), state.getData());
+		setWorldBlocks(world.getxSize(), world.getySize(), world.getzSize(), state.getBlocks());
 		
 		world.getLoadedTileEntities().clear();
 		world.getLoadedEntities().clear();
@@ -571,9 +597,9 @@ public class SimWorld {
 	
 	public WorldState getState() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		byte[][] blocks = getWorldBlocks();
+		Block[][][] blocks = getWorldBlocks();
 
-		return new WorldState(world.getWorldTime(), blocks[0], blocks[1],
+		return new WorldState(world.getWorldTime(), blocks,
 				world.getLoadedTileEntities(), world.getTickableTileEntities(),
 				world.getLoadedEntities(), world.getPendingTickListEntries(),
 				world.getPendingTickListHashSet());
@@ -588,5 +614,28 @@ public class SimWorld {
 		rTileEntity.getNBTFromTileEntity(tileEntity, mcTag);
 
 		Log.i("TileEntity: " + mcTag.toString());
+	}
+
+	public Entity[] createViewDataFromEntities(Object[] entities) throws IllegalAccessException {
+
+		Entity[] output = new Entity[entities.length];
+
+		for (int i = 0; i < entities.length; i++) {
+
+			Object entity = entities[i];
+
+			double x = rEntity.getX(entity);
+			double y = rEntity.getY(entity);
+			double z = rEntity.getZ(entity);
+			float width = rEntity.getWidth(entity);
+			float height = rEntity.getHeight(entity);
+			double vx = rEntity.getMotionX(entity);
+			double vy = rEntity.getMotionY(entity);
+			double vz = rEntity.getMotionZ(entity);
+
+			output[i] = new Entity(x, y, z, width, height, vx, vy, vz);
+		}
+
+		return output;
 	}
 }

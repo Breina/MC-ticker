@@ -1,21 +1,22 @@
 package sim.objects;
 
+import presentation.objects.Block;
+
 import java.util.*;
 
 public class WorldState {
 	
 	private long worldTime;
-	private byte[] ids, data;
+	private Block[][][] blocks;
 	private List<Object> tileEntities, tickableTileEntities, entities;
 	private Set<Object> tileTicks, tileTickHashes;
 	
-	public WorldState(long worldTime, byte[] ids, byte[] data, List<Object> tileEntities,
+	public WorldState(long worldTime, Block[][][] blocks, List<Object> tileEntities,
 					  List<Object> tickableTileEntities, List<Object> entities, Set<Object> tileTicks,
 					  Set<Object> tileTickHashes) {
 		
 		this.worldTime = worldTime;
-		this.ids = ids;
-		this.data = data;
+		this.blocks = blocks;
 		this.tileEntities = new ArrayList<>(tileEntities);
 		this.tickableTileEntities = tickableTileEntities;
 		this.entities = new ArrayList<>(entities);
@@ -27,12 +28,8 @@ public class WorldState {
 		return worldTime;
 	}
 
-	public byte[] getIds() {
-		return ids;
-	}
-
-	public byte[] getData() {
-		return data;
+	public Block[][][] getBlocks() {
+		return blocks;
 	}
 
 	public List<Object> getTileEntities() {
@@ -57,7 +54,7 @@ public class WorldState {
 	
 	@Override
 	public String toString() {
-		return "ids: " + ids.length + ", data: " + data.length + ", tileEntities: " + tileEntities.size() + ", entities: " + entities.size() +
+		return "blocks: " + blocks.length + ", tileEntities: " + tileEntities.size() + ", entities: " + entities.size() +
 				", tileTicks: " + tileTicks.size();
 	}
 }

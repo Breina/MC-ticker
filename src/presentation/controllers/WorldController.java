@@ -47,7 +47,7 @@ public class WorldController {
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
-		viewData = new ViewData(schematicFile.getName(),
+		viewData = new ViewData(simController, schematicFile.getName(),
 								(short) schematic.findTagByName("Width").getValue(),
 								(short) schematic.findTagByName("Height").getValue(),
 								(short) schematic.findTagByName("Length").getValue());
@@ -81,14 +81,14 @@ public class WorldController {
 			ep.addLayer(dw.getEditor());
 			dw.getEditor().addLayer(ep);	
 		}
-		
+
 		windows.add(drawingWindow);
 	}
 	
 	public void drawingWindowClosed(DrawingWindow source) {
-		
-//		for (DrawingWindow dw : windows)
-//			dw.getEditor().removeLayer(source.getEditor());
+
+		for (DrawingWindow dw : windows)
+			dw.getEditor().removeLayer(source.getEditor());
 		
 		windows.remove(source);
 		
@@ -124,7 +124,7 @@ public class WorldController {
 		nbtController.onSchematicUpdated();
 		
 		for (DrawingWindow window : windows)
-			window.getEditor().updateWithNewData();
+			window.getEditor().repaintAll();
 	}
 	
 	public ViewData getWorldData() {
@@ -211,7 +211,7 @@ public class WorldController {
 
 		simController.debug(x, y, z);
 	}
-	
+
 	@Override
 	public String toString() {
 		return viewData.getName();

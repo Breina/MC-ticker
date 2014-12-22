@@ -60,7 +60,8 @@ public class Constants {
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
-		};
+		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"},
+		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
@@ -109,54 +110,7 @@ public class Constants {
 	
 	// Unused and I think we'll maybe need these in the future
 	public final static int DIFFICULTY = 0;
-		
+
 	public final static String LOGENTRY = "[SIM]";
 	public final static String LOGFILE = "log.txt";
 }
-
-// UNUSED CODE THAT MAY BE HANDY IN THE FUTURE:
-
-
-//public static void removeFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-//    field.setAccessible(true);
-//
-//    // remove final modifier from field
-//    Field modifiersField = Field.class.getDeclaredField("modifiers");
-//    modifiersField.setAccessible(true);
-//    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-//}
-
-
-//public String lookupMethod(String obfuscated) {
-//	
-//	String key = null;
-//	
-//	if (!reversedMethods.containsKey(obfuscated)) {
-//		
-//		if (!methods.containsValue(obfuscated))
-//			return null;
-//			
-//		Iterator<Entry<String, String>> i = methods.entrySet().iterator();
-//		
-//		while (i.hasNext()) {
-//			
-//			Entry<String, String> entry = i.next();
-//			
-//			System.out.println("comparing " + obfuscated + "=" + entry.getValue());
-//			
-//			if (!entry.getValue().equals(obfuscated))
-//				continue;
-//			
-//			key = entry.getKey();
-////			methods.remove(key);	// TODO throws a concurrentModificationException
-//			
-//			reversedMethods.put(obfuscated, key);
-//		}
-//	} else {
-//		
-//		key = reversedMethods.get(obfuscated);
-//		
-//	}
-//	
-//	return key;
-//}

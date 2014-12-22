@@ -1,5 +1,6 @@
 package presentation.objects;
 
+import presentation.controllers.SimController;
 import presentation.exceptions.SchematicException;
 import sim.objects.WorldState;
 
@@ -12,11 +13,16 @@ public class ViewData {
 	private short xSize, ySize, zSize;
 	private String name;
 	private Block[][][] blocks;
+	private Entity[] entities;
+
+	private SimController controller;
 	
 	private final static Block AIRBLOCK = new Block((byte) 0);
 	
-	public ViewData(String name, short width, short height, short length) {
-		
+	public ViewData(SimController controller, String name, short width, short height, short length) {
+
+		this.controller = controller;
+
 		this.name = name;
 		
 		this.xSize = width;
@@ -49,29 +55,9 @@ public class ViewData {
 //	}
 	
 	public void setState(WorldState state) throws SchematicException {
-		
-		long size = xSize * ySize * zSize;
-		
-		byte[] ids = state.getIds();
-		byte[] data = state.getData();
-		
-		if (size != ids.length || size != data.length)
-			throw new SchematicException("The state does not match the dimensions specified.");
-		
-		blocks = new Block[xSize][ySize][zSize];
+		blocks = state.getBlocks();
 
-		int i = 0;
-		for (short y = 0; y < ySize; y++)
-			for (short z = 0; z < zSize; z++)
-				for (short x = 0; x < xSize; x++) {
-					blocks[x][y][z] = new Block(ids[i], data[i]);
-					i++;
-				}
-	}
-	
-	public void setBlock(int x, int y, int z, Block block) {
-		
-		blocks[x][y][z] = block;
+		entities = controller.createViewDataFromEntities(state.getEntities().toArray());
 	}
 	
 	public Block getBlock(int x, int y, int z) {
@@ -112,10 +98,6 @@ public class ViewData {
 
 	public String getName() {
 		return name;
-	}
-
-	public Block[][][] getBlocks() {
-		return blocks;
 	}
 	
 	@Override

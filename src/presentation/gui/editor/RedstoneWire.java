@@ -1,13 +1,12 @@
 package presentation.gui.editor;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import presentation.main.Constants;
+import presentation.objects.Orientation;
+
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-
-import presentation.main.Constants;
-import presentation.objects.Orientation;
 
 /**
  * Redstone wire has its own drawing class because we don't want 16 * (5 + 3) = 128 images of 174 bytes (avg.) = 22 KB of images, but instead use a 3.5 KB class.
@@ -35,7 +34,8 @@ public class RedstoneWire {
 		
 		// Apologies for the oneliner, didn't want to create extra vars 
 		g.setColor(new Color((powerLevel == 0) ? offPower : minPower + powerStep * powerLevel, 0, 0));
-		
+
+		// If there's a bug in this code, good luck.
 		switch (orientation) {
 			case TOP:
 				if ((cons[0] || cons[2]) && !cons[1] && !cons[3]) {

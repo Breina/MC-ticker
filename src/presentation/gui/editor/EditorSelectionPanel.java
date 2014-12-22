@@ -1,14 +1,10 @@
 package presentation.gui.editor;
 
-import java.awt.BasicStroke;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
-
 import presentation.main.Constants;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class EditorSelectionPanel extends JLabel {
 	private static final long serialVersionUID = -1236645534312319619L;
@@ -44,7 +40,8 @@ public class EditorSelectionPanel extends JLabel {
 		Graphics2D g = (Graphics2D) rectangle.getGraphics();
 
 		g.setColor(Constants.COLORSELECTION);
-		
+
+		// TODO g.drawRect dumbass (and now also lazy :/ )
 		g.drawLine(0, 0, 0, EditorPanel.SIZE);
 		g.drawLine(0, 0, EditorPanel.SIZE, 0);
 		g.drawLine(EditorPanel.SIZE, EditorPanel.SIZE, 0, EditorPanel.SIZE);

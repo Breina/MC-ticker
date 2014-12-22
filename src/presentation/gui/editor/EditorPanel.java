@@ -1,24 +1,7 @@
 package presentation.gui.editor;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.InternalError;
+import logging.Log;
 import presentation.controllers.TileController;
 import presentation.controllers.WorldController;
 import presentation.exceptions.UnhandledBlockDataException;
@@ -30,9 +13,17 @@ import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 import presentation.tools.Tool;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.InternalError;
-
-import logging.Log;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class EditorPanel extends JLayeredPane {
 	private static final long serialVersionUID = -7955350531422459430L;
@@ -54,12 +45,11 @@ public class EditorPanel extends JLayeredPane {
 	private short selectedX, selectedY;
 	
 	private HashMap<EditorPanel, EditorLayerPanel> layers;
-	
-	public static final int BLOCKLAYER			= 10;
-	public static final int SELECTIONLAYER		= 50;
-	
+
+	// TODO properties
 	public static final boolean LAYER_HIGHLIGHTING = true;
 	public static final boolean SELECTION_HIGHLIGHTING = true;
+
 	public static final byte SIZE = 17; // 16x16 + 1 pixel border
 	
 	private int dragButton;
@@ -102,7 +92,6 @@ public class EditorPanel extends JLayeredPane {
 		};
 		
 		setScale(scale);
-//		add(blockPanel, 10);
 		
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		addMouseMotionListener(new MouseMoveHandler());
@@ -167,8 +156,7 @@ public class EditorPanel extends JLayeredPane {
 		
 		return scaledBlockBuffer;
 	}
-	
-	// TODO Clean this up so it isn't static
+
 	public static BufferedImage scaleBufferedImage(BufferedImage bi, float scale) {
 		
 		BufferedImage scaledImage = new BufferedImage((int) (bi.getWidth() * scale), (int) (bi.getHeight() * scale), bi.getType());
@@ -183,14 +171,6 @@ public class EditorPanel extends JLayeredPane {
 	public void repaintAll() {
 		
 		repaintBlocks();
-		
-		//clearGrid(g);
-
-//		if (LAYER_HIGHLIGHTING)
-//			repaintGrid();
-		
-//		if (SELECTION_HIGHLIGHTING)
-//			updateSelection();
 		
 		repaint();
 	}
@@ -217,12 +197,6 @@ public class EditorPanel extends JLayeredPane {
 					Log.e(e.getMessage());
 				}
 			}
-	}
-	
-	public void updateWithNewData() {
-		
-		repaintBlocks();
-		repaint();
 	}
 
 	public void setLayer(short layer) {
@@ -327,13 +301,13 @@ public class EditorPanel extends JLayeredPane {
 					// wire 1 block higher
 					|| (up && viewData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE);			
 		}
-		testBlock = null;
   		
   		bi = RedstoneWire.draw(powerLevel, this.orientation, cons);  		
 		
 		return bi;
 	}
-	
+
+	// TODO
 	private BufferedImage getChest(Block b, short x, short y, short z) {
 //		tileController.getTile(id, data, orientation)
 		return null;
@@ -397,7 +371,7 @@ public class EditorPanel extends JLayeredPane {
 		selectionPanel.setBounds(pixX, pixY, size, size);
 	}
 	
-	// When the mouse goes out a window of the same world
+	// When the cursor goes out a window of the same world
 	public void unSelect() {
 		selectionPanel.setVisible(false);
 	}
@@ -419,8 +393,8 @@ public class EditorPanel extends JLayeredPane {
 		selectionPanel.setVisible(true);
 		selectCord(cords.x, cords.y);
 	}
-	
-	public BufferedImage getImageBuffer() {
+
+	public BufferedImage generateImage() {
 		generateScaledBuffer();
 		return this.scaledBlockBuffer;
 	}
@@ -561,10 +535,14 @@ public class EditorPanel extends JLayeredPane {
 		else
 			layer.setBounds((int) (SIZE * scale * layerIndex), 0, (int) ((SIZE + 1) * scale), (int) (height * SIZE * scale));
 	}
-	
+
 	public void removeLayer(EditorPanel ep) {
-		
-		remove(layers.get(ep));
-		layers.remove(ep);
+
+		EditorLayerPanel layer = layers.get(ep);
+
+		if (layer != null) {
+			remove(layer);
+			layers.remove(ep);
+		}
 	}
 }

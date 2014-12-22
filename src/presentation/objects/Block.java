@@ -47,8 +47,7 @@ public class Block {
 	}
 	
 	/**
-	 * Checks if a wire should connect to a given block
-	 * @param b The block in question
+	 * Checks if a wire should connect to a given blocka
 	 * @param side Used for checking the side of a repeater
 	 * @return
 	 */
@@ -76,5 +75,15 @@ public class Block {
 		Block b = (Block) obj;
 		
 		return (id == b.getId() && data == b.getData());
+	}
+
+	public short toShort() {
+
+		short blockId = id;
+
+		if (blockId < 0)
+			blockId += 256;
+
+		return (short) (blockId << 4 | data);
 	}
 }

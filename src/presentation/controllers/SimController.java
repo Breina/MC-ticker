@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import logging.Log;
+import presentation.objects.Entity;
 import sim.constants.Constants;
 import sim.logic.SimWorld;
 import sim.objects.WorldState;
@@ -211,6 +212,19 @@ public class SimController {
 			Log.e("Could not get state" + analyseException(e));
 		}
 		
+		return null;
+	}
+
+	public Entity[] createViewDataFromEntities(Object[] entities) {
+
+		try {
+			return simWorld.createViewDataFromEntities(entities);
+
+		} catch (IllegalAccessException e) {
+
+			Log.e("Could not create view data for entities" + analyseException(e));
+		}
+
 		return null;
 	}
 }

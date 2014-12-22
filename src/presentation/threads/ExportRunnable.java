@@ -186,7 +186,7 @@ public class ExportRunnable implements Runnable {
 
 		for (short l = 0; l < max; l++) {
 			e.setLayer(l);
-			buffer = e.getImageBuffer(); // TODO: This happens twice for the
+			buffer = e.generateImage(); // TODO: This happens twice for the
 											// first image
 
 			if (imgs) {
