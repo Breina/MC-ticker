@@ -56,4 +56,18 @@ public class Entity {
     public float getHeight() {
         return height;
     }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", vX=" + vX +
+                ", vY=" + vY +
+                ", vZ=" + vZ +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
+    }
 }

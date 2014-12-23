@@ -227,7 +227,6 @@ public class TimeController implements Runnable {
 						tickCounter--;
 					}
 				}
-						
 					
 				viewData.setState(state);
 				worldController.onSchematicUpdated();

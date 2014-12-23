@@ -92,10 +92,6 @@ public class Constants {
 	public final static String BLOCK_UNLOCALIZEDNAME = "N";
 	public final static String WORLDSERVER_SERVERBLOCKEVENTLIST = "S";
 
-	// The following is a hacky way to extract the GameProfile class for EntityPlayer
-	public final static String HACK_AUTHLIB_LOCATION = "/libraries/com/mojang/authlib/1.5.17/authlib-1.5.17.jar";
-	public final static String HACK_GAMEPROFILE_PACKAGE = "com.mojang.authlib.GameProfile";
-
 	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";
 	public final static int WORLDTYPEID = 1;
@@ -107,9 +103,6 @@ public class Constants {
 	public final static int WORLDPROVIDER = 0;
 	public final static boolean CANSPAWNANIMALS = true;
 	public final static boolean CANSPAWNNPCS = true;
-	
-	// Unused and I think we'll maybe need these in the future
-	public final static int DIFFICULTY = 0;
 
 	public final static String LOGENTRY = "[SIM]";
 	public final static String LOGFILE = "log.txt";

@@ -9,6 +9,7 @@ import presentation.exceptions.UnhandledBlockIdException;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+import presentation.objects.Entity;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 import presentation.tools.Tool;
@@ -22,8 +23,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EditorPanel extends JLayeredPane {
 	private static final long serialVersionUID = -7955350531422459430L;
@@ -44,7 +45,8 @@ public class EditorPanel extends JLayeredPane {
 	private EditorSelectionPanel selectionPanel;	
 	private short selectedX, selectedY;
 	
-	private HashMap<EditorPanel, EditorLayerPanel> layers;
+	private ConcurrentHashMap<EditorPanel, EditorLayerPanel> layers;
+	private ConcurrentHashMap<Entity, EditorEntityPanel> entities;
 
 	// TODO properties
 	public static final boolean LAYER_HIGHLIGHTING = true;
@@ -76,7 +78,8 @@ public class EditorPanel extends JLayeredPane {
 		selectionPanel = new EditorSelectionPanel();
 		add(selectionPanel, 50);
 		
-		layers = new HashMap<>();
+		layers = new ConcurrentHashMap<>();
+		entities = new ConcurrentHashMap<>();
 		
 		blockPanel = new JPanel() {
 			private static final long serialVersionUID = 4506583861488260246L;
@@ -157,6 +160,7 @@ public class EditorPanel extends JLayeredPane {
 		return scaledBlockBuffer;
 	}
 
+	// Fix this so it's no longer static
 	public static BufferedImage scaleBufferedImage(BufferedImage bi, float scale) {
 		
 		BufferedImage scaledImage = new BufferedImage((int) (bi.getWidth() * scale), (int) (bi.getHeight() * scale), bi.getType());
@@ -206,6 +210,7 @@ public class EditorPanel extends JLayeredPane {
 		this.layer = layer;
 		
 		repaintBlocks();
+		checkEntityVisibility();
 		repaint();
 	}
 	
@@ -241,7 +246,17 @@ public class EditorPanel extends JLayeredPane {
 				l.setScale(scale);
 				updateLayer(ep);
 			}
-		}	
+		}
+
+		Iterator<Entity> es = entities.keySet().iterator();
+		Iterator<EditorEntityPanel> eeps = entities.values().iterator();
+
+		while (eeps.hasNext()) {
+			EditorEntityPanel eep = eeps.next();
+
+			eep.setScale(scale);
+			configurateEntity(es.next(), eep);
+		}
 		
 		this.repaintAll();
 	}
@@ -544,5 +559,93 @@ public class EditorPanel extends JLayeredPane {
 			remove(layer);
 			layers.remove(ep);
 		}
+	}
+
+	private void addEntity(Entity entity) {
+
+		EditorEntityPanel pnl = new EditorEntityPanel(entity, orientation);
+		pnl.setScale(scale);
+		entities.put(entity, pnl);
+
+		configurateEntity(entity, pnl);
+
+		add(pnl, 30);
+	}
+
+	private void configurateEntity(Entity entity, EditorEntityPanel pnl) {
+		float scaledWidth = entity.getWidth() * SIZE * scale;
+		float scaledHeight = entity.getHeight() * SIZE * scale;
+		double scaledX = entity.getX() * SIZE * scale;
+		double scaledY = entity.getY() * SIZE * scale;
+		double scaledZ = entity.getZ() * SIZE * scale;
+
+		switch (orientation) {
+			case TOP:
+				pnl.setBounds(	(int) (scaledX - scaledWidth / 2),
+						(int) (scaledZ - scaledWidth / 2),
+						(int) (scaledWidth + scale), (int) (scaledWidth + scale));
+				break;
+
+			case FRONT:
+				pnl.setBounds(	(int) (scaledX - scaledWidth / 2),
+						(int) (height * scale * SIZE - scaledY - scaledHeight),
+						(int) (scaledWidth + scale), (int) (scaledHeight + scale));
+				break;
+
+			case RIGHT:
+				pnl.setBounds(	(int) (width * SIZE * scale - scaledZ - scaledWidth / 2),
+						(int) (height * scale * SIZE - scaledY - scaledHeight),
+						(int) (scaledWidth + scale), (int) (scaledHeight + scale));
+		}
+
+		checkEntityVisibility(entity, pnl);
+	}
+
+	private void checkEntityVisibility(Entity entity, EditorEntityPanel pnl) {
+
+		switch (orientation) {
+			case TOP:
+				pnl.setVisible(
+						entity.getY() + entity.getHeight()  >= layer &&
+						entity.getY() <= layer + 1
+				);
+				break;
+
+			case FRONT:
+				pnl.setVisible(
+						entity.getZ() + entity.getWidth() / 2 >= layer &&
+						entity.getZ() - entity.getWidth() / 2 <= layer + 1
+				);
+				break;
+
+			case RIGHT:
+				pnl.setVisible(
+						entity.getX() + entity.getWidth() / 2 >= layer &&
+								entity.getX() + entity.getWidth() / 2 <= layer + 1
+				);
+		}
+	}
+
+	private void checkEntityVisibility() {
+
+		Iterator<Entity> entityIterator = entities.keySet().iterator();
+		Iterator<EditorEntityPanel> panelIterator = entities.values().iterator();
+
+		while (entityIterator.hasNext())
+			checkEntityVisibility(entityIterator.next(), panelIterator.next());
+	}
+
+	public synchronized void updateEntities(Entity[] ents) {
+
+		// Remove previous entities (unless you find a way to hook up the onEntityRemoved)
+		Iterator<EditorEntityPanel> panelIterator = entities.values().iterator();
+		while (panelIterator.hasNext()) {
+			remove(panelIterator.next());
+			panelIterator.remove();
+		}
+
+		// Add them again
+		for (Entity entity : ents)
+			addEntity(entity);
 	}
 }

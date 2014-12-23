@@ -99,6 +99,10 @@ public class ViewData {
 	public String getName() {
 		return name;
 	}
+
+	public Entity[] getEntities() {
+		return entities;
+	}
 	
 	@Override
 	public String toString() {

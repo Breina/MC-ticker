@@ -8,8 +8,7 @@ import java.awt.image.BufferedImage;
 
 public class EditorSelectionPanel extends JLabel {
 	private static final long serialVersionUID = -1236645534312319619L;
-	
-	private int size;
+
 	private float scale;
 	
 	private BufferedImage rectangle, scaledBuffer;
@@ -27,7 +26,7 @@ public class EditorSelectionPanel extends JLabel {
 		if (this.scale == scale)
 			return;
 		
-		size = (int) ((EditorPanel.SIZE + 1) * scale);
+		int size = (int) ((EditorPanel.SIZE + 1) * scale);
 		
 		this.scale = scale;
 		setPreferredSize(new Dimension(size, size));

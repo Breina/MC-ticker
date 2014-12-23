@@ -1,7 +1,10 @@
 package presentation.main;
 
-import java.awt.Color;
+import java.awt.*;
 
+// This is a separate constants file than the sim.constants one, I originally thought
+// to release the sim part as a library separately, but fuck that. I now regret that
+// decision.
 public class Constants {
 	// RSFrame
 	public final static String APPLICATIONTITLE = "Redstone lab v0.1";
@@ -23,5 +26,8 @@ public class Constants {
 	public static final Color COLORBACKGROUND			= Color.WHITE;
 	public static final Color COLORACTIVELAYER			= Color.BLUE;
 	public static final Color COLORSELECTION			= Color.GREEN;
-	
+	public static final Color COLORENTITY				= Color.RED;
+	public static final Color COLORENTITYVECTOR			= Color.ORANGE;
+
+	public static final float ENTITYVELOCITYMULTIPLIER	= 10;
 }

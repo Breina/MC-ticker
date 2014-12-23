@@ -17,8 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Controlls everything about one world
@@ -27,7 +28,7 @@ public class WorldController {
 	
 	private ViewData viewData;
 	
-	private List<DrawingWindow> windows;
+	private CopyOnWriteArrayList<DrawingWindow> windows;
 	private WorldMenu worldMenu;
 	private TimeWindow time;
 	private TimeController timeController;
@@ -37,8 +38,6 @@ public class WorldController {
 	
 	private NBTviewer nbtViewer;
 	private NBTController nbtController;
-	
-//	private Cord3S selection;
 	
 	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
 		
@@ -63,7 +62,7 @@ public class WorldController {
 		mainController.getWindowMenu().addWorldMenu(worldMenu);
 		
 		// TODO new controls window
-		windows = new ArrayList<DrawingWindow>();		
+		windows = new CopyOnWriteArrayList<DrawingWindow>();
 		addNewPerspective(Orientation.TOP);
 		
 		simController.setSchematic(schematic);
@@ -83,12 +82,18 @@ public class WorldController {
 		}
 
 		windows.add(drawingWindow);
+
+		if (viewData.getEntities() != null)
+			ep.updateEntities(viewData.getEntities());
 	}
 	
 	public void drawingWindowClosed(DrawingWindow source) {
 
-		for (DrawingWindow dw : windows)
-			dw.getEditor().removeLayer(source.getEditor());
+		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
+
+		while (drawingWindowIterator.hasNext())
+			drawingWindowIterator.next().getEditor().removeLayer(source.getEditor());
+
 		
 		windows.remove(source);
 		
@@ -97,9 +102,12 @@ public class WorldController {
 	}
 	
 	public void close() {
-		
-		for (DrawingWindow drawingWindow : windows)
-			drawingWindow.dispose();
+
+		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
+
+		while (drawingWindowIterator.hasNext()) {
+			drawingWindowIterator.next().dispose();
+		}
 		
 		time.dispose();
 		timeController.stopThread();
@@ -122,9 +130,18 @@ public class WorldController {
 	public void onSchematicUpdated() {
 		
 		nbtController.onSchematicUpdated();
+
+		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
 		
-		for (DrawingWindow window : windows)
-			window.getEditor().repaintAll();
+		while (drawingWindowIterator.hasNext()) {
+
+			DrawingWindow window = drawingWindowIterator.next();
+			EditorPanel panel = window.getEditor();
+
+			panel.updateEntities(viewData.getEntities());
+			panel.repaintAll();
+
+		}
 	}
 	
 	public ViewData getWorldData() {
