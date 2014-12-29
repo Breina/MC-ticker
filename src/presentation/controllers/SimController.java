@@ -3,9 +3,7 @@ package presentation.controllers;
 import logging.Log;
 import presentation.objects.Block;
 import presentation.objects.Entity;
-import sim.constants.Constants;
 import sim.logic.SimWorld;
-import sim.objects.WorldState;
 import utils.Tag;
 
 import java.io.IOException;
@@ -120,40 +118,6 @@ public class SimController {
 
 			Log.e("Could not debug block (" + x + ", " + y + ", " + z + "): " + analyseException(e));
 		}
-	}
-
-	@Deprecated
-	public void setState(WorldState state) {
-		
-		try {
-			if (Constants.DEBUG_STATE)
-				Log.i("Setting state to time " + state.getWorldTime());
-			
-			simWorld.setState(state);
-			
-		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | InstantiationException | IOException e) {
-			
-			Log.e("Could not set state" + analyseException(e));
-		}
-	}
-
-	@Deprecated
-	public WorldState getState() {
-		
-		try {
-			if (Constants.DEBUG_STATE)
-				Log.i("Getting state from time " + simWorld.getState().getWorldTime());
-			
-			return simWorld.getState();
-			
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| InstantiationException e) {
-			
-			Log.e("Could not get state" + analyseException(e));
-		}
-		
-		return null;
 	}
 
 	public Block[][][] getBlockObjects() {

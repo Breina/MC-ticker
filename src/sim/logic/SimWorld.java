@@ -5,7 +5,6 @@ import presentation.objects.Block;
 import presentation.objects.Entity;
 import sim.constants.Constants;
 import sim.objects.WorldInstance;
-import sim.objects.WorldState;
 import utils.Tag;
 import utils.Tag.Type;
 
@@ -526,47 +525,6 @@ public class SimWorld {
 	public String getNameFromBlock(Object block) throws IllegalArgumentException, IllegalAccessException {
 
 		return rBlock.getReadableBlockName(block);
-	}
-
-	/*
-	 * Below here are the things that should not be included in a future library
-	 */
-	@Deprecated
-	public void setState(WorldState state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, ArrayIndexOutOfBoundsException, IOException {
-
-		rWorld.setWorldTime(world, state.getWorldTime());
-
-		setBlockObjects(world.getxSize(), world.getySize(), world.getzSize(), state.getBlocks());
-
-		world.getLoadedTileEntities().clear();
-		world.getTickableTileEntities().clear();
-		world.getLoadedEntities().clear();
-		world.getPendingTickListEntries().clear();
-		world.getPendingTickListHashSet().clear();
-		rIntHashMap.clearMap(world.getEntitiesById());
-		world.getEntitiesByUuid().clear();
-
-		world.getLoadedTileEntities().addAll(state.getTileEntities());
-		world.getTickableTileEntities().addAll(state.getTickableEntities());
-		world.getPendingTickListEntries().addAll(state.getTileTicks());
-		world.getPendingTickListHashSet().addAll(state.getTileTickHashes());
-
-		world.getLoadedEntities().addAll(state.getEntities());
-
-		// This adds entitiesById and entitiesByUuid
-		for (Object entity : world.getLoadedEntities())
-			rWorld.onEntityAdded(world, entity);
-	}
-
-	@Deprecated
-	public WorldState getState() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-
-		Block[][][] blocks = getBlockObjects();
-
-		return new WorldState(world.getWorldTime(), blocks,
-				world.getLoadedTileEntities(), world.getTickableTileEntities(),
-				world.getLoadedEntities(), world.getEntitiesById(), world.getEntitiesByUuid(),
-				world.getPendingTickListEntries(), world.getPendingTickListHashSet());
 	}
 
 	public void debug(int x, int y, int z) throws IllegalAccessException, InvocationTargetException, InstantiationException {

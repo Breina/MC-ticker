@@ -106,7 +106,6 @@ public class RBlock {
 	public String getInternalBlockName(Object block) throws InvocationTargetException, IllegalAccessException {
 
 		String internalName = m_getNameForObject.invoke(f_blockRegistry.get(block), block).toString();
-
 		return internalName;
 	}
 
