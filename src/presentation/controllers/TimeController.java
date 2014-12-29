@@ -1,21 +1,15 @@
 package presentation.controllers;
 
 import logging.Log;
-import presentation.exceptions.SchematicException;
 import presentation.gui.time.PlayState;
 import presentation.gui.time.TimeLine;
 import presentation.gui.windows.world.TimeWindow;
 import presentation.objects.ViewData;
-import sim.objects.WorldState;
+import utils.Tag;
 
-/**
- * Throughout this class you'll find the remains of hashes,
- * it was once used to find the end of changes in a schematic
- * and stop the auto-play modes of the timeController.
- */
 public class TimeController implements Runnable {
 	
-	private TimeLine<WorldState> timeLine; 
+	private TimeLine<Tag> timeLine;
 	private int tickCounter = 0;
 	private int maxCount = 0;
 	
@@ -23,9 +17,6 @@ public class TimeController implements Runnable {
 	private SimController simController;
 	
 	private ViewData viewData;
-	
-//	private HashSet<Integer> foundHashes;
-//	private boolean checkHash;
 	
 	private boolean goForward, isPaused, hasDelay;
 	
@@ -41,140 +32,113 @@ public class TimeController implements Runnable {
 		viewData = worldController.getWorldData();
 		
 		timeLine = new TimeLine<>(100);
-//		foundHashes = new HashSet<>();
 		
 		setPlaystate(PlayState.PAUSED);
 	}
 	
 	public void init() {
+
 		isPaused = true;
-		
-		try {
-//			Tag schematic = simController.getSchematic(worldData);
-			WorldState state = simController.getState();
-			
-			viewData.setState(state);
-			worldController.onSchematicUpdated();
-			
-			timeLine.init(state);
-			
-//			foundHashes.clear();
-//			foundHashes.add(schematic.hashCode());
-//			checkHash = true;
-			
-			window.setStep(0);
-			
-			go = true;
-			new Thread(this).start();
-			
-		} catch (SchematicException e) {
-			e.printStackTrace();
-		}
+
+		viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+		timeLine.init(simController.getSchematic());
+
+		window.setStep(0);
+		go = true;
+		new Thread(this).start();
+
 	}
 	
-	private WorldState tick() {
+	private Tag tick() {
 		
 		simController.tick();
-		
-//		Tag schematic = simController.getSchematic(worldData);
-		WorldState state = simController.getState();
 
-//		if (checkHash && !isPaused) {
-//			int hash = schematic.hashCode();
-//			
-//			if (foundHashes.contains(hash) && !isPaused) {
-//				checkHash = false;
-//				return null;
-//			}
-//			
-//			foundHashes.add(hash);
-//		}
+		Tag schematic = simController.getSchematic();
+		timeLine.add(schematic);
 		
-		timeLine.add(state);
-		
-		return state;
+		return schematic;
 	}
 	
 	public synchronized void setPlaystate(PlayState playState) {
-		
-		try {
-		
-			switch (playState) {
-				
-				case START:
-					isPaused = true;
-					hasDelay = false;
-					
-					viewData.setState(timeLine.first());
-					worldController.onSchematicUpdated();
-					window.setStep(0);
-					break;
-					
-				case RUSHBACK:
-					isPaused = false;
-					goForward = false;
-					hasDelay = false;
-					
-					notify();
-					break;
-					
-				case PLAYBACK:
-					isPaused = false;
-					goForward = false;
-					hasDelay = true;
-					
-					notify();
-					break;
-					
-				case STEPBACK:
-					isPaused = true;
-					goForward = false;
-					hasDelay = false;
-					
-					notify();
-					break;
-					
-				case PAUSED:
-					isPaused = true;
-//					checkHash = true;
-					break;
-					
-				case STEPFORWARD:
-					isPaused = true;
-					goForward = true;
-					hasDelay = false;
-					
-					notify();
-					break;
-					
-				case PLAYFORWARD:
-					isPaused = false;
-					goForward = true;
-					hasDelay = true;
-					
-					notify();
-					break;
-					
-				case RUSHFORWARD:
-					isPaused = false;
-					goForward = true;
-					hasDelay = false;
-					
-					notify();
-					break;
-					
-				case END:
-					isPaused = true;
-					hasDelay = false;
-					
-					viewData.setState(timeLine.last());
-					worldController.onSchematicUpdated();
-					window.setStep(maxCount);
-					window.setBackEnabled(true);
-			}
-		
-		} catch (SchematicException e) {
-			Log.e("Could not set playstate " + playState + ": " + e.getMessage());
+
+
+		switch (playState) {
+
+			case START:
+				isPaused = true;
+				hasDelay = false;
+
+
+				simController.setSchematic(timeLine.first());
+				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+
+				worldController.onSchematicUpdated();
+				window.setStep(0);
+				break;
+
+			case RUSHBACK:
+				isPaused = false;
+				goForward = false;
+				hasDelay = false;
+
+				notify();
+				break;
+
+			case PLAYBACK:
+				isPaused = false;
+				goForward = false;
+				hasDelay = true;
+
+				notify();
+				break;
+
+			case STEPBACK:
+				isPaused = true;
+				goForward = false;
+				hasDelay = false;
+
+				notify();
+				break;
+
+			case PAUSED:
+				isPaused = true;
+				break;
+
+			case STEPFORWARD:
+				isPaused = true;
+				goForward = true;
+				hasDelay = false;
+
+				notify();
+				break;
+
+			case PLAYFORWARD:
+				isPaused = false;
+				goForward = true;
+				hasDelay = true;
+
+				notify();
+				break;
+
+			case RUSHFORWARD:
+				isPaused = false;
+				goForward = true;
+				hasDelay = false;
+
+				notify();
+				break;
+
+			case END:
+				isPaused = true;
+				hasDelay = false;
+
+				// TODO setSchematic may not be necessary
+				simController.setSchematic(timeLine.last());
+				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+
+				worldController.onSchematicUpdated();
+				window.setStep(maxCount);
+				window.setBackEnabled(true);
 		}
 	}
 
@@ -185,7 +149,7 @@ public class TimeController implements Runnable {
 		
 		try {
 			
-			WorldState state;
+			Tag schem;
 			
 			while (go) {
 				
@@ -193,15 +157,13 @@ public class TimeController implements Runnable {
 					wait();
 				
 				if (goForward) {
-					if (timeLine.atEnd()) {
-						state = tick();
-						if (state == null) {
-							isPaused = true;
-							window.setPaused(true);
-							continue;
-						}
-					} else
-						state = timeLine.next();
+					if (timeLine.atEnd())
+						schem = tick();
+
+					else {
+						schem = timeLine.next();
+						simController.setSchematic(schem);
+					}
 					
 					tickCounter++;
 					if (tickCounter > maxCount)
@@ -210,13 +172,12 @@ public class TimeController implements Runnable {
 					window.setBackEnabled(true);
 					
 				} else {
-//					checkHash = true;
 					if (timeLine.atStart()) {
-						state = timeLine.first();
+						schem = timeLine.first();
 						setPlaystate(PlayState.PAUSED);
 						
 					} else {
-						state = timeLine.prev();
+						schem = timeLine.prev();
 						
 						if (timeLine.atStart()) {
 							setPlaystate(PlayState.PAUSED);
@@ -226,9 +187,11 @@ public class TimeController implements Runnable {
 						
 						tickCounter--;
 					}
+
+					simController.setSchematic(schem);
 				}
-					
-				viewData.setState(state);
+
+				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
 				worldController.onSchematicUpdated();
 				
 				window.setStep(tickCounter);
@@ -241,31 +204,28 @@ public class TimeController implements Runnable {
 		} catch (InterruptedException e) {
 			Log.e("The time controller's thread was rudely abrupted! :o");			
 			
-		} catch (SchematicException e) {
-			Log.e("Could not read precomputed schematic.");
 		}
 	}
-	
+
+	/**
+	 * Going back in time is only updated visually
+	 */
 	public void loadCurrentTimeIntoSchematic(boolean ignoreIfAtEnd) {
 
 		if (ignoreIfAtEnd && timeLine.atEnd())
 			return;
 
-		simController.setState(timeLine.get());
+		simController.setSchematic(timeLine.get());
 	}
 
 	public void updateCurrentSchematic() {
 
-		try {
-			WorldState state = simController.getState();
-//			foundHashes.clear();
-			timeLine.set(state);
-			viewData.setState(state);
-			worldController.onSchematicUpdated();
+		Tag schem = simController.getSchematic();
 
-		} catch (SchematicException e) {
-			Log.e("Failed to update updated state: " + e.getMessage());
-		}
+		timeLine.set(schem);
+		viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+
+		worldController.onSchematicUpdated();
 	}
 	
 	public void setTimeWindow(TimeWindow window) {

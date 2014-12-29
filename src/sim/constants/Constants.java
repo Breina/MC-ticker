@@ -41,20 +41,19 @@ public class Constants {
 		{"tickUpdates"}, {"getProviderForDimension"}, {"registerBlocks"}, {"getBlockById"},
 		{"getStateFromMeta", "Convert the given metadata"}, {"getIdFromBlock"},
 		{"startSection"}, {"endSection"}, {"setWorldTime", "ets the wo"},
-		{"generateSkylightMap"}, {"tick", "Runs a single tick for the world"},
-		{"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
-		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT", "Save the entity to NBT"}, {"spawnEntityInWorld"},
+		{"generateSkylightMap"}, {"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
+		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBTOptional"}, {"spawnEntityInWorld"},
 		{"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
 		{"getUnlocalizedName", ""}, {"getTagList"}, {"getCompoundTagAt"},
 		{"onBlockActivated"}, {"setCanSpawnAnimals"}, {"setCanSpawnNPCs"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
-		{"onUpdate", "Called to update the entity"}};
+		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"}};
 	
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
-		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"},
+		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"}, {"blockRegistry"},
 		{"profilingMap"}, {"profilingEnabled"}, {"worldAccesses"}, {"isRemote"}, {"loadedEntityList"},
 		{"unloadedEntityList"}, {"playerEntities"}, {"weatherEffects"}, {"worldInfo"},
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
@@ -68,7 +67,7 @@ public class Constants {
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
-		"IUpdatePlayerListBox"};
+		"IUpdatePlayerListBox", "RegistryNamespaced"};
 
 	// TODO remove
 	// net/minecraft/server/MinecraftServer
@@ -82,6 +81,7 @@ public class Constants {
 	public final static String TILEENTITY_READFROMNBT = "b";
 	public final static String NBTTAGCOMPOUND_LOAD = "a";
 	public final static String WORLDSERVER_MCSERVER = "a";
+	public final static String WORLD_ONENTITYADDED = "a";
 	
 	// Untranslated fields
 	public final static String CHUNKPRIMER_DATA = "a";

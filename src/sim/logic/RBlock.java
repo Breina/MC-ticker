@@ -19,19 +19,23 @@ public class RBlock {
 	
 	private Class<?> Block, EntityPlayer;
 	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
-		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties;
-	private Field f_unlocalizedName;
+		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties,
+		m_getNameForObject;
+	private Field f_unlocalizedName, f_blockRegistry;
 
 	private RBlockPos rBlockPos;
 
+	// TODO fix this
 	private Object propertyFacing;
+
+	private Object blockRegistry;
 	
 	 // A buffer for all blocks that were once obtained
 	private HashMap<Integer, Object> bufferedBlocks;
 	
 	public RBlock(Linker linker, RBlockPos rBlockPos) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		
-		bufferedBlocks = new HashMap<Integer, Object>();
+		bufferedBlocks = new HashMap<>();
 		this.rBlockPos = rBlockPos;
 		
 		prepareBlock(linker);
@@ -50,6 +54,7 @@ public class RBlock {
 		Class<?> IBlockState = linker.getClass("IBlockState");
 		Class<?> PropertyDirection = linker.getClass("PropertyDirection");
 		Class<?> IProperty = linker.getClass("IProperty");
+		Class<?> RegistryNamespaced = linker.getClass("RegistryNamespaced");
 		
 		m_getBlockById = linker.method("getBlockById", Block, int.class);
 		m_getStateFromMeta = linker.method("getStateFromMeta", Block, int.class);
@@ -59,24 +64,50 @@ public class RBlock {
 		m_getValue = linker.method("getValue", IBlockState, IProperty);
 		m_hasTileEntity = linker.method("hasTileEntity", Block);
 		m_getProperties = linker.method("getProperties", IBlockState);
-		
-		// TODO can't use linker yet
-		m_getBlock = IBlockState.getDeclaredMethod(Constants.IBLOCKSTATE_GETBLOCK);
-		
-		f_unlocalizedName = Block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
-		f_unlocalizedName.setAccessible(true);
 
 		m_onBlockActivated = linker.method("onBlockActivated", Block, linker.getClass("World"), linker.getClass("BlockPos"),
 				IBlockState, EntityPlayer, linker.getClass("EnumFacing"), float.class, float.class, float.class);
 
 		propertyFacing = linker.method("create", PropertyDirection, String.class).invoke(null, "facing");
+		m_getNameForObject = linker.method("getNameForObject", RegistryNamespaced, Object.class);
+
+		f_blockRegistry = linker.field("blockRegistry", Block);
+
+		// TODO can't use linker yet
+		m_getBlock = IBlockState.getDeclaredMethod(Constants.IBLOCKSTATE_GETBLOCK);
+
+		f_unlocalizedName = Block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
+		f_unlocalizedName.setAccessible(true);
+
 	}
 	
 	public Object getBlockFromName(String name) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
 		// TODO buffer with name as well
 		Object block = m_getBlockFromName.invoke(null, name);
 		
 		return block;
+	}
+
+	/**
+	 * Get the humanly readable name of a block.
+	 * DO NOT USE THIS FOR INTERNAL PURPOSES
+	 * @param block The block object
+	 * @return Its unlocalized name
+	 */
+	public String getReadableBlockName(Object block) throws IllegalArgumentException, IllegalAccessException  {
+
+		return (String) f_unlocalizedName.get(block);
+	}
+
+	/**
+	 * Gets the internally used name of a block
+	 */
+	public String getInternalBlockName(Object block) throws InvocationTargetException, IllegalAccessException {
+
+		String internalName = m_getNameForObject.invoke(f_blockRegistry.get(block), block).toString();
+
+		return internalName;
 	}
 
 	public Object getBlockById(byte byteId) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
@@ -137,18 +168,6 @@ public class RBlock {
 		boolean doesIt = (boolean) m_hasTileEntity.invoke(block);
 		
 		return doesIt;
-	}
-	
-	/**
-	 * Get the block name of a block object by its field
-	 * @param block The block object
-	 * @return Its unlocalized name
-	 */
-	public String getBlockName(Object block) throws IllegalArgumentException, IllegalAccessException  {
-		
-		String blockName = (String) f_unlocalizedName.get(block);
-		
-		return blockName;
 	}
 	
 	public int getIdFromBlock(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

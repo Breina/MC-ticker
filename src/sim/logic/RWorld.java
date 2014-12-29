@@ -19,9 +19,10 @@ public class RWorld {
 	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World,
 			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList, MinecraftServer;
 
-	private Method m_tickUpdates, m_tick, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
+	private Method m_tickUpdates, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
 			m_spawnEntityInWorld, m_onUpdate, m_addTickEntry, m_getBlockState, m_setBlockState,
-			m_incrementTotalWorldTime, m_getTileEntity, m_update, m_setCanSpawnAnimals, m_setCanSpawnNPCs;
+			m_incrementTotalWorldTime, m_getTileEntity, m_update, m_setCanSpawnAnimals, m_setCanSpawnNPCs,
+			m_onEntityAdded;
 
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
@@ -35,12 +36,14 @@ public class RWorld {
 	private Enum<?> e_GameType;
 
 	private RBlockPos rBlockPos;
+	private RIntHashMap rIntHashMap;
 	
-	public RWorld(Linker linker, Object profiler, RBlockPos rBlockPos) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
+	public RWorld(Linker linker, Object profiler, RBlockPos rBlockPos, RIntHashMap rIntHashMap) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
 		
 		prepareWorld(linker, profiler);
 		
 		this.rBlockPos = rBlockPos;
+		this.rIntHashMap = rIntHashMap;
 		
 		Log.i("Preparing the World");
 	}
@@ -115,7 +118,6 @@ public class RWorld {
 
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
 		m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
-		m_tick								= linker.method("tick", WorldServer);
 		
 		m_setWorldTime 						= linker.method("setWorldTime", World, long.class );
 		m_incrementTotalWorldTime			= linker.method("incrementTotalWorldTime", WorldInfo, long.class);
@@ -134,6 +136,9 @@ public class RWorld {
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
 		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
+
+		m_onEntityAdded						= World.getDeclaredMethod(Constants.WORLD_ONENTITYADDED, Entity);
+		m_onEntityAdded						.setAccessible(true);
 
 		f_theProfiler						= World.getField(Constants.WORLD_THEPROFILER);
 		f_theProfiler						.setAccessible(true);
@@ -209,15 +214,17 @@ public class RWorld {
 		Array.set(blockEventArray, 0, c_serverBlockEvents.newInstance());
 		Array.set(blockEventArray, 1, c_serverBlockEvents.newInstance());
 		f_serverBlockEvents.set(worldServer, blockEventArray);
-		
-		// TODO Make this available
+
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
 		ArrayList<Object> tickableTileEntities = new ArrayList<>();
 		ArrayList<Object> loadedEntities = new ArrayList<>();
-		Object entityIdMap = IntHashMap.newInstance();
+		Object entitiesById = IntHashMap.newInstance();
+		HashMap entitiesByUuid = new HashMap();
 		
 		f_worldAccesses.set(worldServer, new ArrayList<>()); // No one's listening, go home worldAccesses
 		f_loadedEntityList.set(worldServer, loadedEntities);
+		f_entitiesById.set(worldServer, entitiesById);
+		f_entitiesByUuid.set(worldServer, entitiesByUuid);
 		f_unloadedEntityList.set(worldServer, new ArrayList<>());
 		f_loadedTileEntityList.set(worldServer, loadedTileEntities);
 		f_tickableTileEntities.set(worldServer, tickableTileEntities);
@@ -225,9 +232,7 @@ public class RWorld {
 		f_tileEntitiesToBeRemoved.set(worldServer, new ArrayList<>());
 		f_playerEntities.set(worldServer, new ArrayList<>());
 		f_weatherEffects.set(worldServer, new ArrayList<>());
-		f_entitiesById.set(worldServer, entityIdMap);
-		f_entitiesByUuid.set(worldServer, new HashMap<>());
-		
+
 		// TODO might want to play with this
 		f_rand.set(worldServer, new Random());
 		
@@ -240,11 +245,13 @@ public class RWorld {
 
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		
-		WorldInstance world = new WorldInstance();
+		WorldInstance world = new WorldInstance(rIntHashMap);
 			world.setWorld(worldServer);
 			world.setLoadedTileEntities(loadedTileEntities);
 			world.setTickableTileEntities(tickableTileEntities);
 			world.setLoadedEntities(loadedEntities);
+			world.setEntitiesById(entitiesById);
+			world.setEntitiesByUuid(entitiesByUuid);
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
@@ -252,16 +259,10 @@ public class RWorld {
 		return world;
 	}
 	
-	
-	public void tick(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
-		m_tick.invoke(world.getWorld());
-	}
-	
 	/**
 	 * This invokes the relevant function once
 	 */
-	public boolean tickUpdates(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public boolean tick(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		if (Constants.DEBUG_WORLD)
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
@@ -329,10 +330,17 @@ public class RWorld {
 	}
 	
 	public boolean spawnEntityInWorld(WorldInstance world, Object entity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
+
 		boolean succes = (boolean) m_spawnEntityInWorld.invoke(world.getWorld(), entity);
-		
+
+		onEntityAdded(world, entity);
+
 		return succes;		
+	}
+
+	public void onEntityAdded(WorldInstance world, Object entity) throws InvocationTargetException, IllegalAccessException {
+
+		m_onEntityAdded.invoke(world.getWorld(), entity);
 	}
 	
 	public Object getBlockState(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -375,19 +383,7 @@ public class RWorld {
 	}
 	
 	public void addTickEntry(WorldInstance world, int x, int y, int z, Object block, int scheduledTime, int priority) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
+
 		m_addTickEntry.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z), block, scheduledTime, priority);
-	}
-	
-	public void clearTileEntities(WorldInstance world) {
-		world.clearLoadedTileEntities();
-	}
-	
-	public void clearEntities(WorldInstance world) {
-		world.clearLoadedEntities();
-	}
-	
-	public void clearTickEntries(WorldInstance world) {
-		world.clearPendingTickLists();
 	}
 }

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 public class REntity {
 	
 	private Class<?> Entity, EntityList;
-	private Method m_writeToNBT, m_createEntityFromNBT;
+	private Method m_writeToNBTOptional, m_createEntityFromNBT;
 	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height;
 	
 	public REntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
@@ -36,20 +36,24 @@ public class REntity {
 		f_width		= linker.field("width", Entity);
 		f_height	= linker.field("height", Entity);
 
-		m_writeToNBT = linker.method("writeToNBT", Entity, NBTTagCompound);
+		m_writeToNBTOptional = linker.method("writeToNBTOptional", Entity, NBTTagCompound);
 		m_createEntityFromNBT = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
 	}
 	
 	public Object createEntityFromNBT(Object nbtTagCompound, Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
+
 		Object entity = m_createEntityFromNBT.invoke(null, nbtTagCompound, world);
 		
 		return entity;
 	}
 	
 	public void getNBTFromEntity(Object entity, Object mcTag) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		m_writeToNBT.invoke(entity, mcTag);
+
+		System.out.println(entity);
+
+		m_writeToNBTOptional.invoke(entity, mcTag);
+
+		System.out.println(mcTag.toString());
 	}
 
 	public double getX(Object entity) throws IllegalAccessException {

@@ -1,15 +1,11 @@
 package presentation;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class StatusPanel extends JPanel {
 	private static final long serialVersionUID = 8458427057926796379L;
@@ -43,7 +39,7 @@ public class StatusPanel extends JPanel {
 		} else {
 			lblWorld.setText(source.getWorldData().getName());
 			lblSelection.setText(cord.toString());
-			
+
 			Block block = source.getWorldData().getBlock(cord.x, cord.y, cord.z);
 			lblBlock.setText(block.getId() + " : " + block.getData());
 		}

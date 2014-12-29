@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import logging.Log;
+import presentation.objects.Block;
 import presentation.objects.Entity;
 import sim.constants.Constants;
 import sim.logic.SimWorld;
@@ -10,7 +11,6 @@ import utils.Tag;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Largely responsible for catching errors and giving meaningful messages back
@@ -27,10 +27,10 @@ public class SimController {
 	public void setSchematic(Tag schematic) {
 		
 		try {
-			
-			loadWorld(schematic);
-			
-		} catch (NoSuchAlgorithmException e) {
+
+			simWorld.setSchematic(schematic);
+
+		} catch (IllegalAccessException | InstantiationException | IOException | InvocationTargetException e) {
 			
 			Log.e("Failed to send schematic to the simulator " + analyseException(e));
 		}
@@ -40,7 +40,7 @@ public class SimController {
 		
 		try {
 			
-			return simWorld.getWorldTag();
+			return simWorld.getSchematic();
 			
 		} catch (IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 
@@ -62,23 +62,11 @@ public class SimController {
 		
 	}
 	
-	public void loadWorld(Tag input) throws NoSuchAlgorithmException {
-		
-		try {
-			
-			simWorld.setWorld(input);
-			
-		} catch (IllegalAccessException | IOException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
-			
-			Log.e("Could not load world" + analyseException(e));	
-		}
-	}
-	
 	public void saveWorld(OutputStream output) {
 		
 		try {
 			
-			simWorld.getWorld(output);
+			simWorld.getSchematic(output);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | IOException e) {
 			
@@ -133,7 +121,67 @@ public class SimController {
 			Log.e("Could not debug block (" + x + ", " + y + ", " + z + "): " + analyseException(e));
 		}
 	}
-	
+
+	@Deprecated
+	public void setState(WorldState state) {
+		
+		try {
+			if (Constants.DEBUG_STATE)
+				Log.i("Setting state to time " + state.getWorldTime());
+			
+			simWorld.setState(state);
+			
+		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | InstantiationException | IOException e) {
+			
+			Log.e("Could not set state" + analyseException(e));
+		}
+	}
+
+	@Deprecated
+	public WorldState getState() {
+		
+		try {
+			if (Constants.DEBUG_STATE)
+				Log.i("Getting state from time " + simWorld.getState().getWorldTime());
+			
+			return simWorld.getState();
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| InstantiationException e) {
+			
+			Log.e("Could not get state" + analyseException(e));
+		}
+		
+		return null;
+	}
+
+	public Block[][][] getBlockObjects() {
+
+		try {
+			return simWorld.getBlockObjects();
+
+		} catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+
+			Log.e("Could not get blocks from world" + analyseException(e));
+		}
+
+		return null;
+	}
+
+	public Entity[] getEntityObjects() {
+
+		try {
+			return simWorld.getEntityObjects();
+
+		} catch (IllegalAccessException e) {
+
+			Log.e("Could not create view data for entities" + analyseException(e));
+		}
+
+		return null;
+	}
+
 	public static String analyseException(Exception e) {
 
 		String msg;
@@ -183,48 +231,4 @@ public class SimController {
 		return ":\n" + msg;
 	}
 
-	public void setState(WorldState state) {
-		
-		try {
-			if (Constants.DEBUG_STATE)
-				Log.i("Setting state to time " + state.getWorldTime());
-			
-			simWorld.setState(state);
-			
-		} catch (ArrayIndexOutOfBoundsException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | InstantiationException | IOException e) {
-			
-			Log.e("Could not set state" + analyseException(e));
-		}
-	}
-	
-	public WorldState getState() {
-		
-		try {
-			if (Constants.DEBUG_STATE)
-				Log.i("Getting state from time " + simWorld.getState().getWorldTime());
-			
-			return simWorld.getState();
-			
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| InstantiationException e) {
-			
-			Log.e("Could not get state" + analyseException(e));
-		}
-		
-		return null;
-	}
-
-	public Entity[] createViewDataFromEntities(Object[] entities) {
-
-		try {
-			return simWorld.createViewDataFromEntities(entities);
-
-		} catch (IllegalAccessException e) {
-
-			Log.e("Could not create view data for entities" + analyseException(e));
-		}
-
-		return null;
-	}
 }

@@ -1,21 +1,11 @@
 package presentation.gui.menu;
 
+import presentation.controllers.WorldController;
+import presentation.objects.Orientation;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-
-import javax.swing.JCheckBox;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-
-import presentation.controllers.WorldController;
-import presentation.exceptions.SchematicException;
-import presentation.gui.choosers.SchematicChooser;
-import presentation.objects.Orientation;
-import presentation.objects.ViewData;
-import logging.Log;
 
 /**
  * A menu for showing a World's actions
@@ -92,7 +82,7 @@ public class WorldMenu extends JMenu {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
-				controller.getWorldData().save();	
+				// TODO
 			}
 		});
 		

@@ -1,6 +1,10 @@
 package sim.objects;
 
+import sim.logic.RIntHashMap;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +13,8 @@ public class WorldInstance {
 	private Object world;
 	private Object player;
 	// Where all future updates are stored as PendingTickListEntry objects
+	private Object entitiesById; // IntHashMap
+	private HashMap entitiesByUuid;
 	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
 	private List<Object> loadedTileEntities, loadedEntities, tickableTileEntities;
 	private long worldTime;
@@ -17,9 +23,27 @@ public class WorldInstance {
 	private boolean doTimeUpdate;
 	
 	private int xSize, ySize, zSize;
+
+	private RIntHashMap rIntHashMap;
 	
-	public WorldInstance() {
+	public WorldInstance(RIntHashMap rIntHashMap) {
 		worldTime = 0;
+
+		this.rIntHashMap = rIntHashMap;
+	}
+
+	/**
+	 * Clears lists containing entities, tileTicks and tileEntities
+	 */
+	public void clearLists() throws InvocationTargetException, IllegalAccessException {
+
+		pendingTickListEntries.clear();
+		pendingTickListHashSet.clear();
+		loadedTileEntities.clear();
+		loadedEntities.clear();
+		tickableTileEntities.clear();
+		entitiesByUuid.clear();
+		rIntHashMap.clearMap(entitiesById);
 	}
 
 	public Object getWorld() {
@@ -36,19 +60,6 @@ public class WorldInstance {
 
 	public void setPlayer(Object player) {
 		this.player = player;
-	}
-	
-	public void clearLoadedTileEntities() {
-		loadedTileEntities.clear();
-	}
-	
-	public void clearLoadedEntities() {
-		loadedEntities.clear();
-	}
-	
-	public void clearPendingTickLists() {
-		pendingTickListEntries.clear();
-		pendingTickListHashSet.clear();
 	}
 
 	public Set<Object> getPendingTickListEntries() {
@@ -81,6 +92,22 @@ public class WorldInstance {
 
 	public void setLoadedEntities(ArrayList<Object> loadedEntities) {
 		this.loadedEntities = loadedEntities;
+	}
+
+	public HashMap getEntitiesByUuid() {
+		return entitiesByUuid;
+	}
+
+	public void setEntitiesByUuid(HashMap entitiesByUuid) {
+		this.entitiesByUuid = entitiesByUuid;
+	}
+
+	public Object getEntitiesById() {
+		return entitiesById;
+	}
+
+	public void setEntitiesById(Object entitiesById) {
+		this.entitiesById = entitiesById;
 	}
 
 	public List<Object> getTickableTileEntities() {

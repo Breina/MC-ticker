@@ -1,8 +1,8 @@
 package logging;
 
-import java.util.ArrayList;
-
 import sim.constants.Constants;
+
+import java.util.ArrayList;
 
 
 public class Log {
@@ -37,7 +37,7 @@ public class Log {
 			lastTime = curTime;
 		
 		if (!isTest)
-			System.out.println(ts);
+			System.out.print(ts);
 	}
 	
 	public static String getMessages() {

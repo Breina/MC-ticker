@@ -3,6 +3,7 @@ package test;
 import logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import presentation.controllers.SimController;
 import sim.constants.Constants;
@@ -278,6 +279,41 @@ public class McMechanics {
 			System.out.println(e.getCause());
 
 			fail("Dispenser failed");
+		}
+	}
+
+	/**
+	 * This code was used to benchmark several clocks.
+	 * http://www.reddit.com/r/redstone/comments/2qfwz1/testing_the_performance_of_several_clocks/
+	 *
+	 * The schematics referenced here are not added to git, ask CX if you want them.
+	 */
+	@Ignore @Test
+	public void testClockPerformance() {
+
+		String[] tests = {"pref-torch.schematic", "pref-burnout.schematic", "pref-repeater-1.schematic", "pref-repeater-1-opt.schematic", "pref-repeater-2.schematic", "pref-repeater-2-opt.schematic", "pref-repeater-3.schematic", "pref-repeater-3-opt.schematic", "pref-repeater-4.schematic", "pref-repeater-4-opt.schematic", "pref-comp-naked.schematic", "pref-comp-opt.schematic", "pref-comp-repeater.schematic", "pref-hopper-closed.schematic", "pref-hopper-open.schematic"};
+
+		for (String schem : tests) {
+
+			loadWorld(schem);
+
+			long time = System.currentTimeMillis();
+
+			System.out.print(schem + '\t');
+
+			try {
+				int ticks = 0;
+				while (System.currentTimeMillis() - time <= 100000) {
+
+					world.tickWorld();
+					ticks++;
+
+				}
+				System.out.println(ticks);
+
+			} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+				System.out.println("FAILED");
+			}
 		}
 	}
 }

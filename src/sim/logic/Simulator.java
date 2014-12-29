@@ -20,6 +20,7 @@ public class Simulator {
 	private RNextTickListEntry rNextTickListEntry;
 	private RChunkPrimer rChunkPrimer;
 	private RBlockPos rBlockPos;
+	private RIntHashMap rIntHashMap;
 
 	public Simulator(String mcpFolder, String minecraftFolder) throws ClassNotFoundException, IOException, NoSuchFieldException, SecurityException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
 	
@@ -31,6 +32,8 @@ public class Simulator {
 		rProfiler = new RProfiler(linker);
 
 		rBlockPos = new RBlockPos(linker);
+
+		rIntHashMap = new RIntHashMap(linker);
 		
 		rBlock = new RBlock(linker, rBlockPos);
 		
@@ -46,7 +49,7 @@ public class Simulator {
 		rChunkProvider = new RChunkProvider(rBlockPos);
 		
 		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
-		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos);
+		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos, rIntHashMap);
 		
 		rEntity = new REntity(linker);
 		
@@ -59,10 +62,6 @@ public class Simulator {
 	
 	public SimWorld createWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld, rChunkPrimer, rBlockPos);
+		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld, rChunkPrimer, rBlockPos, rIntHashMap);
 	}
-	
-//	public String getBlockNameById(byte id) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-//		return rBlock.getBlockName(rBlock.getBlock(id));
-//	}
 }

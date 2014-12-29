@@ -1,10 +1,5 @@
 package presentation.objects;
 
-import presentation.controllers.SimController;
-import presentation.exceptions.SchematicException;
-import sim.objects.WorldState;
-
-
 /**
  * Contains all data required for drawing
  */
@@ -14,50 +9,29 @@ public class ViewData {
 	private String name;
 	private Block[][][] blocks;
 	private Entity[] entities;
-
-	private SimController controller;
 	
 	private final static Block AIRBLOCK = new Block((byte) 0);
 	
-	public ViewData(SimController controller, String name, short width, short height, short length) {
-
-		this.controller = controller;
+	public ViewData(String name, short width, short height, short length) {
 
 		this.name = name;
-		
 		this.xSize = width;
 		this.ySize = height;
 		this.zSize = length;
-		
-		blocks = new Block[xSize][ySize][zSize];
 	}
-	
-	public void save() {
-		
-//		try {
-			// TODO
-//			getSchematic(new FileOutputStream(schematicFile));
-//			
-//		} catch (SchematicException | IOException e) {
-//			
-//			Log.e("Could not save schematic: " + e.getMessage());
-//		}
-	}
-	
-//	public void load() {
-//		
-//		try {
-//			setSchematic(new FileInputStream(schematicFile));
-//		} catch (SchematicException | IOException | NoSuchAlgorithmException e) {
-//
-//			Log.e("Could not load schematic: " + e.getMessage());
-//		}
-//	}
-	
-	public void setState(WorldState state) throws SchematicException {
-		blocks = state.getBlocks();
 
-		entities = controller.createViewDataFromEntities(state.getEntities().toArray());
+	public void setState(Block[][][] blocks, Entity[] entities) {
+
+		setBlocks(blocks);
+		setEntities(entities);
+	}
+
+	public void setBlocks(Block[][][] blocks) {
+		this.blocks = blocks;
+	}
+
+	public void setEntities(Entity[] entities) {
+		this.entities = entities;
 	}
 	
 	public Block getBlock(int x, int y, int z) {

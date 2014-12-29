@@ -46,7 +46,7 @@ public class WorldController {
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
-		viewData = new ViewData(simController, schematicFile.getName(),
+		viewData = new ViewData(schematicFile.getName(),
 								(short) schematic.findTagByName("Width").getValue(),
 								(short) schematic.findTagByName("Height").getValue(),
 								(short) schematic.findTagByName("Length").getValue());
@@ -58,16 +58,18 @@ public class WorldController {
 		nbtController = new NBTController(this, nbtViewer);
 		
 		timeController.setTimeWindow(time);
-		
+
+		// Adds the world to the menu
 		mainController.getWindowMenu().addWorldMenu(worldMenu);
-		
-		// TODO new controls window
+
+		// Loads the world
+		simController.setSchematic(schematic);
+
+		// This will fill ViewData
+		timeController.init();
+
 		windows = new CopyOnWriteArrayList<DrawingWindow>();
 		addNewPerspective(Orientation.TOP);
-		
-		simController.setSchematic(schematic);
-		
-		timeController.init();
 	}
 	
 	public void addNewPerspective(Orientation orientation) {
@@ -140,7 +142,6 @@ public class WorldController {
 
 			panel.updateEntities(viewData.getEntities());
 			panel.repaintAll();
-
 		}
 	}
 	
