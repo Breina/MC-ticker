@@ -426,11 +426,14 @@ public class SimWorld {
 		while (i.hasNext()) {
 
 			Object entity = i.next();
-			Object mcTag = rNBTTags.newInstance();
+			Object mcTag = rEntity.getNBTFromEntity(entity);
 
-			rEntity.getNBTFromEntity(entity, mcTag);
+			Tag tEntity = rNBTTags.getTagFromMinecraftTag(mcTag);
 
-			payload[j] = rNBTTags.getTagFromMinecraftTag(mcTag);
+			// This will save dead entities as well
+			tEntity.addTag(new Tag(Type.TAG_String, "id", rEntity.getEntityString(entity)));
+
+			payload[j] = tEntity;
 			j++;
 		}
 

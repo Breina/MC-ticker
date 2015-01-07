@@ -51,7 +51,7 @@ public class Simulator {
 		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
 		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos, rIntHashMap);
 		
-		rEntity = new REntity(linker);
+		rEntity = new REntity(linker, rNBTTags);
 		
 		new RBootstrap(linker).register();
 		

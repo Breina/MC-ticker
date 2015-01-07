@@ -42,15 +42,16 @@ public class Constants {
 		{"getStateFromMeta", "Convert the given metadata"}, {"getIdFromBlock"},
 		{"startSection"}, {"endSection"}, {"setWorldTime", "ets the wo"},
 		{"generateSkylightMap"}, {"getTotalWorldTime"}, {"hasTileEntity"}, {"createAndLoadEntity"}, {"addTileEntity"},
-		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBTOptional"}, {"spawnEntityInWorld"},
+		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT","Save the entity"}, {"spawnEntityInWorld"},
 		{"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
 		{"getUnlocalizedName", ""}, {"getTagList"}, {"getCompoundTagAt"},
 		{"onBlockActivated"}, {"setCanSpawnAnimals"}, {"setCanSpawnNPCs"},
 		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
-		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"}};
-	
+		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
+		{"getEntityString", "Returns the string that identifies"}};
+
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
 		{"pendingTickListEntriesThisTick"}, {"worldInfo"}, {"chunkProvider"}, {"blockRegistry"},
@@ -59,7 +60,7 @@ public class Constants {
 		{"entitiesById"}, {"entitiesByUuid"}, {"rand", "RNG for World."}, {"scheduledTime"},
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
-		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"},
+		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"}, {"isDead"},
 		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",

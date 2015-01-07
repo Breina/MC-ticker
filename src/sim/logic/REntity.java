@@ -10,12 +10,16 @@ import java.lang.reflect.Method;
 public class REntity {
 	
 	private Class<?> Entity, EntityList;
-	private Method m_writeToNBTOptional, m_createEntityFromNBT;
-	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height;
+	private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString;
+	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height, f_isDead;
+
+	private RNBTTags rNBTTags;
 	
-	public REntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+	public REntity(Linker linker, RNBTTags rNBTTags) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
 		
 		prepareEntity(linker);
+
+		this.rNBTTags = rNBTTags;
 		
 		Log.i("Preparing entities");		
 	}
@@ -35,9 +39,11 @@ public class REntity {
 		f_motionZ	= linker.field("motionZ", Entity);
 		f_width		= linker.field("width", Entity);
 		f_height	= linker.field("height", Entity);
+		f_isDead	= linker.field("isDead", Entity);
 
-		m_writeToNBTOptional = linker.method("writeToNBTOptional", Entity, NBTTagCompound);
+		m_writeToNBT = linker.method("writeToNBT", Entity, NBTTagCompound);
 		m_createEntityFromNBT = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
+		m_getEntityString = linker.method("getEntityString", Entity);
 	}
 	
 	public Object createEntityFromNBT(Object nbtTagCompound, Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -47,13 +53,13 @@ public class REntity {
 		return entity;
 	}
 	
-	public void getNBTFromEntity(Object entity, Object mcTag) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object getNBTFromEntity(Object entity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		System.out.println(entity);
+		Object mcTag = rNBTTags.newInstance();
 
-		m_writeToNBTOptional.invoke(entity, mcTag);
+		m_writeToNBT.invoke(entity, mcTag);
 
-		System.out.println(mcTag.toString());
+		return mcTag;
 	}
 
 	public double getX(Object entity) throws IllegalAccessException {
@@ -86,5 +92,13 @@ public class REntity {
 
 	public float getHeight(Object entity) throws IllegalAccessException {
 		return f_height.getFloat(entity);
+	}
+
+	public String getEntityString(Object entity) throws InvocationTargetException, IllegalAccessException {
+		return (String) m_getEntityString.invoke(entity);
+	}
+
+	public boolean isDead(Object entity) throws IllegalAccessException {
+		return f_isDead.getBoolean(entity);
 	}
 }

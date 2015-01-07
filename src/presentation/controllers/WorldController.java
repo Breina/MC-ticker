@@ -130,7 +130,8 @@ public class WorldController {
 	}
 	
 	public void onSchematicUpdated() {
-		
+
+		// TODO
 		nbtController.onSchematicUpdated();
 
 		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
