@@ -55,6 +55,12 @@ public class EditorEntityPanel extends JLabel {
 		g.setColor(Constants.COLORENTITY);
 		g.drawRect(0, 0, (int) width, (int) height);
 
+		if (entity.isDead()) {
+			g.setColor(Color.BLACK);
+			g.drawLine(0, 0, (int) width, (int) height);
+			g.drawLine(0, (int) height, (int) width, 0);
+		}
+
 		// Vector
 		g.setColor(Constants.COLORENTITYVECTOR);
 

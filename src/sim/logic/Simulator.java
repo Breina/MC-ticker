@@ -47,12 +47,12 @@ public class Simulator {
 		
 		// Our implementation of chunkProvider, which will basically be our block input
 		rChunkProvider = new RChunkProvider(rBlockPos);
-		
-		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
-		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos, rIntHashMap);
-		
+
 		rEntity = new REntity(linker, rNBTTags);
-		
+
+		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
+		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos, rIntHashMap, rEntity);
+
 		new RBootstrap(linker).register();
 		
 		rNextTickListEntry = new RNextTickListEntry(linker);

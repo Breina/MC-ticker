@@ -575,7 +575,7 @@ public class SimWorld {
 		return blocks;
 	}
 
-	public Entity[] getEntityObjects() throws IllegalAccessException {
+	public Entity[] getEntityObjects() throws IllegalAccessException, InvocationTargetException {
 
 		List<Object> entities = world.getLoadedEntities();
 		Iterator<Object> entityIterator = entities.iterator();
@@ -596,8 +596,10 @@ public class SimWorld {
 			double vx = rEntity.getMotionX(entity);
 			double vy = rEntity.getMotionY(entity);
 			double vz = rEntity.getMotionZ(entity);
+			boolean isDead = rEntity.isDead(entity);
+			String id = rEntity.getEntityString(entity);
 
-			output[index++] = new Entity(x, y, z, width, height, vx, vy, vz);
+			output[index++] = new Entity(x, y, z, width, height, vx, vy, vz, isDead, id);
 		}
 
 		return output;

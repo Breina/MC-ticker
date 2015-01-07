@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 public class REntity {
 	
 	private Class<?> Entity, EntityList;
-	private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString;
+	private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString, m_onUpdate;
 	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height, f_isDead;
 
 	private RNBTTags rNBTTags;
@@ -44,6 +44,7 @@ public class REntity {
 		m_writeToNBT = linker.method("writeToNBT", Entity, NBTTagCompound);
 		m_createEntityFromNBT = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
 		m_getEntityString = linker.method("getEntityString", Entity);
+		m_onUpdate = linker.method("onUpdate", Entity);
 	}
 	
 	public Object createEntityFromNBT(Object nbtTagCompound, Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -60,6 +61,11 @@ public class REntity {
 		m_writeToNBT.invoke(entity, mcTag);
 
 		return mcTag;
+	}
+
+	public void update(Object entity) throws InvocationTargetException, IllegalAccessException {
+
+		m_onUpdate.invoke(entity);
 	}
 
 	public double getX(Object entity) throws IllegalAccessException {

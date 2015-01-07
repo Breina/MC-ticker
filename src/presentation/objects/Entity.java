@@ -4,16 +4,18 @@ public class Entity {
 
     private double x, y, z, vX, vY, vZ;
     private float width, height;
+    private boolean isDead;
+    private String id;
 
     public Entity(double x, double y, double z) {
-        this(x, y, z, 0, 0, 0, 0, 0);
+        this(x, y, z, 0, 0, 0, 0, 0, false, "");
     }
 
     public Entity(double x, double y, double z, float width, float height) {
-        this(x, y, z, width, height, 0, 0, 0);
+        this(x, y, z, width, height, 0, 0, 0, false, "");
     }
 
-    public Entity(double x, double y, double z, float width, float height, double vx, double vy, double vz) {
+    public Entity(double x, double y, double z, float width, float height, double vx, double vy, double vz, boolean isDead, String id) {
 
         this.x = x;
         this.y = y;
@@ -23,7 +25,11 @@ public class Entity {
         this.vX = vx;
         this.vY = vy;
         this.vZ = vz;
+        this.isDead = isDead;
+        this.id = id;
     }
+
+
 
     public double getX() {
         return x;
@@ -57,6 +63,14 @@ public class Entity {
         return height;
     }
 
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Entity{" +
@@ -68,6 +82,8 @@ public class Entity {
                 ", vZ=" + vZ +
                 ", width=" + width +
                 ", height=" + height +
+                ", isDead=" + isDead +
+                ", id='" + id + '\'' +
                 '}';
     }
 }

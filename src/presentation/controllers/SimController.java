@@ -138,7 +138,7 @@ public class SimController {
 		try {
 			return simWorld.getEntityObjects();
 
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | InvocationTargetException e) {
 
 			Log.e("Could not create view data for entities" + analyseException(e));
 		}
