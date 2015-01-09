@@ -5,12 +5,14 @@ import java.util.Arrays;
 public class Block {
 	
 	public static final byte BLOCK_AIR				= 0;
+	public static final byte BLOCK_IRON				= 42;
 	public static final byte BLOCK_CHEST			= 54;
 	public static final byte BLOCK_WIRE				= 55;
 	
 	public static final byte DATA_NONE = 0;
 	
 	public static final Block B_AIR = new Block(BLOCK_AIR);
+	public static final Block B_SOLID = new Block(BLOCK_IRON);
 	
 	private byte id, data;
 	

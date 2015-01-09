@@ -1,22 +1,6 @@
 package presentation.gui.windows.main;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-
+import logging.Log;
 import presentation.DesktopPane;
 import presentation.blocks.BlockCategory;
 import presentation.blocks.BlockLogic;
@@ -24,7 +8,16 @@ import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
 import presentation.controllers.TileController;
 import presentation.objects.Block;
-import logging.Log;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class BlockWindow extends MainWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
@@ -56,7 +49,7 @@ public class BlockWindow extends MainWindow {
 		buildGUI();
 	}
 	
-	public void buildGUI() {
+	private void buildGUI() {
 		
 		List<BlockCategory> categories = blockController.getAllCategories();
 		ButtonGroup group = new ButtonGroup();

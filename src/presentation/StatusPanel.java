@@ -3,6 +3,7 @@ package presentation;
 import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+import presentation.objects.Entity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.awt.*;
 public class StatusPanel extends JPanel {
 	private static final long serialVersionUID = 8458427057926796379L;
 
-	private JLabel lblWorld, lblSelection, lblBlock;
+	private JLabel lblWorld, lblSelection, lblValue;
 	
 	public StatusPanel() {
 		super();
@@ -19,11 +20,11 @@ public class StatusPanel extends JPanel {
 		
 		lblWorld = new JLabel();
 		lblSelection = new JLabel();
-		lblBlock = new JLabel();
+		lblValue = new JLabel();
 		
 		add(lblWorld);
 		add(lblSelection);
-		add(lblBlock);
+		add(lblValue);
 		
 		setPreferredSize(new Dimension(0, 20));
 		setBackground(Color.LIGHT_GRAY);
@@ -34,14 +35,21 @@ public class StatusPanel extends JPanel {
 		if (cord == null) {
 			lblWorld.setText("");
 			lblSelection.setText("");
-			lblBlock.setText("");
+			lblValue.setText("");
 			
 		} else {
 			lblWorld.setText(source.getWorldData().getName());
 			lblSelection.setText(cord.toString());
 
 			Block block = source.getWorldData().getBlock(cord.x, cord.y, cord.z);
-			lblBlock.setText(block.getId() + " : " + block.getData());
+			lblValue.setText(block.getId() + " : " + block.getData());
 		}
+	}
+
+	public void updateSelectedEntity(WorldController source, Entity entity) {
+
+		lblWorld.setText(source.getWorldData().getName());
+		lblSelection.setText(entity.getPosString());
+		lblValue.setText(entity.getId());
 	}
 }

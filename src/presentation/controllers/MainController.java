@@ -7,10 +7,7 @@ import presentation.StatusPanel;
 import presentation.exceptions.SchematicException;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
-import presentation.gui.windows.main.BlockWindow;
-import presentation.gui.windows.main.ExportWindow;
-import presentation.gui.windows.main.LogWindow;
-import presentation.gui.windows.main.ToolWindow;
+import presentation.gui.windows.main.*;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.tools.Tool;
@@ -37,6 +34,7 @@ public class MainController {
 	private RSFrame mainframe;
 	private ExportWindow exportWindow;
 	private StatusPanel statusPanel;
+	private NewWorldWindow newWorldWindow;
 	
 	private TileController tileController;
 	private BlockController blockController;
@@ -59,7 +57,8 @@ public class MainController {
 		
 		tileController = new TileController(new File(presentation.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
-		
+
+		// TODO The most emberassing part of the sim, fix this man :(
 		desktopPane = new DesktopPane();
 		statusPanel = new StatusPanel();
 		fileMenu = new FileMenu(this);
@@ -69,6 +68,7 @@ public class MainController {
 		toolWindow = new ToolWindow(this);
 		mainframe = new RSFrame(this);
 		exportWindow = new ExportWindow(this);
+		newWorldWindow = new NewWorldWindow(this);
 		
 		setupSim();
 	}
@@ -96,20 +96,6 @@ public class MainController {
 	private void setupSim() {
 
 		String mcpFolder = sim.constants.Constants.MCPCONFFOLDER;
-//		if (!(new File(mcpFolder).exists())) {
-//			
-//			MCPFolderChooser mcpDialog = new MCPFolderChooser(new File(Constants.MCPCONFFOLDER));
-//			int result = mcpDialog.showDialog(mainframe, "Select folder");
-//			
-//			if (result != MCPFolderChooser.APPROVE_OPTION)  {
-//				if (result == MCPFolderChooser.ERROR_OPTION)
-//					Log.e("Something went wrong when finding MCP's folder.");
-//				
-//				return false;
-//			}
-//			
-//			mcpFolder = mcpDialog.getSelectedFile().getPath();
-//		}
 		
 		// Dumb windows attempt
 		String minecraftFolder = Globals.getMinecraftFolder();
@@ -126,8 +112,9 @@ public class MainController {
 	}
 	
 	
-	public void newWorld() {
-		// TODO unimplemented
+	public void openNewWorldDialog() {
+
+		newWorldWindow.setVisible(true);
 	}
 	
 	public void openSchematic(File schematicFile) {
@@ -144,6 +131,76 @@ public class MainController {
 			
 		} catch (SchematicException | IOException | NoSuchAlgorithmException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			Log.e("Failed to load schematic: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void createNewWorld(String name, short xSize, short ySize, short zSize, int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty) {
+
+		try {
+					Log.i("Creating new world     " + name);
+					Log.i("Size (x, y, z)         (" + xSize + ", " + ySize + ", " + zSize + ")");
+
+			switch (worldTypeId) {
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 8:
+					Log.i("WorldType              id=" + worldTypeId + ", name=" + worldType);
+					break;
+
+				default:
+					Log.w("Custom WordType:       id=" + worldTypeId + ", name=" + worldType);
+			}
+
+					Log.i("GameType               " + gameType);
+					Log.i("Seed                   " + seed);
+
+			switch (worldProvider) {
+				case -1:
+					Log.i("WorldProvider          Hell");
+					break;
+				case 0:
+					Log.i("WorldProvider          Surface");
+					break;
+				case 1:
+					Log.i("WorldProvider          End");
+					break;
+				default:
+					Log.i("Custom WorldProvider   " + worldProvider);
+			}
+
+					Log.i("Hardcore               " + (hardcoreEnabled ? "Enabled" : "Disabled"));
+
+			switch (difficulty) {
+				case 0:
+					Log.i("Difficulty             Peaceful");
+					break;
+				case 1:
+					Log.i("Difficulty             Easy");
+					break;
+				case 2:
+					Log.i("Difficulty             Normal");
+					break;
+				case 3:
+					Log.i("Difficulty             Hard");
+					break;
+				default:
+					Log.e("Custom Difficulty      " + difficulty);
+			}
+
+			SimWorld simWorld = simulator.createWorld();
+			simWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, hardcoreEnabled, difficulty, false, false);
+
+			WorldController worldController = new WorldController(this, simWorld, name, xSize, ySize, zSize);
+			worldControllers.add(worldController);
+
+			onWorldAdded(worldController);
+
+		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+
+			Log.e("Failed to create world: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

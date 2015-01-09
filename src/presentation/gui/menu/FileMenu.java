@@ -1,17 +1,14 @@
 package presentation.gui.menu;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-
+import logging.Log;
 import presentation.controllers.MainController;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.main.Constants;
-import logging.Log;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class FileMenu extends JMenu {
 	private static final long serialVersionUID = 9058054431044220813L;
@@ -55,7 +52,7 @@ public class FileMenu extends JMenu {
 		newItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.newWorld();
+				controller.openNewWorldDialog();
 			}
 		});
 		

@@ -28,23 +28,23 @@ public class Simulator {
 		Log.i("Preparation start");
 		
 		Linker linker = new Linker(mcpFolder, minecraftFolder);
-		
+
 		rProfiler = new RProfiler(linker);
 
 		rBlockPos = new RBlockPos(linker);
 
 		rIntHashMap = new RIntHashMap(linker);
-		
+
 		rBlock = new RBlock(linker, rBlockPos);
-		
+
 		rNBTTags = new RNBTTags(linker);
-		
+
 		rTileEntity = new RTileEntity(linker);
-		
+
 		rChunkPrimer = new RChunkPrimer(linker);
-		
+
 		rChunk = new RChunk(linker, rChunkPrimer);
-		
+
 		// Our implementation of chunkProvider, which will basically be our block input
 		rChunkProvider = new RChunkProvider(rBlockPos);
 
@@ -54,7 +54,7 @@ public class Simulator {
 		rWorld = new RWorld(linker, rProfiler.getInstance(), rBlockPos, rIntHashMap, rEntity);
 
 		new RBootstrap(linker).register();
-		
+
 		rNextTickListEntry = new RNextTickListEntry(linker);
 		
 		Log.i("Done loading");

@@ -75,58 +75,7 @@ public class SimWorld {
 	 * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
 	 */
 	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty, boolean canSpawnAnimals, boolean canSpawnNPCs) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
-		switch (worldTypeId) {
-			case 1:
-			case 2:
-			case 3:
-						Log.i("WorldType              id=" + worldTypeId + ", name=" + worldType);
-				break;
-				
-			default:
-						Log.w("Custom WordType:       id=" + worldTypeId + ", name=" + worldType);
-		}
-		
-						Log.i("GameType               " + gameType);
-						Log.i("Seed                   " + seed);
-						
-		switch (worldProvider) {
-			case -1:
-						Log.i("WorldProvider          Hell");
-				break;
-			case 0:
-						Log.i("WorldProvider          Surface");
-				break;
-			case 1:
-						Log.i("WorldProvider          End");
-				break;
-			default:
-						Log.i("Custom WorldProvider   " + worldProvider);
-		}
-		
-						Log.i("Hardcore               " + (hardcoreEnabled ? "Enabled" : "Disabled"));
-						
-		switch (difficulty) {
-			case 0:
-						Log.i("Difficulty             Peaceful");
-				break;
-			case 1:
-						Log.i("Difficulty             Easy");
-				break;
-			case 2:
-						Log.i("Difficulty             Normal");
-				break;
-			case 3:
-						Log.i("Difficulty             Hard");
-				break;
-			default:
-						Log.e("Custom Difficulty      " + difficulty);
-		}
 
-						Log.i("Can spawn animals	  " + canSpawnAnimals);
-						Log.i("Can spawn NPCs		  " + canSpawnNPCs);
-		
-		Log.i("Creating new world");
 		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler, canSpawnAnimals, canSpawnNPCs);
 	}
 	
@@ -137,9 +86,15 @@ public class SimWorld {
 		for (short y = 0; y < ySize; y++)
 			for (short z = 0; z < zSize; z++)
 				for (short x = 0; x < xSize; x++)
-					blocks[x][y][z] = Block.B_AIR;
+					if (y != 0)
+						blocks[x][y][z] = Block.B_AIR;
+					else
+						blocks[x][y][z] = Block.B_SOLID;
 			
 		setBlockObjects(xSize, ySize, zSize, blocks);
+		world.setxSize((int) xSize);
+		world.setySize((int) ySize);
+		world.setzSize((int) zSize);
 	}
 
 	public void setSchematic(InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
@@ -544,8 +499,6 @@ public class SimWorld {
 	}
 
 	public Block[][][] getBlockObjects() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-
-		int size = world.getxSize() * world.getySize() * world.getzSize();
 
 		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];
 

@@ -18,6 +18,15 @@ public class ViewData {
 		this.xSize = width;
 		this.ySize = height;
 		this.zSize = length;
+
+//		if (fillNew) {
+//			blocks = new Block[width][height][length];
+//
+//			for (int x = 0; x < width; x++)
+//				for (int y = 0; y < height; y++)
+//					for (int z = 0; z < )
+//
+//		}
 	}
 
 	public void setState(Block[][][] blocks, Entity[] entities) {

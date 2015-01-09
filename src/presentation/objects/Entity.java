@@ -86,4 +86,8 @@ public class Entity {
                 ", id='" + id + '\'' +
                 '}';
     }
+
+    public String getPosString() {
+        return "(" + x + ", " + y + ", " + z + ")";
+    }
 }

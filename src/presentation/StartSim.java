@@ -17,6 +17,10 @@ public class StartSim {
 		if (args.length > 0) {
 
 			app.openSchematic(new File(args[0]));
+
+		} else {
+
+			app.openNewWorldDialog();
 		}
 	}
 }

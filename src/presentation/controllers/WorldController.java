@@ -38,6 +38,17 @@ public class WorldController {
 	
 	private NBTviewer nbtViewer;
 	private NBTController nbtController;
+
+	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
+
+		this.mainController = mainController;
+		this.simController = new SimController(simWorld);
+
+		viewData = new ViewData(name, xSize, ySize, zSize);
+		simController.createNewWorld(xSize, ySize, zSize);
+
+		loadSim();
+	}
 	
 	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
 		
@@ -50,25 +61,31 @@ public class WorldController {
 								(short) schematic.findTagByName("Width").getValue(),
 								(short) schematic.findTagByName("Height").getValue(),
 								(short) schematic.findTagByName("Length").getValue());
+
+		// Loads the world
+		simController.setSchematic(schematic);
+
+		loadSim();
+	}
+
+	private void loadSim() {
+
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
 		time = new TimeWindow(this);
-		
+
 		nbtViewer = new NBTviewer(this);
 		nbtController = new NBTController(this, nbtViewer);
-		
+
 		timeController.setTimeWindow(time);
 
 		// Adds the world to the menu
 		mainController.getWindowMenu().addWorldMenu(worldMenu);
 
-		// Loads the world
-		simController.setSchematic(schematic);
-
 		// This will fill ViewData
 		timeController.init();
 
-		windows = new CopyOnWriteArrayList<DrawingWindow>();
+		windows = new CopyOnWriteArrayList<>();
 		addNewPerspective(Orientation.TOP);
 	}
 	
@@ -131,7 +148,6 @@ public class WorldController {
 	
 	public void onSchematicUpdated() {
 
-		// TODO
 		nbtController.onSchematicUpdated();
 
 		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
