@@ -225,9 +225,8 @@ public class MainController {
 	
 	public void saveAll() {
 
-		// TODO
-//		for (WorldController worldController : worldControllers)
-//			worldController.getWorldData().save();
+		for (WorldController worldController : worldControllers)
+			worldController.save();
 	}
 	
 	public void export() {

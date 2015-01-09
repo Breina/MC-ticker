@@ -1,6 +1,8 @@
 package presentation.controllers;
 
+import logging.Log;
 import presentation.exceptions.SchematicException;
+import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.EditorPanel;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
@@ -13,9 +15,7 @@ import presentation.objects.ViewData;
 import sim.logic.SimWorld;
 import utils.Tag;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +39,8 @@ public class WorldController {
 	private NBTviewer nbtViewer;
 	private NBTController nbtController;
 
+	private File lastSavedFile;
+
 	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
 		this.mainController = mainController;
@@ -54,6 +56,7 @@ public class WorldController {
 		
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
+		this.lastSavedFile = schematicFile;
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
@@ -178,15 +181,74 @@ public class WorldController {
 		return worldMenu;
 	}
 	
-	public TimeWindow getTimeWindow() {
-		return time;
-	}
-	
 	public List<DrawingWindow> getOpenWindows() {
 		return windows;
 	}
 
+	private int updateSavedFile() {
+
+		SchematicChooser chooser = new SchematicChooser(new File("schems"));
+		chooser.setSelectedFile(new File(getWorldData().getName() + ".schematic"));
+
+		int result = chooser.showOpenDialog(mainController.getRSframe());
+
+		if (result == SchematicChooser.APPROVE_OPTION)
+			lastSavedFile = chooser.getSelectedFile();
+
+		return result;
+	}
+
+	public void save() {
+
+		if (lastSavedFile == null)
+			if (updateSavedFile() != SchematicChooser.APPROVE_OPTION)
+				return;
+
+		try {
+			simController.saveWorld(new FileOutputStream(lastSavedFile));
+
+		} catch (FileNotFoundException e) {
+
+			Log.e("Failed to save world: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void saveAs() {
+
+		if (updateSavedFile() != SchematicChooser.APPROVE_OPTION)
+			return;
+
+		try {
+			simController.saveWorld(new FileOutputStream(lastSavedFile));
+
+		} catch (FileNotFoundException e) {
+
+			Log.e("Failed to save world: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void revert() {
+
+		if (lastSavedFile == null) {
+
+			Log.e("No file to revert from");
+			return;
+		}
+
+		try {
+			simController.setSchematic(Tag.readFrom(new FileInputStream(lastSavedFile)));
+
+			timeController.init();
+			onSchematicUpdated();
+
+		} catch (IOException | NoSuchAlgorithmException e) {
+
+			Log.e("Failed to revert to file: " + e.getMessage());
+			e.printStackTrace();
+		}
+
 		// TODO
 //		worldData.load();
 //		updateWithNewData();
@@ -210,8 +272,7 @@ public class WorldController {
 	}
 	
 	public void onSelectionUpdated(Cord3S cord, EditorPanel source) {
-		
-//		selection = cord;
+
 		mainController.onSelectionUpdated(this, cord, true);
 		
 		if (source != null)

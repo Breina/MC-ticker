@@ -4,8 +4,6 @@ import presentation.controllers.WorldController;
 import presentation.objects.Orientation;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A menu for showing a World's actions
@@ -57,75 +55,40 @@ public class WorldMenu extends JMenu {
 		add(new JSeparator());
 		
 		// Add functions
-		top.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.addNewPerspective(Orientation.TOP);
-			}
-		});
+		top.addActionListener(e -> {
+            controller.addNewPerspective(Orientation.TOP);
+        });
 		
-		front.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.addNewPerspective(Orientation.FRONT);
-			}
-		});
+		front.addActionListener(e -> {
+            controller.addNewPerspective(Orientation.FRONT);
+        });
 		
-		right.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.addNewPerspective(Orientation.RIGHT);
-			}
-		});
+		right.addActionListener(e -> {
+            controller.addNewPerspective(Orientation.RIGHT);
+        });
 		
-		save.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent ae) {
+		save.addActionListener(ae -> {
+            controller.save();
+        });
+		
+		saveAs.addActionListener(e -> {
+            controller.saveAs();
+        });
+		
+		revert.addActionListener(e -> {
 
-				// TODO
-			}
-		});
+            int reply = JOptionPane.showConfirmDialog(controller.getMainController().getRSframe(),
+                    "Are you sure you want to revert all changes?", "Revert changes", JOptionPane.YES_NO_OPTION);
+
+            if (reply == JOptionPane.YES_OPTION) {
+                controller.revert();
+            }
+
+        });
 		
-		saveAs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-//				SchematicChooser chooser = new SchematicChooser(controller.getWorldData().getSchematicFile());
-//				
-//				int result = chooser.showSaveDialog(controller.getMainController().getRSframe());
-//				
-//				if (result == SchematicChooser.APPROVE_OPTION) {
-//					
-//					
-//					ViewData viewData = controller.getWorldData();
-//					viewData.setSchematicFile(chooser.getSelectedFile());
-//					viewData.save();
-//					
-//				} else if (result == SchematicChooser.ERROR_OPTION)
-//					Log.e("Something when wrong when selecting a file to save to.");
-			}
-		});
-		
-		revert.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				int reply = JOptionPane.showConfirmDialog(controller.getMainController().getRSframe(),
-						"Are you sure you want to revert all changes?", "Revert changes", JOptionPane.YES_NO_OPTION);
-				
-				if (reply == JOptionPane.YES_OPTION) {
-					controller.revert();
-				}
-				
-			}
-		});
-		
-		closeAll.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.close();
-			}
-		});
+		closeAll.addActionListener(e -> {
+            controller.close();
+        });
 	}
 	
 	/**
