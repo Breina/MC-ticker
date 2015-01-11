@@ -1,5 +1,6 @@
 package presentation.tools;
 
+import logging.Log;
 import presentation.controllers.MainController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
@@ -37,6 +38,9 @@ public class ToolPlace extends Tool {
 	
 	private void setBlock() {
 		Cord3S c = getSelectionCord();
+
+		if (c == null)
+			Log.e("Selected cord is null!");
 		
 		getWorldController().setBlock(c.x, c.y, c.z, dragBlock);
 	}

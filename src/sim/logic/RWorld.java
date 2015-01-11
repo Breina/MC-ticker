@@ -261,11 +261,12 @@ public class RWorld {
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
 		
 		advanceTicks(world, advanceTicks);
-		
+
+		// The order of these is cast in stone
 		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
-		tickTileEntities(world);
-		tickEntities(world);
 		tickBlockEvents(world);
+		tickEntities(world);
+		tickTileEntities(world);
 
 		world.setDoTimeUpdate(true);
 
@@ -307,25 +308,29 @@ public class RWorld {
 		int length = Array.getLength(blockEvents);
 
 		for (int i = 0; i < length; i++) {
+
 			Object blockEventDataArray = Array.get(blockEvents, i);
 
-			Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
+			// Repeat until there are no more block events (meaning instantwire)
+			while (!((ArrayList) blockEventDataArray).isEmpty()) {
 
-			for (int j = 0; j < blockEventDataObjects.length; j++) {
+				Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
+				((ArrayList) blockEventDataArray).clear();
 
-				Object blockEventData = blockEventDataObjects[j];
+				for (int j = 0; j < blockEventDataObjects.length; j++) {
 
-				int eventId = (int) m_getEventID.invoke(blockEventData);
-				int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
-				Object blockPos = m_getEventPos.invoke(blockEventData);
+					Object blockEventData = blockEventDataObjects[j];
 
-				Object blockState = getBlockState(world, rBlockPos.getX(blockPos), rBlockPos.getY(blockPos), rBlockPos.getZ(blockPos));
-				Object block = rBlock.getBlockFromState(blockState);
+					int eventId = (int) m_getEventID.invoke(blockEventData);
+					int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
+					Object blockPos = m_getEventPos.invoke(blockEventData);
 
-				rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
+					Object blockState = getBlockState(world, rBlockPos.getX(blockPos), rBlockPos.getY(blockPos), rBlockPos.getZ(blockPos));
+					Object block = rBlock.getBlockFromState(blockState);
+
+					rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
+				}
 			}
-
-			((ArrayList) blockEventDataArray).clear();
 		}
 	}
 	
