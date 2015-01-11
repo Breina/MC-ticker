@@ -309,11 +309,11 @@ public class RWorld {
 		for (int i = 0; i < length; i++) {
 			Object blockEventDataArray = Array.get(blockEvents, i);
 
-			Iterator<Object> blockEventDataIterator = ((ArrayList) blockEventDataArray).iterator();
+			Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
 
-			while (blockEventDataIterator.hasNext()) {
+			for (int j = 0; j < blockEventDataObjects.length; j++) {
 
-				Object blockEventData = blockEventDataIterator.next();
+				Object blockEventData = blockEventDataObjects[j];
 
 				int eventId = (int) m_getEventID.invoke(blockEventData);
 				int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
@@ -323,9 +323,9 @@ public class RWorld {
 				Object block = rBlock.getBlockFromState(blockState);
 
 				rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
-
-				blockEventDataIterator.remove();
 			}
+
+			((ArrayList) blockEventDataArray).clear();
 		}
 	}
 	
