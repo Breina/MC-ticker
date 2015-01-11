@@ -1,12 +1,10 @@
 package presentation.gui.menu;
 
+import presentation.gui.InternalWindow;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JCheckBox;
-
-import presentation.InternalWindow;
-import presentation.gui.windows.main.MainWindow;
 
 public class LinkedCheckbox extends JCheckBox {
 	private static final long serialVersionUID = 8837610138802553238L;

@@ -1,12 +1,11 @@
 package presentation.gui.windows.world;
 
+import presentation.controllers.WorldController;
+import presentation.gui.InternalWindow;
+import presentation.gui.menu.LinkedCheckbox;
+
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
-import presentation.InternalWindow;
-import presentation.controllers.MainController;
-import presentation.controllers.WorldController;
-import presentation.gui.menu.LinkedCheckbox;
 
 public class WorldWindow extends InternalWindow {
 	

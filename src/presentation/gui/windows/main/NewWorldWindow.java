@@ -1,7 +1,7 @@
 package presentation.gui.windows.main;
 
-import presentation.InternalWindow;
 import presentation.controllers.MainController;
+import presentation.gui.InternalWindow;
 
 import javax.swing.*;
 import java.awt.*;

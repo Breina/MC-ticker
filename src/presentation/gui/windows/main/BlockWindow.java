@@ -1,12 +1,12 @@
 package presentation.gui.windows.main;
 
 import logging.Log;
-import presentation.DesktopPane;
 import presentation.blocks.BlockCategory;
 import presentation.blocks.BlockLogic;
 import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
 import presentation.controllers.TileController;
+import presentation.gui.DesktopPane;
 import presentation.objects.Block;
 
 import javax.imageio.ImageIO;

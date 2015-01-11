@@ -1,9 +1,9 @@
 package presentation.gui.windows.world;
 
-import presentation.DesktopPane;
 import presentation.Util;
 import presentation.controllers.TimeController;
 import presentation.controllers.WorldController;
+import presentation.gui.DesktopPane;
 import presentation.gui.time.PlayState;
 
 import javax.swing.*;

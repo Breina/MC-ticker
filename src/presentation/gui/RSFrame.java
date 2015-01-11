@@ -1,13 +1,11 @@
-package presentation;
+package presentation.gui;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-
+import logging.Log;
 import presentation.controllers.MainController;
 import presentation.main.Constants;
-import logging.Log;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class RSFrame extends JFrame {
 	private static final long serialVersionUID = -5737200021101047512L;
@@ -34,6 +32,7 @@ public class RSFrame extends JFrame {
 		add(desktop, BorderLayout.CENTER);
 		
 		add(controller.getStatusPanel(), BorderLayout.SOUTH);
+		add(controller.getToolbar(), BorderLayout.PAGE_START);
 
 		Log.i("Logwindow loaded.");
 

@@ -1,11 +1,11 @@
 package presentation.gui.windows.main;
 
+import presentation.controllers.MainController;
+import presentation.gui.InternalWindow;
+import presentation.gui.menu.LinkedCheckbox;
+
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
-import presentation.InternalWindow;
-import presentation.controllers.MainController;
-import presentation.gui.menu.LinkedCheckbox;
 
 public class MainWindow extends InternalWindow {
 	private static final long serialVersionUID = -7291404124042489301L;

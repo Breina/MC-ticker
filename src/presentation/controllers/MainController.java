@@ -1,13 +1,17 @@
 package presentation.controllers;
 
 import logging.Log;
-import presentation.DesktopPane;
-import presentation.RSFrame;
 import presentation.StatusPanel;
 import presentation.exceptions.SchematicException;
+import presentation.gui.DesktopPane;
+import presentation.gui.RSFrame;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
-import presentation.gui.windows.main.*;
+import presentation.gui.tools.Toolbar;
+import presentation.gui.windows.main.BlockWindow;
+import presentation.gui.windows.main.ExportWindow;
+import presentation.gui.windows.main.LogWindow;
+import presentation.gui.windows.main.NewWorldWindow;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.tools.Tool;
@@ -30,11 +34,11 @@ public class MainController {
 	private FileMenu fileMenu;
 	private LogWindow logWindow;
 	private BlockWindow blockWindow;
-	private ToolWindow toolWindow;
 	private RSFrame mainframe;
 	private ExportWindow exportWindow;
 	private StatusPanel statusPanel;
 	private NewWorldWindow newWorldWindow;
+	private Toolbar toolbar;
 	
 	private TileController tileController;
 	private BlockController blockController;
@@ -61,11 +65,11 @@ public class MainController {
 		// TODO The most emberassing part of the sim, fix this man :(
 		desktopPane = new DesktopPane();
 		statusPanel = new StatusPanel();
+		toolbar = new Toolbar(this);
 		fileMenu = new FileMenu(this);
 		windowMenu = new WindowMenu(this);
 		logWindow = new LogWindow(this);
 		blockWindow = new BlockWindow(this);
-		toolWindow = new ToolWindow(this);
 		mainframe = new RSFrame(this);
 		exportWindow = new ExportWindow(this);
 		newWorldWindow = new NewWorldWindow(this);
@@ -253,6 +257,8 @@ public class MainController {
 	public BlockWindow getEditorWindow() {
 		return blockWindow;
 	}
+
+	public Toolbar getToolbar() { return toolbar; }
 	
 	public RSFrame getRSframe() {
 		return mainframe;

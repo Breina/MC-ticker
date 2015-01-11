@@ -1,7 +1,7 @@
 package presentation.gui.windows.world;
 
-import presentation.InternalWindow;
 import presentation.controllers.WorldController;
+import presentation.gui.InternalWindow;
 import presentation.gui.editor.EditorPanel;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;

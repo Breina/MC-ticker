@@ -1,8 +1,8 @@
-package presentation;
-
-import javax.swing.JInternalFrame;
+package presentation.gui;
 
 import presentation.controllers.MainController;
+
+import javax.swing.*;
 
 public class InternalWindow extends JInternalFrame {
 	private static final long serialVersionUID = 7086467386852495806L;
