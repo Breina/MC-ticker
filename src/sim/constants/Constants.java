@@ -50,7 +50,8 @@ public class Constants {
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
 		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
-		{"getEntityString", "Returns the string that identifies"}};
+		{"getEntityString", "Returns the string that identifies"}, {"getEventID"}, {"getEventParameter"},
+		{"onBlockEventReceived"}};
 
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -68,11 +69,7 @@ public class Constants {
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
-		"IUpdatePlayerListBox", "RegistryNamespaced"};
-
-	// TODO remove
-	// net/minecraft/server/MinecraftServer
-	public final static String[] UNOBFUSCATEDCLASSES = {"net.minecraft.server.MinecraftServer"};
+		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData"};
 
 	// Untranslated methods
 	public final static String WORLD_GETBLOCKSTATE = "p";
@@ -81,8 +78,7 @@ public class Constants {
 	public final static String WORLD_ADDTICKENTRY = "b";
 	public final static String TILEENTITY_READFROMNBT = "b";
 	public final static String NBTTAGCOMPOUND_LOAD = "a";
-	public final static String WORLDSERVER_MCSERVER = "a";
-	public final static String WORLD_ONENTITYADDED = "a";
+	public final static String BLOCKEVENTDATA_GETBLOCKPOS = "a";
 	
 	// Untranslated fields
 	public final static String CHUNKPRIMER_DATA = "a";

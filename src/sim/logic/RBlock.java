@@ -20,7 +20,7 @@ public class RBlock {
 	private Class<?> Block, EntityPlayer;
 	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
 		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties,
-		m_getNameForObject;
+		m_getNameForObject, m_onBlockEventReceived;
 	private Field f_unlocalizedName, f_blockRegistry;
 
 	private RBlockPos rBlockPos;
@@ -55,7 +55,9 @@ public class RBlock {
 		Class<?> PropertyDirection = linker.getClass("PropertyDirection");
 		Class<?> IProperty = linker.getClass("IProperty");
 		Class<?> RegistryNamespaced = linker.getClass("RegistryNamespaced");
-		
+		Class<?> World = linker.getClass("World");
+		Class<?> BlockPos = linker.getClass("BlockPos");
+
 		m_getBlockById = linker.method("getBlockById", Block, int.class);
 		m_getStateFromMeta = linker.method("getStateFromMeta", Block, int.class);
 		m_getIdFromBlock = linker.method("getIdFromBlock", Block, Block);
@@ -64,6 +66,7 @@ public class RBlock {
 		m_getValue = linker.method("getValue", IBlockState, IProperty);
 		m_hasTileEntity = linker.method("hasTileEntity", Block);
 		m_getProperties = linker.method("getProperties", IBlockState);
+		m_onBlockEventReceived = linker.method("onBlockEventReceived", Block, World, BlockPos, IBlockState, int.class, int.class);
 
 		m_onBlockActivated = linker.method("onBlockActivated", Block, linker.getClass("World"), linker.getClass("BlockPos"),
 				IBlockState, EntityPlayer, linker.getClass("EnumFacing"), float.class, float.class, float.class);
@@ -188,6 +191,11 @@ public class RBlock {
 		Object block = m_getBlock.invoke(state);
 		
 		return block;
+	}
+
+	public boolean onBlockEventReceived(Object block, Object world, Object blockPos, Object blockState, int eventId, int eventParameter) throws InvocationTargetException, IllegalAccessException {
+
+		return (boolean) m_onBlockEventReceived.invoke(block, world, blockPos, blockState, eventId,  eventParameter);
 	}
 
 	public Object getPropertyFacing(Object blockState) throws InvocationTargetException, IllegalAccessException {

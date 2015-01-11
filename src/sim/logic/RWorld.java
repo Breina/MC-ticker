@@ -17,31 +17,34 @@ import java.util.*;
 public class RWorld {
 	
 	private Class<?> WorldServer, WorldProvider, WorldType, WorldSettings, WorldInfo, IChunkProvider, GameType, World,
-			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList, MinecraftServer;
+			IntHashMap, BlockPos, WorldBorder, ServerBlockEventList;
 
 	private Method m_tickUpdates, m_setWorldTime, m_getWorldTime, m_getProviderForDimension,
-			m_spawnEntityInWorld, m_onUpdate, m_addTickEntry, m_getBlockState, m_setBlockState,
-			m_incrementTotalWorldTime, m_getTileEntity, m_update, m_setCanSpawnAnimals, m_setCanSpawnNPCs;
+			m_spawnEntityInWorld, m_addTickEntry, m_getBlockState, m_setBlockState,
+			m_incrementTotalWorldTime, m_getTileEntity, m_update, m_getEventID,
+			m_getEventParameter, m_getEventPos;
 
 	private Field f_provider, f_levelSaving, f_theProfiler, f_pendingTickListEntriesTreeSet, f_chunkProvider,
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
 			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
-			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents, f_mcServer;
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
 			c_serverBlockEvents;
 
 	private Enum<?> e_GameType;
 
+	private RBlock rBlock;
 	private RBlockPos rBlockPos;
 	private RIntHashMap rIntHashMap;
 	private REntity rEntity;
 	
-	public RWorld(Linker linker, Object profiler, RBlockPos rBlockPos, RIntHashMap rIntHashMap, REntity rEntity) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
+	public RWorld(Linker linker, Object profiler, RBlock rBlock, RBlockPos rBlockPos, RIntHashMap rIntHashMap, REntity rEntity) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException {
 		
 		prepareWorld(linker, profiler);
-		
+
+		this.rBlock = rBlock;
 		this.rBlockPos = rBlockPos;
 		this.rIntHashMap = rIntHashMap;
 		this.rEntity = rEntity;
@@ -65,13 +68,12 @@ public class RWorld {
 		IntHashMap							= linker.getClass("IntHashMap");
 		BlockPos							= linker.getClass("BlockPos");
 		ServerBlockEventList				= linker.getClass("WorldServer$ServerBlockEventList");
-		MinecraftServer						= linker.getClass("net.minecraft.server.MinecraftServer");
-		
+
 		Class<?> IBlockState				= linker.getClass("IBlockState");
 		Class<?> Block						= linker.getClass("Block");
 		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
 		Class<?> IUpdatePlayerListBox		= linker.getClass("IUpdatePlayerListBox");
-		Class<?> Entity						= linker.getClass("Entity");
+		Class<?> BlockEventData				= linker.getClass("BlockEventData");
 		
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
@@ -128,6 +130,9 @@ public class RWorld {
 		m_getTileEntity						= linker.method("getTileEntity", World, BlockPos);
 		m_update							= linker.method("update", IUpdatePlayerListBox);
 
+		m_getEventID						= linker.method("getEventID", BlockEventData);
+		m_getEventParameter					= linker.method("getEventParameter", BlockEventData);
+
 		// TODO remove
 //		m_setCanSpawnAnimals				= linker.method("setCanSpawnAnimals", MinecraftServer, boolean.class);
 //		m_setCanSpawnNPCs					= linker.method("setCanSpawnNPCs", MinecraftServer, boolean.class);
@@ -136,14 +141,13 @@ public class RWorld {
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
 		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
+		m_getEventPos						= BlockEventData.getDeclaredMethod(Constants.BLOCKEVENTDATA_GETBLOCKPOS);
 
 		f_theProfiler						= World.getField(Constants.WORLD_THEPROFILER);
 		f_theProfiler						.setAccessible(true);
 
 		f_serverBlockEvents					= WorldServer.getDeclaredField(Constants.WORLDSERVER_SERVERBLOCKEVENTLIST);
 		f_serverBlockEvents					.setAccessible(true);
-
-		f_mcServer							= WorldServer.getDeclaredField(Constants.WORLDSERVER_MCSERVER);
 	}
 	
 	/**
@@ -167,14 +171,7 @@ public class RWorld {
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		Objenesis objenesis = new ObjenesisStd(false); // <3 I LOVE YOU OBJENESIS <3
-
 		Object worldServer = objenesis.newInstance(WorldServer);
-
-		// TODO remove
-//		Object mcServer = objenesis.newInstance(MinecraftServer); // YES YES YES :D
-//		m_setCanSpawnAnimals.invoke(mcServer, canSpawnAnimals);
-//		m_setCanSpawnNPCs.invoke(mcServer, canSpawnNPCs);
-//		f_mcServer.set(worldServer, mcServer);
 		
 		Object worldProvider = m_getProviderForDimension.invoke(null, _worldProvider);
 		f_provider.set(worldServer, worldProvider);
@@ -188,7 +185,7 @@ public class RWorld {
 		
 		f_pendingTickListEntriesTreeSet.set(worldServer, pendingTickListEntriesTreeSet);
 		f_pendingTickListEntriesHashSet.set(worldServer, pendingTickListEntriesHashSet);
-		f_pendingTickListEntriesThisTick.set(worldServer, new ArrayList<Object>());
+		f_pendingTickListEntriesThisTick.set(worldServer, new ArrayList<>());
 		
 		Object worldType = c_worldType.newInstance(_worldTypeId, _worldType);
 		e_GameType = Enum.valueOf((Class<Enum>) GameType, _gameType);
@@ -207,9 +204,8 @@ public class RWorld {
 		
 		f_isRemote.setBoolean(worldServer, false);
 
-		Object blockEventArray = Array.newInstance(ServerBlockEventList, 2);
+		Object blockEventArray = Array.newInstance(ServerBlockEventList, 1);
 		Array.set(blockEventArray, 0, c_serverBlockEvents.newInstance());
-		Array.set(blockEventArray, 1, c_serverBlockEvents.newInstance());
 		f_serverBlockEvents.set(worldServer, blockEventArray);
 
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
@@ -259,7 +255,7 @@ public class RWorld {
 	/**
 	 * This invokes the relevant function once
 	 */
-	public boolean tick(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public boolean tick(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		if (Constants.DEBUG_WORLD)
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
@@ -269,6 +265,7 @@ public class RWorld {
 		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
 		tickTileEntities(world);
 		tickEntities(world);
+		tickBlockEvents(world);
 
 		world.setDoTimeUpdate(true);
 
@@ -277,10 +274,11 @@ public class RWorld {
 
 	public void tickTileEntities(WorldInstance world) throws InvocationTargetException, IllegalAccessException {
 
-		List<Object> tileEntities = world.getTickableTileEntities();
+		// TODO I would prefer using an iterator, but it throws a ConcurrentModificationException
+		Object[] tileEntities = world.getTickableTileEntities().toArray();
 
-		for (Object tileEntity : tileEntities)
-			m_update.invoke(tileEntity);
+		for (int i = 0; i < tileEntities.length; i++)
+			m_update.invoke(tileEntities[i]);
 	}
 
 	public void tickEntities(WorldInstance world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -296,6 +294,38 @@ public class RWorld {
 			}
 
 			rEntity.update(entity);
+		}
+	}
+
+	/**
+	 * WorldServer overrides World's behavior without calling its super method,
+	 * so fixing that here.
+	 */
+	public void tickBlockEvents(WorldInstance world) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+
+		Object blockEvents = f_serverBlockEvents.get(world.getWorld());
+		int length = Array.getLength(blockEvents);
+
+		for (int i = 0; i < length; i++) {
+			Object blockEventDataArray = Array.get(blockEvents, i);
+
+			Iterator<Object> blockEventDataIterator = ((ArrayList) blockEventDataArray).iterator();
+
+			while (blockEventDataIterator.hasNext()) {
+
+				Object blockEventData = blockEventDataIterator.next();
+
+				int eventId = (int) m_getEventID.invoke(blockEventData);
+				int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
+				Object blockPos = m_getEventPos.invoke(blockEventData);
+
+				Object blockState = getBlockState(world, rBlockPos.getX(blockPos), rBlockPos.getY(blockPos), rBlockPos.getZ(blockPos));
+				Object block = rBlock.getBlockFromState(blockState);
+
+				rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
+
+				blockEventDataIterator.remove();
+			}
 		}
 	}
 	
