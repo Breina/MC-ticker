@@ -1,25 +1,20 @@
-package presentation.gui.windows.main;
+package presentation.gui;
 
-import logging.Log;
 import presentation.blocks.BlockCategory;
 import presentation.blocks.BlockLogic;
 import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
 import presentation.controllers.TileController;
-import presentation.gui.DesktopPane;
 import presentation.objects.Block;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-public class BlockWindow extends MainWindow {
+public class BlockPanel extends JPanel {
 	private static final long serialVersionUID = -6830958137411873462L;
 	
 	private final static int BTNSIZE = 25;
@@ -27,24 +22,13 @@ public class BlockWindow extends MainWindow {
 	private MainController mainController;
 	private BlockController blockController;
 	private TileController tileController;
-	
-	private Block selectedBlock;
 
-	public BlockWindow(MainController mainController) {
-		super(mainController, "Blocks", true);
-		
-		try {
-			setFrameIcon(new ImageIcon(ImageIO.read(new File("img/tools/block.png"))));
-			
-		} catch (IOException e) {
-			Log.e("Failed to set icon for blocks window: " + e.getMessage());
-		}
+	public BlockPanel(MainController mainController) {
+		super();
 		
 		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();
 		this.tileController = mainController.getTileController();
-		
-		setLocation(0, 52);
 		
 		buildGUI();
 	}
@@ -97,9 +81,5 @@ public class BlockWindow extends MainWindow {
 			
 			main.add(pnlCategory);
 		}
-		
-		pack();
-		
-		setLayer(DesktopPane.PALETTE_LAYER);		
 	}
 }

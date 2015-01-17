@@ -2,6 +2,8 @@ package presentation.gui;
 
 import logging.Log;
 import presentation.controllers.MainController;
+import presentation.gui.toolbar.Timebar;
+import presentation.gui.toolbar.WrappingLayout;
 import presentation.main.Constants;
 
 import javax.swing.*;
@@ -32,7 +34,14 @@ public class RSFrame extends JFrame {
 		add(desktop, BorderLayout.CENTER);
 		
 		add(controller.getStatusPanel(), BorderLayout.SOUTH);
-		add(controller.getToolbar(), BorderLayout.PAGE_START);
+		add(controller.getBlockPanel(), BorderLayout.WEST);
+
+		JPanel toolbar = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
+
+		toolbar.add(controller.getToolbar());
+		toolbar.add(new Timebar(controller));
+
+		add(toolbar, BorderLayout.NORTH);
 
 		Log.i("Logwindow loaded.");
 

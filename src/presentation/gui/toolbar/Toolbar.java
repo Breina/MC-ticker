@@ -1,4 +1,4 @@
-package presentation.gui.tools;
+package presentation.gui.toolbar;
 
 import presentation.Util;
 import presentation.controllers.MainController;
@@ -9,8 +9,6 @@ import presentation.tools.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseMotionListener;
 
 public class Toolbar extends JToolBar {
@@ -24,13 +22,7 @@ public class Toolbar extends JToolBar {
 
         this.mainController = mainController;
 
-        buildGUI();
-    }
-
-    public void buildGUI() {
-
-        setLayout(new GridLayout(1, 5));
-
+        setLayout(new FlowLayout());
         ButtonGroup group = new ButtonGroup();
         addTool(group, new ToolActivate(mainController));
         addTool(group, new ToolSelect(mainController));
@@ -57,15 +49,12 @@ public class Toolbar extends JToolBar {
             selectTool(tool);
         }
 
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectTool(tool);
-            }
+        btn.addActionListener(e -> {
+            selectTool(tool);
         });
     }
 
-    public void selectTool(Tool tool) {
+    private void selectTool(Tool tool) {
         for (WorldController worldController : mainController.getWorldControllers())
             for (DrawingWindow window : worldController.getOpenWindows()) {
                 EditorPanel editor = window.getEditor();
@@ -82,5 +71,4 @@ public class Toolbar extends JToolBar {
         currentTool = tool;
         mainController.setTool(tool);
     }
-
 }

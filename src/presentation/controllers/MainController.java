@@ -3,12 +3,12 @@ package presentation.controllers;
 import logging.Log;
 import presentation.StatusPanel;
 import presentation.exceptions.SchematicException;
+import presentation.gui.BlockPanel;
 import presentation.gui.DesktopPane;
 import presentation.gui.RSFrame;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
-import presentation.gui.tools.Toolbar;
-import presentation.gui.windows.main.BlockWindow;
+import presentation.gui.toolbar.Toolbar;
 import presentation.gui.windows.main.ExportWindow;
 import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.NewWorldWindow;
@@ -33,7 +33,7 @@ public class MainController {
 	private WindowMenu windowMenu;
 	private FileMenu fileMenu;
 	private LogWindow logWindow;
-	private BlockWindow blockWindow;
+	private BlockPanel blockPanel;
 	private RSFrame mainframe;
 	private ExportWindow exportWindow;
 	private StatusPanel statusPanel;
@@ -69,7 +69,7 @@ public class MainController {
 		fileMenu = new FileMenu(this);
 		windowMenu = new WindowMenu(this);
 		logWindow = new LogWindow(this);
-		blockWindow = new BlockWindow(this);
+		blockPanel = new BlockPanel(this);
 		mainframe = new RSFrame(this);
 		exportWindow = new ExportWindow(this);
 		newWorldWindow = new NewWorldWindow(this);
@@ -253,9 +253,9 @@ public class MainController {
 	public WindowMenu getWindowMenu() {
 		return windowMenu;
 	}
-	
-	public BlockWindow getEditorWindow() {
-		return blockWindow;
+
+	public BlockPanel getBlockPanel() {
+		return blockPanel;
 	}
 
 	public Toolbar getToolbar() { return toolbar; }
