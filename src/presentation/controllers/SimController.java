@@ -146,6 +146,11 @@ public class SimController {
 		return null;
 	}
 
+	public long getWorldTime() {
+
+		return simWorld.getWorldTime();
+	}
+
 	public static String analyseException(Exception e) {
 
 		String msg;

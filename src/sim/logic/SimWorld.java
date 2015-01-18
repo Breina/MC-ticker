@@ -557,4 +557,8 @@ public class SimWorld {
 
 		return output;
 	}
+
+	public long getWorldTime() {
+		return world.getWorldTime();
+	}
 }

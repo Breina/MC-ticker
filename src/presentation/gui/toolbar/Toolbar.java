@@ -41,6 +41,7 @@ public class Toolbar extends JToolBar {
             btn.setToolTipText(tool.getName());
         }
 
+        btn.setPreferredSize(new Dimension(35, 35));
         add(btn);
         group.add(btn);
 

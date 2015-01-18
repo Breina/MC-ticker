@@ -6,8 +6,10 @@ import presentation.exceptions.SchematicException;
 import presentation.gui.BlockPanel;
 import presentation.gui.DesktopPane;
 import presentation.gui.RSFrame;
+import presentation.gui.WorldListener;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
+import presentation.gui.toolbar.Timebar;
 import presentation.gui.toolbar.Toolbar;
 import presentation.gui.windows.main.ExportWindow;
 import presentation.gui.windows.main.LogWindow;
@@ -39,6 +41,7 @@ public class MainController {
 	private StatusPanel statusPanel;
 	private NewWorldWindow newWorldWindow;
 	private Toolbar toolbar;
+	private Timebar timebar;
 	
 	private TileController tileController;
 	private BlockController blockController;
@@ -46,6 +49,8 @@ public class MainController {
 	
 	private WorldController selectionController;
 	private Cord3S selectionCord;
+
+	private List<WorldListener> worldListeners;
 	
 	private Tool tool;
 	
@@ -57,7 +62,8 @@ public class MainController {
 		
 		setLF();
 		
-		worldControllers = new ArrayList<WorldController>();
+		worldControllers = new ArrayList<>();
+		worldListeners = new ArrayList<>();
 		
 		tileController = new TileController(new File(presentation.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
@@ -66,6 +72,7 @@ public class MainController {
 		desktopPane = new DesktopPane();
 		statusPanel = new StatusPanel();
 		toolbar = new Toolbar(this);
+		timebar = new Timebar(this);
 		fileMenu = new FileMenu(this);
 		windowMenu = new WindowMenu(this);
 		logWindow = new LogWindow(this);
@@ -210,11 +217,18 @@ public class MainController {
 	}
 	
 	public void onWorldAdded(WorldController worldController) {
-		exportWindow.onWorldAdded(worldController);
+
+		for (WorldListener listener : worldListeners)
+			listener.onWorldAdded(worldController);
 	}
 	
 	public void onWorldRemoved(WorldController worldController) {
-		exportWindow.onWorldRemoved(worldController);
+		for (WorldListener listener : worldListeners)
+			listener.onWorldRemoved(worldController);
+	}
+
+	public void addWorldListener(WorldListener worldListener) {
+		worldListeners.add(worldListener);
 	}
 	
 	public void onSelectionUpdated(WorldController source, Cord3S cord, boolean dragTools) {
@@ -259,6 +273,8 @@ public class MainController {
 	}
 
 	public Toolbar getToolbar() { return toolbar; }
+
+	public Timebar getTimebar() { return timebar; }
 	
 	public RSFrame getRSframe() {
 		return mainframe;

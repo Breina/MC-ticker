@@ -2,7 +2,6 @@ package presentation.gui;
 
 import logging.Log;
 import presentation.controllers.MainController;
-import presentation.gui.toolbar.Timebar;
 import presentation.gui.toolbar.WrappingLayout;
 import presentation.main.Constants;
 
@@ -39,7 +38,7 @@ public class RSFrame extends JFrame {
 		JPanel toolbar = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
 
 		toolbar.add(controller.getToolbar());
-		toolbar.add(new Timebar(controller));
+		toolbar.add(controller.getTimebar());
 
 		add(toolbar, BorderLayout.NORTH);
 

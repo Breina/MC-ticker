@@ -1,33 +1,19 @@
 package presentation.gui.windows.main;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import logging.Log;
+import presentation.controllers.MainController;
+import presentation.controllers.WorldController;
+import presentation.gui.WorldListener;
+import presentation.main.Constants;
+import presentation.threads.ExportRunnable;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Iterator;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-
-import presentation.controllers.MainController;
-import presentation.controllers.WorldController;
-import presentation.main.Constants;
-import presentation.objects.ViewData;
-import presentation.threads.ExportRunnable;
-import logging.Log;
-
-public class ExportWindow extends MainWindow {
+public class ExportWindow extends MainWindow implements WorldListener {
 	private static final long serialVersionUID = 4399955648841335487L;
 	
 	private MainController controller;
@@ -42,6 +28,7 @@ public class ExportWindow extends MainWindow {
 		super(controller, "Export", false);
 		
 		this.controller = controller;
+		controller.addWorldListener(this);
 		
 		JPanel p0 = new JPanel();
 			p0.setLayout(new BorderLayout());
@@ -124,11 +111,13 @@ public class ExportWindow extends MainWindow {
 		setLocation(200, 200);
 		pack();
 	}
-	
+
+	@Override
 	public void onWorldAdded(WorldController worldController) {
 		worldChooser.addItem(worldController);
 	}
-	
+
+	@Override
 	public void onWorldRemoved(WorldController worldController) {
 		worldChooser.removeItem(worldController);
 	}

@@ -7,7 +7,6 @@ import presentation.gui.editor.EditorPanel;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
-import presentation.gui.windows.world.TimeWindow;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.objects.Orientation;
@@ -30,7 +29,6 @@ public class WorldController {
 	
 	private CopyOnWriteArrayList<DrawingWindow> windows;
 	private WorldMenu worldMenu;
-	private TimeWindow time;
 	private TimeController timeController;
 	
 	private MainController mainController;
@@ -75,12 +73,9 @@ public class WorldController {
 
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
-		time = new TimeWindow(this);
 
 		nbtViewer = new NBTviewer(this);
 		nbtController = new NBTController(this, nbtViewer);
-
-		timeController.setTimeWindow(time);
 
 		// Adds the world to the menu
 		mainController.getWindowMenu().addWorldMenu(worldMenu);
@@ -130,8 +125,7 @@ public class WorldController {
 		while (drawingWindowIterator.hasNext()) {
 			drawingWindowIterator.next().dispose();
 		}
-		
-		time.dispose();
+
 		timeController.stopThread();
 		
 		nbtViewer.dispose();

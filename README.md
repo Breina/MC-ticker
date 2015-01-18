@@ -28,7 +28,7 @@ If we inspect these examples of fine programming, we can notice 2 trends:
 1. They're all called redstone simulators.
 2. They view 2 layers of blocks at once.
 	
-I'm not following either of these treds. Because this simulator will simulate
+I'm not following either of these trends. Because this simulator will simulate
 everything, not just redstone. It would take a lot more work to provide
 graphics for cases where the block is above and such, so I just chose not to.
 
@@ -55,33 +55,23 @@ graphics are provided and configured, those should work the same way.
 
 What is done and what is not done
 ---------------------------------
-So I'm making this open source and didn't clean up at all, dear me! Just so
-that there is no confusion about buttons not working and such. I was in the
-middle of a couple things before I got distracted/busy. Moreso I was working
-on the part between the simulator ticking and the GUI displaying it. So sadly
-in its current state you won't see much change. But when it's done, there
-will be awesome time-controls.
+- Normal block logic always works (wires, repeaters, torches, ...)
+- TileEntities work (comparators, hoppers, droppers, ...)
+- Item entities work, but not mobs or other special cases
+- Light updates are completely ignored
 
-New schematic:		Unimplemented
-Block placement:	Should mostly work, but no logic is updated (no wires
-					going on).
-Time controls:		Time can be simulated forward for blocks and some
-					tileEntities (no items yet due to current
-					incompatibilities). The actual time controls aren't hooked
-					up yet though.
-Export:				Works
-Publish:			Last time I did anything, they were uploading to imgur,
-					but nothing is done with the links yet.
-					
-I didn't start on entities yet, as I wasn't properly done with TileEntities.
-Creating entities will crash the sim, so don't do it yet (inproper torch
-placement, water washing stuff away).
+Usage notes and bugs
+--------------------
+- When placing a block that hangs off another one, you'll have to rotate it
+correctly before updating.
+- You can't simulate 2 worlds at once
+- The tick counter can get messed up
 
 Installation
 ------------
 Requirements:
-* MCP version 9.08
-* Minecraft version 1.7.10
+* MCP version 9.10
+* Minecraft version 1.8
 
 Steps:
 	

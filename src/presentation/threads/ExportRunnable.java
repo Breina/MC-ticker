@@ -139,11 +139,9 @@ public class ExportRunnable implements Runnable {
 
 	private void generateSeries(Orientation side, WorldController worldController, String path, boolean imgs, boolean gif)
 			throws IOException {
-
-		Log.w("Export not implemented yet");
 		
-//		Log.i("Rendering layers: "
-//				+ (side == Orientation.TOP ? "top" : (side == Orientation.RIGHT ? "right" : "front")));
+		Log.i("Rendering layers: "
+				+ (side == Orientation.TOP ? "top" : (side == Orientation.RIGHT ? "right" : "front")));
 		
 		// TODO
 

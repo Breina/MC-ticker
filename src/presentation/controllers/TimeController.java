@@ -2,14 +2,15 @@ package presentation.controllers;
 
 import logging.Log;
 import presentation.gui.time.PlayState;
+import presentation.gui.time.TimeInfo;
 import presentation.gui.time.TimeLine;
-import presentation.gui.windows.world.TimeWindow;
 import presentation.objects.ViewData;
 import utils.Tag;
 
 public class TimeController implements Runnable {
 	
 	private TimeLine<Tag> timeLine;
+
 	private int tickCounter = 0;
 	private int maxCount = 0;
 	
@@ -17,18 +18,18 @@ public class TimeController implements Runnable {
 	private SimController simController;
 	
 	private ViewData viewData;
+
+	private TimeInfo timeInfo;
 	
 	private boolean goForward, isPaused, hasDelay;
-	
-	private TimeWindow window;
-	
 	private boolean go;
 	
 	public TimeController(WorldController worldController) {
 		
 		this.worldController = worldController;
 		this.simController = worldController.getSimController();
-		
+
+		timeInfo = worldController.getMainController().getTimebar();
 		viewData = worldController.getWorldData();
 		
 		timeLine = new TimeLine<>(100);
@@ -43,7 +44,7 @@ public class TimeController implements Runnable {
 		viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
 		timeLine.init(simController.getSchematic());
 
-		window.setStep(0);
+		timeInfo.setStep(0);
 		go = true;
 		new Thread(this).start();
 
@@ -73,7 +74,7 @@ public class TimeController implements Runnable {
 				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
-				window.setStep(0);
+				timeInfo.setStep(0);
 				break;
 
 			case RUSHBACK:
@@ -137,8 +138,8 @@ public class TimeController implements Runnable {
 				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
-				window.setStep(maxCount);
-				window.setBackEnabled(true);
+				timeInfo.setStep(maxCount);
+				timeInfo.setBackEnabled(true);
 		}
 	}
 
@@ -168,8 +169,8 @@ public class TimeController implements Runnable {
 					tickCounter++;
 					if (tickCounter > maxCount)
 						maxCount = tickCounter;
-					
-					window.setBackEnabled(true);
+
+					timeInfo.setBackEnabled(true);
 					
 				} else {
 					if (timeLine.atStart()) {
@@ -181,8 +182,8 @@ public class TimeController implements Runnable {
 						
 						if (timeLine.atStart()) {
 							setPlaystate(PlayState.PAUSED);
-							window.setPaused(true);
-							window.setBackEnabled(false);
+							timeInfo.setPaused(true);
+							timeInfo.setBackEnabled(false);
 						}
 						
 						tickCounter--;
@@ -193,8 +194,8 @@ public class TimeController implements Runnable {
 
 				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
 				worldController.onSchematicUpdated();
-				
-				window.setStep(tickCounter);
+
+				timeInfo.setStep(tickCounter);
 				
 				if (hasDelay)
 					wait(90l);
@@ -228,11 +229,11 @@ public class TimeController implements Runnable {
 		worldController.onSchematicUpdated();
 	}
 	
-	public void setTimeWindow(TimeWindow window) {
-		this.window = window;
-	}
-	
 	public void stopThread() {
 		go = false;
+	}
+
+	public int getTickCounter() {
+		return tickCounter;
 	}
 }
