@@ -144,7 +144,6 @@ public class ExportRunnable implements Runnable {
 				+ (side == Orientation.TOP ? "top" : (side == Orientation.RIGHT ? "right" : "front")));
 		
 		// TODO
-
 		EditorPanel e = new EditorPanel(worldController, (short) 0, scale, side);
 		e.repaintAll();
 		short max;
@@ -185,7 +184,7 @@ public class ExportRunnable implements Runnable {
 		for (short l = 0; l < max; l++) {
 			e.setLayer(l);
 			buffer = e.generateImage(); // TODO: This happens twice for the
-											// first image
+			// first image
 
 			if (imgs) {
 				imgsOutput = new File(path + l + ".png");

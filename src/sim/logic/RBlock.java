@@ -159,7 +159,7 @@ public class RBlock {
 		
 		return id;		
 	}
-	
+
 	/**
 	 * Seems to always return false
 	 * @param block
@@ -185,7 +185,7 @@ public class RBlock {
 		
 		return metaData;
 	}
-	
+
 	public Object getBlockFromState(Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		Object block = m_getBlock.invoke(state);
@@ -211,15 +211,11 @@ public class RBlock {
 		Iterator<?> values = props.values().iterator();
 
 		while (keys.hasNext()) {
-
 			Object key = keys.next();
-
 			System.out.println(key.hashCode() + " " + key + ": " + values.next());
 		}
-
 		return m_getValue.invoke(blockState, propertyFacing);
 	}
-
 	public Map getProperties(Object blockState) throws InvocationTargetException, IllegalAccessException {
 
 		return (Map) m_getProperties.invoke(blockState);

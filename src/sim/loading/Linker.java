@@ -29,6 +29,7 @@ public class Linker {
 		
 		// Parses the methods and fields .csv file
 		CSVparser parser = new CSVparser();
+
 		HashMap<String, String> o_methods = parser.readDeobfuscation(new File(mcpFolder + File.separator + Constants.METHODSCSV),
 				Constants.REQUIREDMETHODS);
 		HashMap<String, String> o_fields = parser.readDeobfuscation(new File(mcpFolder + File.separator + Constants.FIELDSCSV),
@@ -36,7 +37,7 @@ public class Linker {
 		
 		// Parses the joined.srg file
 		JoinedParser joinedParser = new JoinedParser();
-		
+
 		// Creates the translator
 		translator = joinedParser.readDeobfuscation(new File(mcpFolder + File.separator + Constants.JOINEDSRG),
 				Constants.REQUIREDCLASSES, o_methods, o_fields);
@@ -70,7 +71,7 @@ public class Linker {
 		m.setAccessible(true);
 		return m;
 	}
-	
+
 	/**
 	 * Gets the requested method
 	 * @param name Its name

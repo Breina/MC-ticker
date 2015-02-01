@@ -103,13 +103,11 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
                 lblStep.setText("");
 
             } else {
-
                 setEnabled(true);
                 timeController = worldController.getTimeController();
                 setStep(timeController.getTickCounter());
             }
         });
-
         btnStart.addActionListener(ae -> {
             setPaused(true);
             setBackEnabled(false);
@@ -122,18 +120,13 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
 
             timeController.setPlaystate(PlayState.RUSHBACK);
         });
-
         btnPlayBack.addActionListener(ae -> {
             setPaused(false);
-
             timeController.setPlaystate(PlayState.PLAYBACK);
         });
-
         btnStepBack.addActionListener(ae -> {
-
             timeController.setPlaystate(PlayState.STEPBACK);
         });
-
         btnPause.addActionListener(ae -> {
             setPaused(btnPause.isSelected());
 
@@ -148,27 +141,21 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
 
         btnPlayForward.addActionListener(ae -> {
             setPaused(false);
-
             timeController.setPlaystate(PlayState.PLAYFORWARD);
         });
-
         btnRushForward.addActionListener(ae -> {
             setPaused(false);
-
             timeController.setPlaystate(PlayState.RUSHFORWARD);
         });
-
         btnEnd.addActionListener(ae -> {
             setPaused(true);
 
             timeController.setPlaystate(PlayState.END);
         });
-
         add(contentPanel);
     }
 
     public void setEnabled(boolean active) {
-
         btnStart.setEnabled(active);
         btnRushBack.setEnabled(active);
         btnPlayBack.setEnabled(active);
@@ -180,7 +167,6 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
         btnEnd.setEnabled(active);
     }
 
-    @Override
     public void setBackEnabled(boolean b) {
         btnStart.setEnabled(b);
         btnRushBack.setEnabled(b);

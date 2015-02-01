@@ -73,6 +73,7 @@ public class WorldInstance {
 	public void setPendingTickListEntries(Set<Object> pendingTickListEntries) {
 		this.pendingTickListEntries = pendingTickListEntries;
 	}
+
 	
 	public void setPendingTickListHashSet(Set<Object> pendingTickListHashSet) {
 		this.pendingTickListHashSet = pendingTickListHashSet;
@@ -97,11 +98,11 @@ public class WorldInstance {
 	public HashMap getEntitiesByUuid() {
 		return entitiesByUuid;
 	}
-
+	
 	public void setEntitiesByUuid(HashMap entitiesByUuid) {
 		this.entitiesByUuid = entitiesByUuid;
 	}
-
+	
 	public Object getEntitiesById() {
 		return entitiesById;
 	}

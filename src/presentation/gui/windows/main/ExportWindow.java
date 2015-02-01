@@ -178,7 +178,7 @@ public class ExportWindow extends MainWindow implements WorldListener {
 		float scaleNum = (float) scaleDub;
 		
 		boolean publishBool = publish.isSelected();
-		
+			
 		ExportRunnable exportRunnable = new ExportRunnable(btnOK, opts, worldController, exportDir, mils, scaleNum, publishBool);
 		Thread t = new Thread(exportRunnable);
 		t.start();

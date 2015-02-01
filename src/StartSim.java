@@ -1,5 +1,3 @@
-package presentation;
-
 import presentation.controllers.MainController;
 
 import java.io.File;

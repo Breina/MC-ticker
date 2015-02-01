@@ -1,12 +1,10 @@
 package sim.logic;
 
+import logging.Log;
+import sim.loading.Linker;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import logging.Log;
-import sim.constants.Constants;
-import sim.loading.ClassTester;
-import sim.loading.Linker;
 
 
 public class RBootstrap {

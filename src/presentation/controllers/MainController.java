@@ -14,6 +14,7 @@ import presentation.gui.toolbar.Toolbar;
 import presentation.gui.windows.main.ExportWindow;
 import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.NewWorldWindow;
+import presentation.main.Constants;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.tools.Tool;
@@ -59,6 +60,8 @@ public class MainController {
 	private Simulator simulator;
 	
 	public MainController() {
+
+		Log.i(Constants.MOTD);
 		
 		setLF();
 		

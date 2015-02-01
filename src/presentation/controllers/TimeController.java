@@ -20,12 +20,12 @@ public class TimeController implements Runnable {
 	private ViewData viewData;
 
 	private TimeInfo timeInfo;
-	
+
 	private boolean goForward, isPaused, hasDelay;
 	private boolean go;
-	
+
 	public TimeController(WorldController worldController) {
-		
+
 		this.worldController = worldController;
 		this.simController = worldController.getSimController();
 
@@ -36,7 +36,7 @@ public class TimeController implements Runnable {
 		
 		setPlaystate(PlayState.PAUSED);
 	}
-	
+
 	public void init() {
 
 		isPaused = true;
@@ -47,11 +47,10 @@ public class TimeController implements Runnable {
 		timeInfo.setStep(0);
 		go = true;
 		new Thread(this).start();
-
 	}
-	
+
 	private Tag tick() {
-		
+
 		simController.tick();
 
 		Tag schematic = simController.getSchematic();

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="img"/>
 	<classpathentry kind="src" path="tst"/>
-	<classpathentry kind="src" path="minecraft"/>
-	<classpathentry kind="src" path="schems"/>
-	<classpathentry kind="src" path="schems/tests"/>
 	<classpathentry kind="src" path="conf"/>
+	<classpathentry kind="src" path="img"/>
+	<classpathentry kind="src" path="lib"/>
+	<classpathentry kind="src" path="mcp"/>
+	<classpathentry kind="src" path="schems"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/img"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/tst"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/minecraft"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/schems"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/schems/tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCsim/conf"/>
 	<classpathentry exported="true" kind="lib" path="lib/objenesis-2.1.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

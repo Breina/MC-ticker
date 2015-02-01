@@ -7,7 +7,8 @@ import java.awt.*;
 // decision.
 public class Constants {
 	// RSFrame
-	public final static String APPLICATIONTITLE = "Redstone lab v0.1";
+	public final static String APPLICATIONTITLE = "RSsim 0.0.1 (pre-alpha)";
+	public final static String MOTD = "Thanks for trying out the sim! Lots of things are not done though.";
 
 	public final static String SCHEMATICSDIR = "schems";
 	public final static String EXPORTDIR = "export";

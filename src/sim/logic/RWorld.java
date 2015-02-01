@@ -1,6 +1,6 @@
 package sim.logic;
 
-import com.mojang.authlib.GameProfile;
+//import com.mojang.authlib.GameProfile;
 import logging.Log;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
@@ -96,24 +96,28 @@ public class RWorld {
 		f_worldAccesses						= linker.field("worldAccesses", World);
 		f_loadedEntityList					= linker.field("loadedEntityList", World);
 		f_unloadedEntityList				= linker.field("unloadedEntityList", World);
+
+		
 		
 		f_loadedTileEntityList				= linker.field("loadedTileEntityList", World);
 		f_tickableTileEntities				= linker.field("tickableTileEntities", World);
 		f_addedTileEntityList				= linker.field("addedTileEntityList", World);
 		f_tileEntitiesToBeRemoved			= linker.field("tileEntitiesToBeRemoved", World);
+
 		
 		f_playerEntities					= linker.field("playerEntities", World);
 		f_weatherEffects					= linker.field("weatherEffects", World);
 		f_rand								= linker.field("rand", World);
 		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
 		f_worldBorder						= linker.field("worldBorder", World);
+
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
 		c_worldSettings						= WorldSettings.getConstructor(long.class, GameType, boolean.class, boolean.class,
 				WorldType);
 		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);
-		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
+//		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
 		c_worldBorder						= WorldBorder.getDeclaredConstructor();
 
 		c_serverBlockEvents					= ServerBlockEventList.getDeclaredConstructor();
@@ -138,6 +142,7 @@ public class RWorld {
 //		m_setCanSpawnNPCs					= linker.method("setCanSpawnNPCs", MinecraftServer, boolean.class);
 
 				// TODO can't use linker yet for these
+		
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
 		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);
@@ -149,7 +154,7 @@ public class RWorld {
 		f_serverBlockEvents					= WorldServer.getDeclaredField(Constants.WORLDSERVER_SERVERBLOCKEVENTLIST);
 		f_serverBlockEvents					.setAccessible(true);
 	}
-	
+
 	/**
 	 * Loads a new world that can be simulated.
 	 * @param _worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
@@ -232,9 +237,9 @@ public class RWorld {
 		f_lightUpdateBlockList.set(worldServer, new int[32768]);
 
 		// UUID.fromString("4865726f-6272-696e-6520-3d207265616c")
-		GameProfile gameProfile = new GameProfile(null, Constants.PLAYERNAME);
+//		GameProfile gameProfile = new GameProfile(null, Constants.PLAYERNAME);
 
-		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
+//		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
 
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		
@@ -248,7 +253,7 @@ public class RWorld {
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
-			world.setPlayer(entityPlayer); // TODO uncomment accordingly
+//			world.setPlayer(entityPlayer); // TODO uncomment accordingly
 		return world;
 	}
 	

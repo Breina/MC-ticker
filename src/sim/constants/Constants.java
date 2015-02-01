@@ -89,6 +89,7 @@ public class Constants {
 	public final static String BLOCK_UNLOCALIZEDNAME = "N";
 	public final static String WORLDSERVER_SERVERBLOCKEVENTLIST = "S";
 
+	
 	// Properties of the World object
 	public final static String WORLDTYPE = "Simulation";
 	public final static int WORLDTYPEID = 1;
