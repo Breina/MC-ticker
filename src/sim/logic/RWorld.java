@@ -141,8 +141,7 @@ public class RWorld {
 //		m_setCanSpawnAnimals				= linker.method("setCanSpawnAnimals", MinecraftServer, boolean.class);
 //		m_setCanSpawnNPCs					= linker.method("setCanSpawnNPCs", MinecraftServer, boolean.class);
 
-				// TODO can't use linker yet for these
-		
+        // TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
 		m_setBlockState						= World.getDeclaredMethod(Constants.WORLD_SETBLOCKSTATE, BlockPos, IBlockState, int.class);
 		m_addTickEntry						= World.getDeclaredMethod(Constants.WORLD_ADDTICKENTRY, BlockPos, Block, int.class, int.class);

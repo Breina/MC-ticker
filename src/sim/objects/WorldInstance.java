@@ -74,7 +74,6 @@ public class WorldInstance {
 		this.pendingTickListEntries = pendingTickListEntries;
 	}
 
-	
 	public void setPendingTickListHashSet(Set<Object> pendingTickListHashSet) {
 		this.pendingTickListHashSet = pendingTickListHashSet;
 	}

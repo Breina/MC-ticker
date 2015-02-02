@@ -498,6 +498,7 @@ public class SimWorld {
 		Log.i("TileEntity: " + mcTag.toString());
 	}
 
+    // TODO I do not like this getting called twice, try to avoid it or cache this shit
 	public Block[][][] getBlockObjects() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];
