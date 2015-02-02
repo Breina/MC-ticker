@@ -1,6 +1,7 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
+import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 
@@ -16,6 +17,8 @@ public class Editor extends JLayeredPane implements IEditor {
      * The size of one tile, 16x16 + 1 pixel border
      */
     public static final byte SIZE = 17;
+
+    private static final int BLOCKPANEL_INDEX = 10;
 
     private final WorldController worldController;
 
@@ -54,6 +57,11 @@ public class Editor extends JLayeredPane implements IEditor {
      */
     private boolean scaledBufferChanged;
 
+    /**
+     * The panel containing the block graphics
+     */
+    private BlockPanel blockPanel;
+
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
     }
@@ -73,6 +81,11 @@ public class Editor extends JLayeredPane implements IEditor {
         int pixelHeight = height * SIZE;
 
         unscaledBuffer = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
+
+        blockPanel = new BlockPanel(this);
+        add(blockPanel, BLOCKPANEL_INDEX);
+
+        setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
 
     /**
@@ -133,11 +146,6 @@ public class Editor extends JLayeredPane implements IEditor {
     }
 
     @Override
-    public void updateAll() {
-
-    }
-
-    @Override
     public BufferedImage getImage() {
         if (scaledBufferChanged)
             generateScaledBuffer();
@@ -149,6 +157,16 @@ public class Editor extends JLayeredPane implements IEditor {
     public void setScale(float scale) {
         this.scale = scale;
 
+        setScaledSizeChanged();
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
+    }
+
+    @Override
+    public void setScaledSizeChanged() {
         scaledBufferChanged = true;
     }
 
@@ -158,17 +176,84 @@ public class Editor extends JLayeredPane implements IEditor {
     }
 
     @Override
-    public void addLayer(Editor editor) {
+    public short getLayerHeight() {
+        return layer;
+    }
+
+    @Override
+    public void addLayer(IEditor editor) {
 
     }
 
     @Override
-    public void updateLayer(Editor editor) {
+    public void updateLayer(IEditor editor) {
 
     }
 
     @Override
-    public void remoreLayer(Editor editor) {
+    public void removeLayer(IEditor editor) {
 
     }
+
+    @Override
+    public void selectCord(Cord3S cord) {
+
+    }
+
+    @Override
+    public void unselect() {
+
+    }
+
+    public short getEditorWidth() {
+        return width;
+    }
+
+    public short getEditorHeight() {
+        return height;
+    }
+
+    @Override
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public WorldController getWorldController() {
+        return worldController;
+    }
+
+//    private void onSelectionUpdated(short curX, short curY) {
+//
+//        curX = (short) (curX / scale / SIZE);
+//        curY = (short) (curY / scale / SIZE);
+//
+//        if ((curX == selectedX && curY == selectedY) ||
+//                curX < 0 || curX >= width ||
+//                curY < 0 || curY >= height)
+//            return false;
+//
+//
+//        selectedX = curX;
+//        selectedY = curY;
+//
+//        selectCord(curX, curY);
+//
+//        Cord3S cord = getCords(selectedX, selectedY);
+//        worldController.onSelectionUpdated(cord, this);
+//
+//        return true;
+//    }
+//
+//    protected class MouseMoveHandler extends MouseMotionAdapter {
+//
+//        @Override
+//        public void mouseMoved(MouseEvent e) {
+//            onSelectionUpdated((short) e.getX(), (short) e.getY());
+//        }
+//
+//        @Override
+//        public void mouseDragged(MouseEvent e) {
+//            onSelectionUpdated((short) e.getX(), (short) e.getY());
+//        }
+//    }
 }

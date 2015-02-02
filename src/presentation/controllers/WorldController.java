@@ -4,6 +4,7 @@ import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.EditorPanel;
+import presentation.gui.editor.IEditor;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
@@ -90,7 +91,7 @@ public class WorldController {
 	public void addNewPerspective(Orientation orientation) {
 		
 		DrawingWindow drawingWindow = new DrawingWindow(this, orientation);
-		EditorPanel ep = drawingWindow.getEditor();
+		IEditor ep = drawingWindow.getEditor();
 		
 		for (DrawingWindow dw : windows) {
 			
@@ -100,8 +101,8 @@ public class WorldController {
 
 		windows.add(drawingWindow);
 
-		if (viewData.getEntities() != null)
-			ep.updateEntities(viewData.getEntities());
+//		if (viewData.getEntities() != null)
+//			ep.updateEntities(viewData.getEntities());
 	}
 	
 	public void drawingWindowClosed(DrawingWindow source) {
@@ -144,19 +145,7 @@ public class WorldController {
 	}
 	
 	public void onSchematicUpdated() {
-
 		nbtController.onSchematicUpdated();
-
-		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
-		
-		while (drawingWindowIterator.hasNext()) {
-
-			DrawingWindow window = drawingWindowIterator.next();
-			EditorPanel panel = window.getEditor();
-
-			panel.updateEntities(viewData.getEntities());
-			panel.repaintAll();
-		}
 	}
 	
 	public ViewData getWorldData() {
@@ -256,11 +245,11 @@ public class WorldController {
 		
 		for (DrawingWindow dw : windows) {
 			
-			EditorPanel ep = dw.getEditor();
+			IEditor ep = dw.getEditor();
 			
 			if (!ep.equals(source)) {
 				
-				ep.unSelect();
+				ep.unselect();
 			}
 		}
 	}
@@ -272,7 +261,7 @@ public class WorldController {
 		if (source != null)
 			for (DrawingWindow dw : windows) {
 				
-				EditorPanel ep = dw.getEditor();
+				IEditor ep = dw.getEditor();
 				
 				if (!ep.equals(source)) {
 					
@@ -280,12 +269,12 @@ public class WorldController {
 				}
 			}
 	}
-	
-	public void updateLayers(EditorPanel source) {
+
+	public void updateLayers(IEditor source) {
 		
 		for (DrawingWindow dw : windows) {
 			
-			EditorPanel ep = dw.getEditor();
+			IEditor ep = dw.getEditor();
 			
 			if (ep.getOrientation() == source.getOrientation())
 				continue;

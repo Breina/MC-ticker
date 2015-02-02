@@ -2,7 +2,7 @@ package presentation.gui.windows.world;
 
 import presentation.controllers.WorldController;
 import presentation.gui.InternalWindow;
-import presentation.gui.editor.EditorPanel;
+import presentation.gui.editor.Editor;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 
@@ -20,7 +20,8 @@ public class DrawingWindow extends InternalWindow {
 	
 	private WorldController worldController;
 	
-	private EditorPanel editor;
+//	private EditorPanel editor;
+    private Editor editor;
 	
 	private JButton up, down;
 
@@ -88,7 +89,8 @@ public class DrawingWindow extends InternalWindow {
 		
 		setJMenuBar(menuBar);
 		
-		editor = new EditorPanel(controller, orientation);
+		Editor editor = new Editor(controller, orientation);
+        this.editor = editor;
 		add(new JScrollPane(editor));
 		
 		addInternalFrameListener(new InternalFrameHandler());
@@ -120,7 +122,7 @@ public class DrawingWindow extends InternalWindow {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			
-			short layer = editor.getLayer();
+			short layer = editor.getLayerHeight();
 			
 			if (ae.getSource().equals(up)) {
 				
@@ -139,7 +141,7 @@ public class DrawingWindow extends InternalWindow {
 					up.setEnabled(true);
 			}
 			
-			editor.setLayer(layer); // Also repaints
+			editor.setLayerHeight(layer); // Also repaints
 			updateTitle(layer);
 			
 			worldController.updateLayers(getEditor());
@@ -153,7 +155,7 @@ public class DrawingWindow extends InternalWindow {
 		setTitle(this.title + layer);
 	}
 
-	public EditorPanel getEditor() {
+	public Editor getEditor() {
 		return editor;
 	}
 	

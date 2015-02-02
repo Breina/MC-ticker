@@ -86,7 +86,7 @@ public class RedstoneWire {
 	/**
 	 * Returns a hashcode for the hashMap
 	 * @param powerLevel 4 bits
-	 * @param side 2 bits
+     * @param orientation the orientation
 	 * @param cons 4 bits
 	 * @return 16 bits
 	 */
@@ -94,7 +94,7 @@ public class RedstoneWire {
 		byte con = (byte) ((cons[0] ? 1 : 0) << 3 | (cons[1] ? 1 : 0) << 2 | (cons[2] ? 1 : 0) << 1 | (cons[3] ? 1 : 0));
 		
 		byte ori = 0;
-		
+
 		switch (orientation) {
 			case TOP:
 				ori = 0;
