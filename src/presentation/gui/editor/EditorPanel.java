@@ -68,9 +68,9 @@ public class EditorPanel extends JLayeredPane {
 		this.layer = layer;
 		this.orientation = orientation;
 
-		extractWorldDimensions();
-		
-		int pixelWidth = width * SIZE;
+        extractWorldDimensions();
+
+        int pixelWidth = width * SIZE;
 		int pixelHeight = height * SIZE;
 		
 		drawBlockBuffer = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
