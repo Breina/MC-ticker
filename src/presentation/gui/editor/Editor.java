@@ -79,14 +79,16 @@ public class Editor extends JLayeredPane implements IEditor {
 
         extractWorldDimensions();
 
-        int pixelWidth = width * SIZE;
-        int pixelHeight = height * SIZE;
+        int pixelWidth = (int) (width * SIZE * scale);
+        int pixelHeight = (int) (height * SIZE * scale);
 
         blockPanel = new BlockPanel(this);
-        add(blockPanel, BLOCK_INDEX);
+        setLayer(blockPanel, BLOCK_INDEX);
+        add(blockPanel);
 
         selectionPanel = new SelectionPanel(this);
-        add(selectionPanel, SELECTION_INDEX);
+        setLayer(selectionPanel, SELECTION_INDEX);
+        add(selectionPanel);
 
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         addMouseMotionListener(new MouseMoveHandler());
@@ -124,8 +126,6 @@ public class Editor extends JLayeredPane implements IEditor {
     protected void paintComponent(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         g.scale(scale, scale);
-
-        super.paintComponent(g);
     }
 
     @Override

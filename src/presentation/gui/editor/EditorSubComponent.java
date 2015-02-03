@@ -1,6 +1,7 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 
@@ -9,7 +10,7 @@ import javax.swing.*;
 /**
  * A JPanel that provides some utilities for subcomponents
  */
-public class EditorSubComponent extends JPanel {
+public abstract class EditorSubComponent extends JPanel {
 
     protected final WorldController worldController;
 
@@ -53,23 +54,36 @@ public class EditorSubComponent extends JPanel {
      */
     protected Cord3S getCords(short x, short y) {
 
-        Cord3S cords = null;
         short layer = editor.getLayerHeight();
 
         switch (orientation) {
             case TOP:
-                cords = new Cord3S(x, layer, y);
-                break;
+                return new Cord3S(x, layer, y);
 
             case FRONT:
-                cords = new Cord3S(x, (short) (height - y - 1), layer);
-                break;
+                return new Cord3S(x, (short) (height - y - 1), layer);
 
             case RIGHT:
-                cords = new Cord3S(layer, (short) (height - y - 1), (short) (width - x - 1));
-                break;
+                return new Cord3S(layer, (short) (height - y - 1), (short) (width - x - 1));
         }
 
-        return cords;
+        return null;
+    }
+
+    // TODO I'm sure I wrote this code somewhere else, couldn't find it though. Also pretty sure it's dead wrong as well
+    protected Cord2S getCord(short x, short y, short z) {
+
+        switch (orientation) {
+            case TOP:
+                return new Cord2S(x, z);
+
+            case FRONT:
+                return new Cord2S(x, y);
+
+            case RIGHT:
+                return new Cord2S(z, y);
+        }
+
+        return null;
     }
 }

@@ -4,6 +4,7 @@ import presentation.main.Constants;
 import presentation.main.Cord3S;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class SelectionPanel extends EditorSubComponent {
 
@@ -17,6 +18,8 @@ public class SelectionPanel extends EditorSubComponent {
 
         // When the first selected cord is (0,0), updating the selection wouldn't happen without this line
         mouseX = -1;
+
+        setVisible(false);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class SelectionPanel extends EditorSubComponent {
         Graphics2D g = (Graphics2D) gr;
 
         g.setColor(Constants.COLORSELECTION);
-        g.draw(new Rectangle(0, 0, Editor.SIZE, Editor.SIZE));
+        g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE, Editor.SIZE));
     }
 
     public void onSelectionUpdated(short curX, short curY) {

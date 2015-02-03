@@ -16,8 +16,6 @@ import presentation.tools.Tool;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -40,10 +38,7 @@ public class EditorPanel extends JLayeredPane {
 	private JPanel blockPanel;
 	private BufferedImage drawBlockBuffer, scaledBlockBuffer;
 	private boolean scaledBufferChanged;
-	
-	private EditorSelectionPanel selectionPanel;	
-	private short selectedX, selectedY;
-	
+
 	private ConcurrentHashMap<EditorPanel, EditorLayerPanel> layers;
 	private ConcurrentHashMap<Entity, EditorEntityPanel> entities;
 
@@ -73,10 +68,7 @@ public class EditorPanel extends JLayeredPane {
 		int pixelHeight = height * SIZE;
 		
 		drawBlockBuffer = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
-		
-		selectionPanel = new EditorSelectionPanel();
-		add(selectionPanel, 50);
-		
+
 		layers = new ConcurrentHashMap<>();
 		entities = new ConcurrentHashMap<>();
 		
@@ -230,10 +222,7 @@ public class EditorPanel extends JLayeredPane {
 		
 		blockPanel.setPreferredSize(scaledSize);
 		blockPanel.setBounds(new Rectangle(scaledSize));
-		
-		if (SELECTION_HIGHLIGHTING)
-			selectionPanel.setScale(scale);
-		
+
 		if (LAYER_HIGHLIGHTING) {
 			Iterator<EditorPanel> eps = layers.keySet().iterator();
 			Iterator<EditorLayerPanel> ls = layers.values().iterator();
@@ -374,58 +363,14 @@ public class EditorPanel extends JLayeredPane {
 				return null;
 		}
 	}
-	
-	// Called internally, panel is always visible when called
-	public void selectCord(short x, short y) {
-		
-		int pixX = (int) (x * SIZE * scale);
-		int pixY = (int) (y * SIZE * scale);
-		int size = (int) ((SIZE + 1) * scale);
-		
-		selectionPanel.setBounds(pixX, pixY, size, size);
-	}
-	
-	// When the cursor goes out a window of the same world
-	public void unSelect() {
-		selectionPanel.setVisible(false);
-	}
-	
+
 	public void unSelectOthers() {
 		worldController.unSelectAll(this);
-	}
-	
-	// Called from outside, panel starts in the invisible state
-	public void selectCord(Cord3S c) {
-		
-		Cord2S cords = getCords(c.x, c.y, c.z);
-		
-		if (cords == null) {
-			selectionPanel.setVisible(false);
-			return;
-		}
-		
-		selectionPanel.setVisible(true);
-		selectCord(cords.x, cords.y);
 	}
 
 	public BufferedImage generateImage() {
 		generateScaledBuffer();
 		return this.scaledBlockBuffer;
-	}
-	
-	protected class MouseHandler extends MouseAdapter {
-		@Override
-		public void mouseExited(MouseEvent e) {
-			unSelect();			
-			unSelectOthers();
-			
-			worldController.onSelectionUpdated(null, null);
-		}
-		
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			selectionPanel.setVisible(true);
-		}
 	}
 	
 //	private boolean onSelectionUpdated(short curX, short curY) {
