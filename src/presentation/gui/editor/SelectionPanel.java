@@ -1,6 +1,7 @@
 package presentation.gui.editor;
 
 import presentation.main.Constants;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 
 import java.awt.*;
@@ -57,5 +58,23 @@ public class SelectionPanel extends EditorSubComponent {
 
         setBounds(x * Editor.SIZE, y * Editor.SIZE,
                 (x + 1) * (Editor.SIZE + 1), (y + 1) * (Editor.SIZE + 1));
+    }
+
+    public void selectCord(short x, short y, short z) {
+
+        Cord2S cord = getCord(x, y, z);
+
+        setVisible(cord != null);
+
+        if (cord != null)
+            selectCord(cord.x, cord.y);
+    }
+
+    public void selectCord(Cord3S c) {
+        if (c == null)
+            setVisible(false);
+
+        else
+            selectCord(c.x, c.y, c.z);
     }
 }

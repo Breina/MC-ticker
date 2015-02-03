@@ -177,18 +177,21 @@ public class Editor extends JLayeredPane implements IEditor {
 
     @Override
     public void selectCord(Cord3S cord) {
-
+        selectionPanel.selectCord(cord);
     }
 
-    @Override
-    public void unselect() {
-
-    }
-
+    /**
+     * Returns the tile width of the editor
+     * @return The width
+     */
     public short getEditorWidth() {
         return width;
     }
 
+    /**
+     * Returns the tile height of the editor
+     * @return The height
+     */
     public short getEditorHeight() {
         return height;
     }
@@ -202,6 +205,9 @@ public class Editor extends JLayeredPane implements IEditor {
         return worldController;
     }
 
+    /**
+     * Handles updating the selection of the mouse cursor
+     */
     protected class MouseMoveHandler extends MouseMotionAdapter {
 
         @Override
@@ -215,15 +221,15 @@ public class Editor extends JLayeredPane implements IEditor {
         }
     }
 
+    /**
+     * Handles making the selection (in)visible when moving in and out of the editor
+     */
     protected class MouseHandler extends MouseAdapter {
         @Override
         public void mouseExited(MouseEvent e) {
-            selectionPanel.onSelectionUpdated((short) -1, (short) -1);
+            selectionPanel.selectCord(null);
 
-        // TODO
-//            unSelectOthers();
-
-            worldController.onSelectionUpdated(null, null);
+            worldController.onSelectionUpdated(null, Editor.this);
         }
 
         @Override

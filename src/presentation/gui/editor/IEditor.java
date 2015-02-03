@@ -69,9 +69,4 @@ public interface IEditor {
      * @param cord The cord
      */
     public void selectCord(Cord3S cord);
-
-    /**
-     * Makes the selection invisible again
-     */
-    public void unselect();
 }

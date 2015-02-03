@@ -70,18 +70,35 @@ public abstract class EditorSubComponent extends JPanel {
         return null;
     }
 
-    // TODO I'm sure I wrote this code somewhere else, couldn't find it though. Also pretty sure it's dead wrong as well
+    /**
+     * Translates 3D cords to 2D tile cords depending on the layer and the orientation.
+     * @param x
+     * @param y
+     * @param z
+     * @return The 2D cord if the layer is in the range, otherwise null.
+     */
     protected Cord2S getCord(short x, short y, short z) {
+
+        short layer = editor.getLayerHeight();
 
         switch (orientation) {
             case TOP:
-                return new Cord2S(x, z);
+                if (y != layer)
+                    return null;
+
+                return new Cord2S(x,  z);
 
             case FRONT:
-                return new Cord2S(x, y);
+                if (z != layer)
+                    return null;
+
+                return new Cord2S(x, (short) (height - y - 1));
 
             case RIGHT:
-                return new Cord2S(z, y);
+                if (x != layer)
+                    return null;
+
+                return new Cord2S((short) (width - z - 1), (short) (height - y - 1));
         }
 
         return null;
