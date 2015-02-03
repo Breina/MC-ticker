@@ -364,10 +364,6 @@ public class EditorPanel extends JLayeredPane {
 		}
 	}
 
-	public void unSelectOthers() {
-		worldController.unSelectAll(this);
-	}
-
 	public BufferedImage generateImage() {
 		generateScaledBuffer();
 		return this.scaledBlockBuffer;

@@ -4,8 +4,7 @@ import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.Editor;
-import presentation.gui.editor.EditorPanel;
-import presentation.gui.editor.IEditor;
+import presentation.gui.editor.LayerManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
@@ -92,26 +91,29 @@ public class WorldController {
 	public void addNewPerspective(Orientation orientation) {
 		
 		DrawingWindow drawingWindow = new DrawingWindow(this, orientation);
-		IEditor ep = drawingWindow.getEditor();
+        Editor editor = drawingWindow.getEditor();
+        LayerManager layerManager = editor.getLayerManager();
 		
 		for (DrawingWindow dw : windows) {
-			
-			ep.addLayer(dw.getEditor());
-			dw.getEditor().addLayer(ep);	
+
+            layerManager.addLayer(dw.getEditor());
+			dw.getEditor().getLayerManager().addLayer(editor);
 		}
 
 		windows.add(drawingWindow);
-
-//		if (viewData.getEntities() != null)
-//			ep.updateEntities(viewData.getEntities());
 	}
 	
 	public void drawingWindowClosed(DrawingWindow source) {
 
 		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
 
-		while (drawingWindowIterator.hasNext())
-			drawingWindowIterator.next().getEditor().removeLayer(source.getEditor());
+		while (drawingWindowIterator.hasNext()) {
+
+            DrawingWindow dw = drawingWindowIterator.next();
+
+            if (source != dw)
+                dw.getEditor().getLayerManager().removeLayer(source.getEditor());
+        }
 
 		
 		windows.remove(source);
@@ -232,27 +234,6 @@ public class WorldController {
 			Log.e("Failed to revert to file: " + e.getMessage());
 			e.printStackTrace();
 		}
-
-		// TODO
-//		worldData.load();
-//		updateWithNewData();
-//		timeController.init();
-//		
-//		destroySim();
-//		simController.setSchematic(worldData);
-	}
-	
-	public void unSelectAll(EditorPanel source) {
-		
-		for (DrawingWindow dw : windows) {
-			
-			IEditor ep = dw.getEditor();
-			
-			if (!ep.equals(source)) {
-				
-				ep.unselect();
-			}
-		}
 	}
 	
 	public void onSelectionUpdated(Cord3S cord, Editor source) {
@@ -262,27 +243,27 @@ public class WorldController {
 		if (source != null)
 			for (DrawingWindow dw : windows) {
 				
-				IEditor ep = dw.getEditor();
+				Editor editor = dw.getEditor();
 				
-				if (!ep.equals(source)) {
+				if (!editor.equals(source)) {
 					
-					ep.selectCord(cord);
+					editor.selectCord(cord);
 				}
 			}
 	}
 
-	public void updateLayers(IEditor source) {
+	public void updateLayers(Editor source) {
 		
 		for (DrawingWindow dw : windows) {
 			
-			IEditor ep = dw.getEditor();
+			Editor editor = dw.getEditor();
 			
-			if (ep.getOrientation() == source.getOrientation())
+			if (editor.getOrientation() == source.getOrientation())
 				continue;
 			
-			if (!ep.equals(source)) {
+			if (!editor.equals(source)) {
 				
-				ep.updateLayer(source);
+				editor.getLayerManager().updateLayer(source);
 			}
 		}
 	}

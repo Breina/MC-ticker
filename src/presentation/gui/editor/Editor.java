@@ -12,7 +12,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
-public class Editor extends JLayeredPane implements IEditor {
+/**
+ * Container for logic regarding the editor. Handles:
+ *  - Scaling
+ *  - Layers
+ *  - Selection
+ */
+public class Editor extends JLayeredPane {
 
     /**
      * The size of one tile, 16x16 + 1 pixel border
@@ -20,6 +26,7 @@ public class Editor extends JLayeredPane implements IEditor {
     public static final byte SIZE = 17;
 
     private static final int BLOCK_INDEX = 10;
+    public static final int LAYER_INDEX = 20;
     private static final int SELECTION_INDEX = 50;
 
     private final WorldController worldController;
@@ -50,11 +57,6 @@ public class Editor extends JLayeredPane implements IEditor {
     private int pixelWidth, pixelHeight;
 
     /**
-     * When true, the scaled buffer is out of date and should be updated
-     */
-    private boolean scaledBufferChanged;
-
-    /**
      * The panel containing the block graphics
      */
     private BlockPanel blockPanel;
@@ -63,6 +65,11 @@ public class Editor extends JLayeredPane implements IEditor {
      * The panel containing the mouse cursor block
      */
     private SelectionPanel selectionPanel;
+
+    /**
+     * The layer manager to handle all the layers xD
+     */
+    private LayerManager layerManager;
 
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
@@ -79,8 +86,8 @@ public class Editor extends JLayeredPane implements IEditor {
 
         extractWorldDimensions();
 
-        int pixelWidth = (int) (width * SIZE * scale);
-        int pixelHeight = (int) (height * SIZE * scale);
+        pixelWidth = (int) (width * SIZE * scale);
+        pixelHeight = (int) (height * SIZE * scale);
 
         blockPanel = new BlockPanel(this);
         setLayer(blockPanel, BLOCK_INDEX);
@@ -93,6 +100,8 @@ public class Editor extends JLayeredPane implements IEditor {
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         addMouseMotionListener(new MouseMoveHandler());
         addMouseListener(new MouseHandler());
+
+        layerManager = new LayerManager(this);
 
         setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
@@ -128,7 +137,10 @@ public class Editor extends JLayeredPane implements IEditor {
         g.scale(scale, scale);
     }
 
-    @Override
+    /**
+     * Renders the current image without selection nor layers, used for export
+     * @return A BufferedImage containing said image
+     */
     public BufferedImage getImage() {
 
         BufferedImage img = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
@@ -137,7 +149,10 @@ public class Editor extends JLayeredPane implements IEditor {
         return img;
     }
 
-    @Override
+    /**
+     * Sets the scale of the image, a scale of 1.0f will show the images as they are
+     * @param scale The scale
+     */
     public void setScale(float scale) {
         this.scale = scale;
 
@@ -145,37 +160,34 @@ public class Editor extends JLayeredPane implements IEditor {
                 (int) ((height * SIZE) * scale)));
     }
 
-    @Override
+    /**
+     * Gets the scale of the image, a scale of 1.0f will show the images as they are
+     * @return The scale
+     */
     public float getScale() {
         return scale;
     }
 
-    @Override
+    /**
+     * Sets the current height of this layer, should not exceed the max nor be below 0
+     * @param layer The layer height
+     */
     public void setLayerHeight(short layer) {
         this.layer = layer;
     }
 
-    @Override
+    /**
+     * Gets the current height of this layer, will not exceed the max nor be below 0
+     * @return The layer height
+     */
     public short getLayerHeight() {
         return layer;
     }
 
-    @Override
-    public void addLayer(IEditor editor) {
-
-    }
-
-    @Override
-    public void updateLayer(IEditor editor) {
-
-    }
-
-    @Override
-    public void removeLayer(IEditor editor) {
-
-    }
-
-    @Override
+    /**
+     * Selects the 3D dimensional cord in the editor
+     * @param cord The cord
+     */
     public void selectCord(Cord3S cord) {
         selectionPanel.selectCord(cord);
     }
@@ -196,13 +208,20 @@ public class Editor extends JLayeredPane implements IEditor {
         return height;
     }
 
-    @Override
+    /**
+     * Gets the orientation of the editor
+     * @return The orientation
+     */
     public Orientation getOrientation() {
         return orientation;
     }
 
     public WorldController getWorldController() {
         return worldController;
+    }
+
+    public LayerManager getLayerManager() {
+        return layerManager;
     }
 
     /**
