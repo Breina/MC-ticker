@@ -35,12 +35,6 @@ public interface IEditor {
     public float getScale();
 
     /**
-     * Informs the implementation that the scaled buffer is out of date,
-     * recommended action is to render it again before a repaint
-     */
-    public void setScaledSizeChanged();
-
-    /**
      * Sets the current height of this layer, should not exceed the max nor be below 0
      * @param layer The layer height
      */

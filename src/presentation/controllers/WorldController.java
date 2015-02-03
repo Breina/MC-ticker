@@ -3,6 +3,7 @@ package presentation.controllers;
 import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
+import presentation.gui.editor.Editor;
 import presentation.gui.editor.EditorPanel;
 import presentation.gui.editor.IEditor;
 import presentation.gui.menu.WorldMenu;
@@ -254,7 +255,7 @@ public class WorldController {
 		}
 	}
 	
-	public void onSelectionUpdated(Cord3S cord, EditorPanel source) {
+	public void onSelectionUpdated(Cord3S cord, Editor source) {
 
 		mainController.onSelectionUpdated(this, cord, true);
 		

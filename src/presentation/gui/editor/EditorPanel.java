@@ -18,7 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -96,9 +95,9 @@ public class EditorPanel extends JLayeredPane {
 		
 		setScale(scale);
 		
-		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-		addMouseMotionListener(new MouseMoveHandler());
-		addMouseListener(new MouseHandler());
+//		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+//		addMouseMotionListener(new MouseMoveHandler());
+//		addMouseListener(new MouseHandler());
 		
 		Tool tool = worldController.getMainController().getTool();
 		addMouseListener(tool);
@@ -429,43 +428,43 @@ public class EditorPanel extends JLayeredPane {
 		}
 	}
 	
-	private boolean onSelectionUpdated(short curX, short curY) {
-		
-		if (!SELECTION_HIGHLIGHTING)
-			return false;
-		
-		curX = (short) (curX / scale / SIZE);
-		curY = (short) (curY / scale / SIZE);
-		
-		if ((curX == selectedX && curY == selectedY) ||
-				curX < 0 || curX >= width ||
-				curY < 0 || curY >= height)
-			return false;
-		
-		
-		selectedX = curX;
-		selectedY = curY;
-		
-		selectCord(curX, curY);
-		
-		Cord3S cord = getCords(selectedX, selectedY);
-		worldController.onSelectionUpdated(cord, this);
-		
-		return true;
-	}
-	
-	protected class MouseMoveHandler extends MouseMotionAdapter {
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			onSelectionUpdated((short) e.getX(), (short) e.getY());
-		}
-		
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			onSelectionUpdated((short) e.getX(), (short) e.getY());
-		}
-	}
+//	private boolean onSelectionUpdated(short curX, short curY) {
+//
+//		if (!SELECTION_HIGHLIGHTING)
+//			return false;
+//
+//		curX = (short) (curX / scale / SIZE);
+//		curY = (short) (curY / scale / SIZE);
+//
+//		if ((curX == selectedX && curY == selectedY) ||
+//				curX < 0 || curX >= width ||
+//				curY < 0 || curY >= height)
+//			return false;
+//
+//
+//		selectedX = curX;
+//		selectedY = curY;
+//
+//		selectCord(curX, curY);
+//
+//		Cord3S cord = getCords(selectedX, selectedY);
+//		worldController.onSelectionUpdated(cord, this);
+//
+//		return true;
+//	}
+//
+//	protected class MouseMoveHandler extends MouseMotionAdapter {
+//
+//		@Override
+//		public void mouseMoved(MouseEvent e) {
+//			onSelectionUpdated((short) e.getX(), (short) e.getY());
+//		}
+//
+//		@Override
+//		public void mouseDragged(MouseEvent e) {
+//			onSelectionUpdated((short) e.getX(), (short) e.getY());
+//		}
+//	}
 	
 	public void addLayer(EditorPanel ep) {
 		

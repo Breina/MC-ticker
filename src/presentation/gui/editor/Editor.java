@@ -7,8 +7,9 @@ import presentation.objects.ViewData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
 public class Editor extends JLayeredPane implements IEditor {
@@ -18,7 +19,8 @@ public class Editor extends JLayeredPane implements IEditor {
      */
     public static final byte SIZE = 17;
 
-    private static final int BLOCKPANEL_INDEX = 10;
+    private static final int BLOCK_INDEX = 10;
+    private static final int SELECTION_INDEX = 50;
 
     private final WorldController worldController;
 
@@ -38,19 +40,14 @@ public class Editor extends JLayeredPane implements IEditor {
     private float scale;
 
     /**
-     * The width and height of the editor panel, depends on the orientation
+     * The width and height of the editor panel in tiles, depends on the orientation
      */
     private short width, height;
 
     /**
-     * The unscaled buffer, is always ready
+     * The width and height of the editor panel in pixels
      */
-    private BufferedImage unscaledBuffer;
-
-    /**
-     * The scaled buffer, can be out of date
-     */
-    private BufferedImage scaledBlockBuffer;
+    private int pixelWidth, pixelHeight;
 
     /**
      * When true, the scaled buffer is out of date and should be updated
@@ -61,6 +58,11 @@ public class Editor extends JLayeredPane implements IEditor {
      * The panel containing the block graphics
      */
     private BlockPanel blockPanel;
+
+    /**
+     * The panel containing the mouse cursor block
+     */
+    private SelectionPanel selectionPanel;
 
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
@@ -80,10 +82,15 @@ public class Editor extends JLayeredPane implements IEditor {
         int pixelWidth = width * SIZE;
         int pixelHeight = height * SIZE;
 
-        unscaledBuffer = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
-
         blockPanel = new BlockPanel(this);
-        add(blockPanel, BLOCKPANEL_INDEX);
+        add(blockPanel, BLOCK_INDEX);
+
+        selectionPanel = new SelectionPanel(this);
+        add(selectionPanel, SELECTION_INDEX);
+
+        setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        addMouseMotionListener(new MouseMoveHandler());
+        addMouseListener(new MouseHandler());
 
         setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
@@ -115,59 +122,32 @@ public class Editor extends JLayeredPane implements IEditor {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-
-        if (scaledBufferChanged)
-            generateScaledBuffer();
-
         Graphics2D g = (Graphics2D) graphics;
-        g.drawImage(this.scaledBlockBuffer, 0, 0, null);
-    }
+        g.scale(scale, scale);
 
-    private void generateScaledBuffer() {
-
-        if (scale != 1.0f)
-            this.scaledBlockBuffer = scaleBufferedImage(unscaledBuffer, scale);
-        else
-            this.scaledBlockBuffer = this.unscaledBuffer;
-
-        this.scaledBufferChanged = false;
-    }
-
-    private BufferedImage scaleBufferedImage(BufferedImage bi, float scale) {
-
-        BufferedImage scaledImage = new BufferedImage((int) (bi.getWidth() * scale), (int) (bi.getHeight() * scale), bi.getType());
-
-        AffineTransform at = new AffineTransform();
-        at.scale(scale,scale);
-        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-
-        return scaleOp.filter(bi, scaledImage);
+        super.paintComponent(g);
     }
 
     @Override
     public BufferedImage getImage() {
-        if (scaledBufferChanged)
-            generateScaledBuffer();
 
-        return scaledBlockBuffer;
+        BufferedImage img = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
+        paintComponent(img.createGraphics());
+
+        return img;
     }
 
     @Override
     public void setScale(float scale) {
         this.scale = scale;
 
-        setScaledSizeChanged();
+        setPreferredSize(new Dimension((int) ((width * SIZE) * scale),
+                (int) ((height * SIZE) * scale)));
     }
 
     @Override
     public float getScale() {
         return scale;
-    }
-
-    @Override
-    public void setScaledSizeChanged() {
-        scaledBufferChanged = true;
     }
 
     @Override
@@ -222,38 +202,33 @@ public class Editor extends JLayeredPane implements IEditor {
         return worldController;
     }
 
-//    private void onSelectionUpdated(short curX, short curY) {
-//
-//        curX = (short) (curX / scale / SIZE);
-//        curY = (short) (curY / scale / SIZE);
-//
-//        if ((curX == selectedX && curY == selectedY) ||
-//                curX < 0 || curX >= width ||
-//                curY < 0 || curY >= height)
-//            return false;
-//
-//
-//        selectedX = curX;
-//        selectedY = curY;
-//
-//        selectCord(curX, curY);
-//
-//        Cord3S cord = getCords(selectedX, selectedY);
-//        worldController.onSelectionUpdated(cord, this);
-//
-//        return true;
-//    }
-//
-//    protected class MouseMoveHandler extends MouseMotionAdapter {
-//
-//        @Override
-//        public void mouseMoved(MouseEvent e) {
-//            onSelectionUpdated((short) e.getX(), (short) e.getY());
-//        }
-//
-//        @Override
-//        public void mouseDragged(MouseEvent e) {
-//            onSelectionUpdated((short) e.getX(), (short) e.getY());
-//        }
-//    }
+    protected class MouseMoveHandler extends MouseMotionAdapter {
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            selectionPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            selectionPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
+        }
+    }
+
+    protected class MouseHandler extends MouseAdapter {
+        @Override
+        public void mouseExited(MouseEvent e) {
+            selectionPanel.onSelectionUpdated((short) -1, (short) -1);
+
+        // TODO
+//            unSelectOthers();
+
+            worldController.onSelectionUpdated(null, null);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            selectionPanel.setVisible(true);
+        }
+    }
 }

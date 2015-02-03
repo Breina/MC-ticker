@@ -31,8 +31,6 @@ public class BlockPanel extends EditorSubComponent {
     protected void paintComponent(Graphics gr) {
         super.paintComponent(gr);
 
-        editor.setScaledSizeChanged();
-
         Graphics2D g = (Graphics2D) gr;
         g.setBackground(Color.GRAY);
         g.clearRect(0, 0, width * Editor.SIZE + 1, height * Editor.SIZE + 1);
