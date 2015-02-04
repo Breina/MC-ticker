@@ -1,5 +1,6 @@
 package presentation.gui.editor;
 
+import logging.Log;
 import presentation.objects.Entity;
 
 import java.util.HashMap;
@@ -27,11 +28,15 @@ public class EntityManager {
 
     /**
      * Sets the entities, will check which ones can be created, updated and destroyed
-     * @param inputEntities The entities to be drawn
      */
-    public void setEntities(Entity[] inputEntities) {
+    public void updateEntities() {
+
+        Entity[] inputEntities = editor.getWorldController().getWorldData().getEntities();
 
         HashMap<UUID, EntityPanel> newEntities = new HashMap<>(inputEntities.length);
+
+        for (UUID uuid : newEntities.keySet())
+            Log.i(uuid.toString());
 
         for (Entity e : inputEntities) {
 
@@ -60,5 +65,18 @@ public class EntityManager {
 
         while (entitiesToBeRemoved.hasNext())
             editor.remove(entitiesToBeRemoved.next());
+
+        entities = newEntities;
+    }
+
+    /**
+     * Checks whether the entities shoiuld be displayed in the current layer
+     */
+    public void checkVisibility() {
+
+        Iterator<EntityPanel> panelIterator = entities.values().iterator();
+
+        while (panelIterator.hasNext())
+            panelIterator.next().checkVisibility();
     }
 }

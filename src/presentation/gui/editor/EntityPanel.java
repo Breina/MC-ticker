@@ -1,10 +1,12 @@
 package presentation.gui.editor;
 
+import logging.Log;
 import presentation.main.Constants;
 import presentation.objects.Entity;
 import presentation.objects.Orientation;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * The entity panel used by Editor
@@ -27,84 +29,68 @@ public class EntityPanel extends EditorSubComponent {
      * @param entity
      */
     public void setEntity(Entity entity) {
+
         this.entity = entity;
+
+        Log.i("Setting entity");
+
+        position();
+        checkVisibility();
     }
 
     /**
-     * Calculates the bounds where the entity should be
-     * @return A rectangle containing the said bounds
+     * Positions the entity to the right bounds according to iets properties
      */
-    @Override
-    public Rectangle getBounds() {
+    private void position() {
+
+        int scaledX = (int) (entity.getX() * Editor.SIZE);
+        int scaledY = (int) (entity.getY() * Editor.SIZE);
+        int scaledZ = (int) (entity.getZ() * Editor.SIZE);
+        float scaledWidth = entity.getWidth() * Editor.SIZE;
+        int scaledHeight = (int) (entity.getHeight() * Editor.SIZE);
+
         switch (orientation) {
             case TOP:
-                return new Rectangle((int) (entity.getX() - entity.getWidth() / 2),
-                        (int) (entity.getZ() - entity.getWidth() / 2),
-                        (int) (entity.getWidth() + 1), (int) (entity.getWidth() + 1));
+                setBounds((int) (scaledX - scaledWidth / 2),
+                        (int) (scaledZ - scaledWidth / 2),
+                        (int) (scaledWidth + 1), (int) (scaledWidth + 1));
+                break;
 
             case FRONT:
-                return new Rectangle((int) (entity.getX() - entity.getWidth() / 2),
-                        (int) (height * Editor.SIZE - entity.getY() - entity.getHeight()),
-                        (int) (entity.getWidth() + 1), (int) (entity.getHeight() + 1));
+                setBounds((int) (scaledX - scaledWidth / 2),
+                        height - scaledY - scaledHeight,
+                        (int) (scaledWidth + 1), (int) (scaledHeight + 1));
+                break;
 
             case RIGHT:
-                return new Rectangle((int) (width * Editor.SIZE - entity.getZ() - entity.getWidth() / 2),
-                        (int) (height * Editor.SIZE - entity.getY() - entity.getHeight()),
-                        (int) (entity.getWidth() + 1), (int) (entity.getHeight()));
-
-            case UNDEFINED:
-            default:
-                return null;
+                setBounds((int) (width - scaledZ - scaledWidth / 2),
+                        height - scaledY - scaledHeight,
+                        (int) (scaledWidth + 1), (int) (scaledHeight));
         }
     }
-
-//    private void position() {
-//
-//        switch (orientation) {
-//            case TOP:
-//                setBounds((int) (entity.getX() - entity.getWidth() / 2),
-//                        (int) (entity.getZ() - entity.getWidth() / 2),
-//                        (int) (entity.getWidth() + 1), (int) (entity.getWidth() + 1));
-//                break;
-//
-//            case FRONT:
-//                setBounds((int) (entity.getX() - entity.getWidth() / 2),
-//                        (int) (height * Editor.SIZE - entity.getY() - entity.getHeight()),
-//                        (int) (entity.getWidth() + 1), (int) (entity.getHeight() + 1));
-//                break;
-//
-//            case RIGHT:
-//                setBounds((int) (width * Editor.SIZE - entity.getZ() - entity.getWidth() / 2),
-//                        (int) (height * Editor.SIZE - entity.getY() - entity.getHeight()),
-//                        (int) (entity.getWidth() + 1), (int) (entity.getHeight()));
-//        }
-//    }
 
     /**
      * Checks whether the entity is within the visible layer
      * @return True if it is visible
      */
-    @Override
-    public boolean isVisible() {
+    public void checkVisibility() {
 
         short layer = editor.getLayerHeight();
 
         switch (orientation) {
             case TOP:
-                return entity.getY() + entity.getHeight() >= layer &&
-                        entity.getY() <= layer + 1;
+                setVisible(entity.getY() + entity.getHeight() >= layer &&
+                        entity.getY() <= layer + 1);
+                break;
 
             case FRONT:
-                return entity.getZ() + entity.getWidth() / 2 >= layer &&
-                        entity.getZ() - entity.getWidth() / 2 <= layer + 1;
+                setVisible(entity.getZ() + entity.getWidth() / 2 >= layer &&
+                        entity.getZ() - entity.getWidth() / 2 <= layer + 1);
+                break;
 
             case RIGHT:
-                return entity.getX() + entity.getWidth() / 2 >= layer &&
-                        entity.getX() + entity.getWidth() / 2 <= layer + 1;
-
-            case UNDEFINED:
-            default:
-                return false;
+                setVisible(entity.getX() + entity.getWidth() / 2 >= layer &&
+                        entity.getX() + entity.getWidth() / 2 <= layer + 1);
         }
     }
 
@@ -124,7 +110,7 @@ public class EntityPanel extends EditorSubComponent {
             height = entity.getHeight() * EditorPanel.SIZE;
 
         g.setColor(Constants.COLORENTITY);
-        g.drawRect(0, 0, (int) width, (int) height);
+        g.draw(new Rectangle2D.Float(0.5f, 0.5f, width, height));
 
         if (entity.isDead()) {
             g.setColor(Color.BLACK);

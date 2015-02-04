@@ -87,6 +87,9 @@ public class Editor extends JLayeredPane {
         this.worldController = worldController;
         this.orientation = orientation;
 
+        layerManager = new LayerManager(this);
+        entityManager = new EntityManager(this);
+
         setLayerHeight(layer);
         setScale(scale);
 
@@ -107,8 +110,7 @@ public class Editor extends JLayeredPane {
         addMouseMotionListener(new MouseMoveHandler());
         addMouseListener(new MouseHandler());
 
-        layerManager = new LayerManager(this);
-        entityManager = new EntityManager(this);
+        onSchematicUpdated();
 
         setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
@@ -176,11 +178,14 @@ public class Editor extends JLayeredPane {
     }
 
     /**
-     * Sets the current height of this layer, should not exceed the max nor be below 0
+     * Sets the current height of this layer, should not exceed the max nor be below 0.
+     * Must be called after entityManager is initialized
      * @param layer The layer height
      */
     public void setLayerHeight(short layer) {
         this.layer = layer;
+
+        entityManager.checkVisibility();
     }
 
     /**
@@ -232,7 +237,7 @@ public class Editor extends JLayeredPane {
     }
 
     public void onSchematicUpdated() {
-        entityManager.setEntities(worldController.getWorldData().getEntities());
+        entityManager.updateEntities();
     }
 
     public EntityManager getEntityManager() {

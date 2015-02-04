@@ -141,7 +141,7 @@ public class DrawingWindow extends InternalWindow {
 					up.setEnabled(true);
 			}
 			
-			editor.setLayerHeight(layer); // Also repaints
+			editor.setLayerHeight(layer);
 			updateTitle(layer);
 			
 			worldController.updateLayers(getEditor());
