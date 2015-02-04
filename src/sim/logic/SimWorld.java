@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SimWorld {
 	
@@ -387,6 +388,7 @@ public class SimWorld {
 
 			// This will save dead entities as well
 			tEntity.addTag(new Tag(Type.TAG_String, "id", rEntity.getEntityString(entity)));
+            tEntity.addTag(new Tag(Type.TAG_String, "UUID", rEntity.getUUID(entity).toString()));
 
 			payload[j] = tEntity;
 			j++;
@@ -552,8 +554,9 @@ public class SimWorld {
 			double vz = rEntity.getMotionZ(entity);
 			boolean isDead = rEntity.isDead(entity);
 			String id = rEntity.getEntityString(entity);
+            UUID uuid = rEntity.getUUID(entity);
 
-			output[index++] = new Entity(x, y, z, width, height, vx, vy, vz, isDead, id);
+			output[index++] = new Entity(x, y, z, width, height, vx, vy, vz, isDead, id, uuid);
 		}
 
 		return output;

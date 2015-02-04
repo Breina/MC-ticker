@@ -149,6 +149,10 @@ public class WorldController {
 	
 	public void onSchematicUpdated() {
 		nbtController.onSchematicUpdated();
+
+        for (DrawingWindow dw : windows) {
+            dw.getEditor().onSchematicUpdated();
+        }
 	}
 	
 	public ViewData getWorldData() {

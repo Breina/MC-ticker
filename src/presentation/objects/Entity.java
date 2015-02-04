@@ -1,21 +1,24 @@
 package presentation.objects;
 
+import java.util.UUID;
+
 public class Entity {
 
     private double x, y, z, vX, vY, vZ;
     private float width, height;
     private boolean isDead;
     private String id;
+    private UUID uuid;
 
     public Entity(double x, double y, double z) {
-        this(x, y, z, 0, 0, 0, 0, 0, false, "");
+        this(x, y, z, 0, 0, 0, 0, 0, false, "", UUID.randomUUID());
     }
 
     public Entity(double x, double y, double z, float width, float height) {
-        this(x, y, z, width, height, 0, 0, 0, false, "");
+        this(x, y, z, width, height, 0, 0, 0, false, "", UUID.randomUUID());
     }
 
-    public Entity(double x, double y, double z, float width, float height, double vx, double vy, double vz, boolean isDead, String id) {
+    public Entity(double x, double y, double z, float width, float height, double vx, double vy, double vz, boolean isDead, String id, UUID uuid) {
 
         this.x = x;
         this.y = y;
@@ -27,6 +30,7 @@ public class Entity {
         this.vZ = vz;
         this.isDead = isDead;
         this.id = id;
+        this.uuid = uuid;
     }
 
 
@@ -71,6 +75,10 @@ public class Entity {
         return id;
     }
 
+    public UUID getUUID() {
+        return uuid;
+    }
+
     @Override
     public String toString() {
         return "Entity{" +
@@ -84,6 +92,7 @@ public class Entity {
                 ", height=" + height +
                 ", isDead=" + isDead +
                 ", id='" + id + '\'' +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 

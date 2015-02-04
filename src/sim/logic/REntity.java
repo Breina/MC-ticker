@@ -6,12 +6,13 @@ import sim.loading.Linker;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 public class REntity {
 	
 	private Class<?> Entity, EntityList;
 	private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString, m_onUpdate;
-	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height, f_isDead;
+	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height, f_isDead, f_entityUniqueID;
 
 	private RNBTTags rNBTTags;
 	
@@ -26,25 +27,26 @@ public class REntity {
 	
 	private void prepareEntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
 		
-		Entity = linker.getClass("Entity");
-		EntityList = linker.getClass("EntityList");
+		Entity                  = linker.getClass("Entity");
+		EntityList              = linker.getClass("EntityList");
 		Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
-		Class<?> World = linker.getClass("World");
+		Class<?> World          = linker.getClass("World");
 
-		f_posX		= linker.field("posX", Entity);
-		f_posY		= linker.field("posY", Entity);
-		f_posZ		= linker.field("posZ", Entity);
-		f_motionX	= linker.field("motionX", Entity);
-		f_motionY	= linker.field("motionY", Entity);
-		f_motionZ	= linker.field("motionZ", Entity);
-		f_width		= linker.field("width", Entity);
-		f_height	= linker.field("height", Entity);
-		f_isDead	= linker.field("isDead", Entity);
+		f_posX		        = linker.field("posX", Entity);
+		f_posY		        = linker.field("posY", Entity);
+		f_posZ		        = linker.field("posZ", Entity);
+		f_motionX	        = linker.field("motionX", Entity);
+		f_motionY	        = linker.field("motionY", Entity);
+		f_motionZ	        = linker.field("motionZ", Entity);
+		f_width		        = linker.field("width", Entity);
+		f_height	        = linker.field("height", Entity);
+		f_isDead	        = linker.field("isDead", Entity);
+        f_entityUniqueID    = linker.field("entityUniqueID", Entity);
 
-		m_writeToNBT = linker.method("writeToNBT", Entity, NBTTagCompound);
-		m_createEntityFromNBT = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
-		m_getEntityString = linker.method("getEntityString", Entity);
-		m_onUpdate = linker.method("onUpdate", Entity);
+		m_writeToNBT            = linker.method("writeToNBT", Entity, NBTTagCompound);
+		m_createEntityFromNBT   = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
+		m_getEntityString       = linker.method("getEntityString", Entity);
+		m_onUpdate              = linker.method("onUpdate", Entity);
 	}
 	
 	public Object createEntityFromNBT(Object nbtTagCompound, Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -107,4 +109,8 @@ public class REntity {
 	public boolean isDead(Object entity) throws IllegalAccessException {
 		return f_isDead.getBoolean(entity);
 	}
+
+    public UUID getUUID(Object entity) throws IllegalAccessException {
+        return (UUID) f_entityUniqueID.get(entity);
+    }
 }

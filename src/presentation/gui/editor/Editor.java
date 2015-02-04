@@ -27,6 +27,7 @@ public class Editor extends JLayeredPane {
 
     private static final int BLOCK_INDEX = 10;
     public static final int LAYER_INDEX = 20;
+    public static final int ENTITY_INDEX = 40;
     private static final int SELECTION_INDEX = 50;
 
     private final WorldController worldController;
@@ -71,6 +72,11 @@ public class Editor extends JLayeredPane {
      */
     private LayerManager layerManager;
 
+    /**
+     * The manager of all the entities
+     */
+    private EntityManager entityManager;
+
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
     }
@@ -102,6 +108,7 @@ public class Editor extends JLayeredPane {
         addMouseListener(new MouseHandler());
 
         layerManager = new LayerManager(this);
+        entityManager = new EntityManager(this);
 
         setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
@@ -222,6 +229,14 @@ public class Editor extends JLayeredPane {
 
     public LayerManager getLayerManager() {
         return layerManager;
+    }
+
+    public void onSchematicUpdated() {
+        entityManager.setEntities(worldController.getWorldData().getEntities());
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
     /**

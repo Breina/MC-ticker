@@ -5,8 +5,11 @@ import presentation.controllers.MainController;
 import presentation.gui.toolbar.WrappingLayout;
 import presentation.main.Constants;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class RSFrame extends JFrame {
 	private static final long serialVersionUID = -5737200021101047512L;
@@ -28,7 +31,14 @@ public class RSFrame extends JFrame {
 	 */
 	private void buildGUI() {
 
-		setLayout(new BorderLayout());
+        try {
+            setIconImage(ImageIO.read(new File("img/MCsim.png")));
+
+        } catch (IOException e) {
+            Log.w("Could not set application icon: " + e.getMessage());
+        }
+
+        setLayout(new BorderLayout());
 		final DesktopPane desktop = controller.getDesktop();
 		add(desktop, BorderLayout.CENTER);
 		
