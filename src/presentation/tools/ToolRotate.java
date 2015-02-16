@@ -30,7 +30,7 @@ public class ToolRotate extends Tool {
 	}
 	
 	private void rotate() {
-		Cord3S c = getSelectionCord();
+		Cord3S c = getSelectionCord3D();
 
 		Block block = getWorldController().getWorldData().getBlock(c.x, c.y, c.z);
 		
@@ -41,7 +41,7 @@ public class ToolRotate extends Tool {
 		block.setData(blockLogic.rotate(block.getData(), dragButton == MouseEvent.BUTTON1));
 		getWorldController().setBlock(c.x, c.y, c.z, block);
 
-		getWorldController().getMainController().onSelectionUpdated(getWorldController(), c, false);
+		getWorldController().getMainController().getStatusPanel().updateSelection(getWorldController(), c);
 	}
 
 	@Override

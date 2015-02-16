@@ -8,6 +8,7 @@ import presentation.gui.editor.LayerManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.objects.Orientation;
@@ -241,9 +242,9 @@ public class WorldController {
 		}
 	}
 	
-	public void onSelectionUpdated(Cord3S cord, Editor source) {
+	public void onSelectionUpdated(Cord2S cord2D, Cord3S cord3D, Editor source) {
 
-		mainController.onSelectionUpdated(this, cord, true);
+		mainController.onSelectionUpdated(this, cord2D, cord3D, true);
 		
 		if (source != null)
 			for (DrawingWindow dw : windows) {
@@ -252,7 +253,7 @@ public class WorldController {
 				
 				if (!editor.equals(source)) {
 					
-					editor.selectCord(cord);
+					editor.selectCord(cord3D);
 				}
 			}
 	}

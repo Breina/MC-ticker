@@ -2,25 +2,95 @@ package presentation.gui.editor;
 
 import presentation.main.Constants;
 import presentation.main.Cord2S;
-import presentation.main.Cord3S;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+/**
+ * The excel-style selection panel
+ */
 public class SelectionPanel extends EditorSubComponent {
 
     /**
-     * The last tile cords of the mouse pos.
+     * A mask indicating which columns are selected
      */
-    private short mouseX, mouseY;
+    private boolean[][] selectionMask;
+
+    /**
+     * Remembering the outline
+     */
+    private Cord2S start;
+    private Cord2S end;
 
     public SelectionPanel(Editor editor) {
         super(editor);
 
-        // When the first selected cord is (0,0), updating the selection wouldn't happen without this line
-        mouseX = -1;
+        clearSelection();
+    }
 
-        setVisible(false);
+    /**
+     * Clears the entire selection
+     */
+    public void clearSelection() {
+        selectionMask = new boolean[width][height];
+    }
+
+    /**
+     * Selects or unselects an entire region
+     * @param start The start of the selection, will determine if the region gets selected or unselected
+     * @param end The end of the selection
+     */
+    public void selectRegion(Cord2S start, Cord2S end) {
+
+        boolean select = !selectionMask[start.x][start.y];
+
+        setSelectedRectangle(start, end);
+
+        for (int x = this.start.x; x < this.end.x; x++)
+            for (int y = this.start.y; y < this.end.y; y++)
+                selectionMask[x][y] = select;
+    }
+
+    private void setSelectedRectangle(Cord2S start, Cord2S end) {
+
+        // Makes it so that start is top left and end is bottom right
+        if (start.x < end.x) {
+
+            if (start.y < end.y) {
+
+                this.start = start;
+                this.end = end;
+
+            } else {
+
+                this.start = new Cord2S(start.x, end.y);
+                this.end = new Cord2S(end.x, start.y);
+            }
+        } else {
+
+            if (start.y < end.y) {
+
+                this.start = new Cord2S(end.x, start.y);
+                this.end = new Cord2S(start.x, end.y);
+
+            } else {
+
+                this.start = end;
+                this.end = start;
+            }
+        }
+    }
+
+    /**
+     * Selects a single tile
+     * @param cord The tile to select
+     */
+    public void selectTile(Cord2S cord) {
+
+        this.start = cord;
+        this.end = cord;
+
+        selectionMask[cord.x][cord.y] = !selectionMask[cord.x][cord.y];
     }
 
     @Override
@@ -29,52 +99,9 @@ public class SelectionPanel extends EditorSubComponent {
 
         Graphics2D g = (Graphics2D) gr;
 
-        g.setColor(Constants.COLORSELECTION);
-        g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE, Editor.SIZE));
-    }
-
-    public void onSelectionUpdated(short curX, short curY) {
-
-        float scale = editor.getScale();
-
-        curX = (short) (curX / scale / Editor.SIZE);
-        curY = (short) (curY / scale / Editor.SIZE);
-
-        if ((curX == mouseX && curY == mouseY) ||
-                curX < 0 || curX >= width ||
-                curY < 0 || curY >= height)
-            return;
-
-        mouseX = curX;
-        mouseY = curY;
-
-        selectCord(curX, curY);
-
-        Cord3S cord = getCords(mouseX, mouseY);
-        worldController.onSelectionUpdated(cord, editor);
-    }
-
-    private void selectCord(short x, short y) {
-
-        setBounds(x * Editor.SIZE, y * Editor.SIZE,
-                (x + 1) * (Editor.SIZE + 1), (y + 1) * (Editor.SIZE + 1));
-    }
-
-    public void selectCord(short x, short y, short z) {
-
-        Cord2S cord = getCord(x, y, z);
-
-        setVisible(cord != null);
-
-        if (cord != null)
-            selectCord(cord.x, cord.y);
-    }
-
-    public void selectCord(Cord3S c) {
-        if (c == null)
-            setVisible(false);
-
-        else
-            selectCord(c.x, c.y, c.z);
+        g.setColor(Constants.COLORSELECTIONBORDER);
+        g.setStroke(new BasicStroke(2));
+        g.draw(new Rectangle2D.Float(start.x * Editor.SIZE, start.y * Editor.SIZE,
+                end.x * Editor.SIZE + 1f, end.y * Editor.SIZE + 1f));
     }
 }

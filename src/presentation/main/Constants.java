@@ -26,9 +26,11 @@ public class Constants {
 	// Colors
 	public static final Color COLORBACKGROUND			= Color.WHITE;
 	public static final Color COLORACTIVELAYER			= Color.BLUE;
-	public static final Color COLORSELECTION			= Color.GREEN;
+	public static final Color COLORCURSOR               = Color.GREEN;
 	public static final Color COLORENTITY				= Color.RED;
 	public static final Color COLORENTITYVECTOR			= Color.ORANGE;
+    public static final Color COLORSELECTIONBORDER      = Color.BLACK;
+    public static final Color COLORSELECTIONINTERIOR    = new Color(0, 0, 0, 64);
 
 	public static final float ENTITYVELOCITYMULTIPLIER	= 10;
 }

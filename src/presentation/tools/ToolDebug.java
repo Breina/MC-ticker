@@ -14,7 +14,7 @@ public class ToolDebug extends Tool {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		Cord3S c = getSelectionCord();
+		Cord3S c = getSelectionCord3D();
 
 		getWorldController().debug(c.x, c.y, c.z);
 	}

@@ -2,6 +2,7 @@ package presentation.tools;
 
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 
 import java.awt.event.MouseListener;
@@ -38,9 +39,13 @@ public abstract class Tool implements MouseListener {
 	public String getFileName() {
 		return fileName;
 	}
+
+    protected Cord2S getSelectedCord2D() {
+        return mainController.getSelectedCord2D();
+    }
 	
-	protected Cord3S getSelectionCord() {
-		return mainController.getSelectedCord();
+	protected Cord3S getSelectionCord3D() {
+		return mainController.getSelectedCord3D();
 	}
 
 	// TODO find a fix for when there is no world

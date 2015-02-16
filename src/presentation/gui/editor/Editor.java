@@ -1,6 +1,7 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
@@ -27,8 +28,9 @@ public class Editor extends JLayeredPane {
 
     private static final int BLOCK_INDEX = 10;
     public static final int LAYER_INDEX = 20;
-    public static final int ENTITY_INDEX = 40;
-    private static final int SELECTION_INDEX = 50;
+    public static final int ENTITY_INDEX = 30;
+    private static final int SELECTION_INDEX = 40;
+    private static final int CURSOR_INDEX = 50;
 
     private final WorldController worldController;
 
@@ -64,6 +66,11 @@ public class Editor extends JLayeredPane {
 
     /**
      * The panel containing the mouse cursor block
+     */
+    private CursorPanel cursorPanel;
+
+    /**
+     * The panel containing the selected blocks
      */
     private SelectionPanel selectionPanel;
 
@@ -102,11 +109,17 @@ public class Editor extends JLayeredPane {
         setLayer(blockPanel, BLOCK_INDEX);
         add(blockPanel);
 
+        cursorPanel = new CursorPanel(this);
+        setLayer(cursorPanel, CURSOR_INDEX);
+        add(cursorPanel);
+
         selectionPanel = new SelectionPanel(this);
         setLayer(selectionPanel, SELECTION_INDEX);
         add(selectionPanel);
 
-        setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        selectionPanel.selectRegion(new Cord2S((short) 2, (short) 2), new Cord2S((short) 4, (short) 5));
+        selectionPanel.repaint();
+
         addMouseMotionListener(new MouseMoveHandler());
         addMouseListener(new MouseHandler());
 
@@ -201,7 +214,7 @@ public class Editor extends JLayeredPane {
      * @param cord The cord
      */
     public void selectCord(Cord3S cord) {
-        selectionPanel.selectCord(cord);
+        cursorPanel.selectCord(cord);
     }
 
     /**
@@ -242,10 +255,6 @@ public class Editor extends JLayeredPane {
         repaint();
     }
 
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
-
     /**
      * Handles updating the selection of the mouse cursor
      */
@@ -253,12 +262,12 @@ public class Editor extends JLayeredPane {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            selectionPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
+            cursorPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            selectionPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
+            cursorPanel.onSelectionUpdated((short) e.getX(), (short) e.getY());
         }
     }
 
@@ -268,14 +277,14 @@ public class Editor extends JLayeredPane {
     protected class MouseHandler extends MouseAdapter {
         @Override
         public void mouseExited(MouseEvent e) {
-            selectionPanel.selectCord(null);
+            cursorPanel.selectCord(null);
 
-            worldController.onSelectionUpdated(null, Editor.this);
+            worldController.onSelectionUpdated(null, null, Editor.this);
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            selectionPanel.setVisible(true);
+            cursorPanel.setVisible(true);
         }
     }
 }

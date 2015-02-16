@@ -15,6 +15,7 @@ import presentation.gui.windows.main.ExportWindow;
 import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.NewWorldWindow;
 import presentation.main.Constants;
+import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.tools.Tool;
@@ -48,8 +49,9 @@ public class MainController {
 	private BlockController blockController;
 	private List<WorldController> worldControllers;
 	
-	private WorldController selectionController;
-	private Cord3S selectionCord;
+	private WorldController activeWorldController;
+    private Cord2S selectionCord2D;
+	private Cord3S selectionCord3D;
 
 	private List<WorldListener> worldListeners;
 	
@@ -234,11 +236,13 @@ public class MainController {
 		worldListeners.add(worldListener);
 	}
 	
-	public void onSelectionUpdated(WorldController source, Cord3S cord, boolean dragTools) {
-		selectionController = source;
-		selectionCord = cord;
+	public void onSelectionUpdated(WorldController source, Cord2S cord2D, Cord3S cord3D, boolean dragTools) {
+		activeWorldController = source;
+
+        selectionCord2D = cord2D;
+		selectionCord3D = cord3D;
 		
-		statusPanel.updateSelection(source, cord);
+		statusPanel.updateSelection(source, cord3D);
 
 		if (dragTools)
 			tool.onSelectionChanged();
@@ -300,21 +304,37 @@ public class MainController {
 	}
 	
 	public WorldController getSelectedWorld() {
-		return selectionController;
+		return activeWorldController;
 	}
+
+    public Cord2S getSelectedCord2D() {
+        return selectionCord2D;
+    }
 	
-	public Cord3S getSelectedCord() {
-		return selectionCord;
+	public Cord3S getSelectedCord3D() {
+		return selectionCord3D;
 	}
-	
+
+    /**
+     * Sets the currently active tool
+     * @param tool The tool to become active
+     */
 	public void setTool(Tool tool) {
 		this.tool = tool;
 	}
-	
-	public Tool getTool() {
-		return tool;
-	}
-	
+
+    /**
+     * Gets the currently active tool
+     * @return The selected tool
+     */
+    public Tool getTool() {
+        return tool;
+    }
+
+    /**
+     * Sets the currently selected blocks
+     * @param block The selected block
+     */
 	public void setBlock(Block block) {
 		this.block = block;
 	}

@@ -32,13 +32,13 @@ public class ToolActivate extends Tool {
 	
 	private void activate() {
 		
-		Cord3S c = getSelectionCord();
+		Cord3S c = getSelectionCord3D();
 
 		WorldController worldController = mainController.getSelectedWorld();
 		worldController.getSimController().activateBlock(c.x, c.y, c.z);
 		
 		worldController.getTimeController().updateCurrentSchematic();
-		worldController.getMainController().onSelectionUpdated(worldController, c, false);
+		worldController.getMainController().getStatusPanel().updateSelection(worldController, c);
 	}
 
 	@Override
