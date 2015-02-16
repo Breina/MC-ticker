@@ -1,7 +1,6 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
-import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
@@ -116,9 +115,6 @@ public class Editor extends JLayeredPane {
         selectionPanel = new SelectionPanel(this);
         setLayer(selectionPanel, SELECTION_INDEX);
         add(selectionPanel);
-
-        selectionPanel.selectRegion(new Cord2S((short) 2, (short) 2), new Cord2S((short) 4, (short) 5));
-        selectionPanel.repaint();
 
         addMouseMotionListener(new MouseMoveHandler());
         addMouseListener(new MouseHandler());
@@ -247,6 +243,14 @@ public class Editor extends JLayeredPane {
 
     public LayerManager getLayerManager() {
         return layerManager;
+    }
+
+    /**
+     * Returns the selection panel
+     * @return
+     */
+    public SelectionPanel getSelectionPanel() {
+        return selectionPanel;
     }
 
     public void onSchematicUpdated() {

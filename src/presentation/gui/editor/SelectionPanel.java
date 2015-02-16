@@ -22,6 +22,11 @@ public class SelectionPanel extends EditorSubComponent {
     private Cord2S start;
     private Cord2S end;
 
+    /**
+     * Whether we should draw or not
+     */
+    private boolean draw;
+
     public SelectionPanel(Editor editor) {
         super(editor);
 
@@ -33,22 +38,27 @@ public class SelectionPanel extends EditorSubComponent {
      */
     public void clearSelection() {
         selectionMask = new boolean[width][height];
+
+        draw = false;
     }
 
     /**
      * Selects or unselects an entire region
      * @param start The start of the selection, will determine if the region gets selected or unselected
      * @param end The end of the selection
+     * @param select To select or not
+     * @param calculateMask Whether or not to update the mask thingy
      */
-    public void selectRegion(Cord2S start, Cord2S end) {
-
-        boolean select = !selectionMask[start.x][start.y];
+    public void selectRegion(Cord2S start, Cord2S end, boolean select, boolean calculateMask) {
 
         setSelectedRectangle(start, end);
 
-        for (int x = this.start.x; x < this.end.x; x++)
-            for (int y = this.start.y; y < this.end.y; y++)
-                selectionMask[x][y] = select;
+        if (calculateMask)
+            for (int x = this.start.x; x <= this.end.x; x++)
+                for (int y = this.start.y; y <= this.end.y; y++)
+                    selectionMask[x][y] = select;
+
+        draw = true;
     }
 
     private void setSelectedRectangle(Cord2S start, Cord2S end) {
@@ -84,24 +94,49 @@ public class SelectionPanel extends EditorSubComponent {
     /**
      * Selects a single tile
      * @param cord The tile to select
+     * @param select To select or not
      */
-    public void selectTile(Cord2S cord) {
+    public void selectTile(Cord2S cord, boolean select) {
 
         this.start = cord;
         this.end = cord;
 
-        selectionMask[cord.x][cord.y] = !selectionMask[cord.x][cord.y];
+        selectionMask[cord.x][cord.y] = select;
+
+        draw = true;
+    }
+
+    /**
+     * Returns whether the tile is selected or not
+     * @param cord The cord
+     * @return True if it's been selected
+     */
+    public boolean tileSelected(Cord2S cord) {
+        return selectionMask[cord.x][cord.y];
     }
 
     @Override
     protected void paintComponent(Graphics gr) {
         super.paintComponent(gr);
 
+        if (!draw)
+            return;
+
         Graphics2D g = (Graphics2D) gr;
 
+        // Border
         g.setColor(Constants.COLORSELECTIONBORDER);
         g.setStroke(new BasicStroke(2));
+
         g.draw(new Rectangle2D.Float(start.x * Editor.SIZE, start.y * Editor.SIZE,
-                end.x * Editor.SIZE + 1f, end.y * Editor.SIZE + 1f));
+                (end.x - start.x + 1) * Editor.SIZE + 1f, (end.y - start.y + 1) * Editor.SIZE + 1f));
+
+        // Interior
+        g.setColor(Constants.COLORSELECTIONINTERIOR);
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height;y++)
+                if (selectionMask[x][y])
+                    g.fill(new Rectangle2D.Float(x * Editor.SIZE + 1f, y * Editor.SIZE + 1f,
+                            Editor.SIZE, Editor.SIZE));
     }
 }
