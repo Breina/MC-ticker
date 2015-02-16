@@ -2,7 +2,7 @@ package presentation.threads;
 
 import logging.Log;
 import presentation.controllers.WorldController;
-import presentation.gui.editor.EditorPanel;
+import presentation.gui.editor.Editor;
 import presentation.main.GifSequenceWriter;
 import presentation.objects.Orientation;
 
@@ -144,8 +144,8 @@ public class ExportRunnable implements Runnable {
 				+ (side == Orientation.TOP ? "top" : (side == Orientation.RIGHT ? "right" : "front")));
 		
 		// TODO
-		EditorPanel e = new EditorPanel(worldController, (short) 0, scale, side);
-		e.repaintAll();
+		Editor e = new Editor(worldController, (short) 0, scale, side);
+		e.onSchematicUpdated();
 		short max;
 
 		switch (side) {
@@ -182,8 +182,8 @@ public class ExportRunnable implements Runnable {
 		File imgsOutput;
 
 		for (short l = 0; l < max; l++) {
-			e.setLayer(l);
-			buffer = e.generateImage(); // TODO: This happens twice for the
+			e.setLayerHeight(l);
+			buffer = e.getImage(); // TODO: This happens twice for the
 			// first image
 
 			if (imgs) {

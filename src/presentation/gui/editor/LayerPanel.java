@@ -4,6 +4,8 @@ import presentation.main.Constants;
 import presentation.objects.Orientation;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 public class LayerPanel extends EditorSubComponent {
 
@@ -84,21 +86,17 @@ public class LayerPanel extends EditorSubComponent {
 
         if (horizontal) {
 
-            g.drawLine(0, 0, 0, EditorPanel.SIZE);
-            g.drawLine(0, 0, EditorPanel.SIZE * length, 0);
-            g.drawLine(EditorPanel.SIZE * length, EditorPanel.SIZE, 0, EditorPanel.SIZE);
+            g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE * length, Editor.SIZE));
 
             for (int i = 1; i < length; i++)
-                g.drawLine(EditorPanel.SIZE * i, EditorPanel.SIZE, EditorPanel.SIZE * i, 0);
+                g.draw(new Line2D.Float(Editor.SIZE * i + 0.5f, Editor.SIZE, Editor.SIZE * i + 0.5f, 0.5f));
 
         } else {
 
-            g.drawLine(0, 0, EditorPanel.SIZE, 0);
-            g.drawLine(0, 0, 0, EditorPanel.SIZE * length);
-            g.drawLine(EditorPanel.SIZE, EditorPanel.SIZE * length, EditorPanel.SIZE, 0);
+            g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE, Editor.SIZE * length));
 
             for (int i = 1; i < length; i++)
-                g.drawLine(EditorPanel.SIZE, EditorPanel.SIZE * i, 0, EditorPanel.SIZE * i);
+                g.draw(new Line2D.Float(Editor.SIZE, Editor.SIZE * i + 0.5f, 0.5f, Editor.SIZE * i + 0.5f));
         }
     }
 

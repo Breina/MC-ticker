@@ -238,6 +238,8 @@ public class Editor extends JLayeredPane {
 
     public void onSchematicUpdated() {
         entityManager.updateEntities();
+
+        repaint();
     }
 
     public EntityManager getEntityManager() {

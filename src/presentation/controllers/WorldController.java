@@ -145,6 +145,8 @@ public class WorldController {
 		simController.setBlock(x, y, z, block.getId(), block.getData());
 		
 		timeController.updateCurrentSchematic();
+
+        onSchematicUpdated();
 	}
 	
 	public void onSchematicUpdated() {

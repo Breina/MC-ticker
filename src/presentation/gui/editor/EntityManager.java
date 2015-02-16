@@ -27,7 +27,7 @@ public class EntityManager {
     }
 
     /**
-     * Sets the entities, will check which ones can be created, updated and destroyed
+     * Update the entities, will check which ones can be created, updated and destroyed
      */
     public void updateEntities() {
 

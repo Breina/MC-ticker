@@ -1,12 +1,11 @@
 package presentation.gui.editor;
 
-import logging.Log;
 import presentation.main.Constants;
 import presentation.objects.Entity;
 import presentation.objects.Orientation;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Line2D;
 
 /**
  * The entity panel used by Editor
@@ -26,13 +25,11 @@ public class EntityPanel extends EditorSubComponent {
 
     /**
      * Sets the entity to be drawn
-     * @param entity
+     * @param entity The entity
      */
     public void setEntity(Entity entity) {
 
         this.entity = entity;
-
-        Log.i("Setting entity");
 
         position();
         checkVisibility();
@@ -47,25 +44,25 @@ public class EntityPanel extends EditorSubComponent {
         int scaledY = (int) (entity.getY() * Editor.SIZE);
         int scaledZ = (int) (entity.getZ() * Editor.SIZE);
         float scaledWidth = entity.getWidth() * Editor.SIZE;
-        int scaledHeight = (int) (entity.getHeight() * Editor.SIZE);
+        float scaledHeight = entity.getHeight() * Editor.SIZE;
 
         switch (orientation) {
             case TOP:
-                setBounds((int) (scaledX - scaledWidth / 2),
-                        (int) (scaledZ - scaledWidth / 2),
-                        (int) (scaledWidth + 1), (int) (scaledWidth + 1));
+                setBounds((int) (scaledX - scaledWidth / 2 + 2),
+                        (int) (scaledZ - scaledWidth / 2 + 2),
+                        (int) (scaledWidth), (int) (scaledWidth));
                 break;
 
             case FRONT:
-                setBounds((int) (scaledX - scaledWidth / 2),
-                        height - scaledY - scaledHeight,
-                        (int) (scaledWidth + 1), (int) (scaledHeight + 1));
+                setBounds((int) (scaledX - scaledWidth / 2 + 2),
+                        (int) (height * Editor.SIZE - scaledY - scaledHeight + 1),
+                        (int) (scaledWidth), (int) (scaledHeight));
                 break;
 
             case RIGHT:
-                setBounds((int) (width - scaledZ - scaledWidth / 2),
-                        height - scaledY - scaledHeight,
-                        (int) (scaledWidth + 1), (int) (scaledHeight));
+                setBounds((int) (width * Editor.SIZE - scaledZ - scaledWidth / 2 + 1),
+                        (int) (height * Editor.SIZE - scaledY - scaledHeight + 1),
+                        (int) (scaledWidth), (int) (scaledHeight));
         }
     }
 
@@ -101,16 +98,16 @@ public class EntityPanel extends EditorSubComponent {
         Graphics2D g = (Graphics2D) gr;
 
         // Box
-        float width = entity.getWidth() * EditorPanel.SIZE;
+        float width = entity.getWidth() * Editor.SIZE;
         float height;
 
         if (orientation == Orientation.TOP)
             height = width;
         else
-            height = entity.getHeight() * EditorPanel.SIZE;
+            height = entity.getHeight() * Editor.SIZE;
 
         g.setColor(Constants.COLORENTITY);
-        g.draw(new Rectangle2D.Float(0.5f, 0.5f, width, height));
+        g.drawRect(0,0,(int) width, (int) height);
 
         if (entity.isDead()) {
             g.setColor(Color.BLACK);
@@ -151,8 +148,10 @@ public class EntityPanel extends EditorSubComponent {
                     y += entity.getvY() * Constants.ENTITYVELOCITYMULTIPLIER;
         }
 
-        if (x != 0.5f | y != 0.5f)
-            g.drawLine(	(int) (width / 2), (int) (height / 2),
-                    (int) (x * width), (int) (y * height));
+        if (x != 0.5f | y != 0.5f) {
+            g.setStroke(new BasicStroke(0.5f));
+            g.draw(new Line2D.Float(width / 2, height / 2,
+                                    x * width, y * height));
+        }
     }
 }
