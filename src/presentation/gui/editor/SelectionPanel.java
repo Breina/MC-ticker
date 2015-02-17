@@ -139,4 +139,26 @@ public class SelectionPanel extends EditorSubComponent {
                     g.fill(new Rectangle2D.Float(x * Editor.SIZE + 1f, y * Editor.SIZE + 1f,
                             Editor.SIZE, Editor.SIZE));
     }
+
+    /**
+     * Checks if the mouse position is on the border
+     * @param p The mouse location
+     * @return True if the mouse is above the border
+     */
+    public boolean isPositionOnBorder(Point p) {
+
+        if (start == null || end == null)
+            return false;
+
+        Rectangle2D outer = new Rectangle2D.Float(start.x * Editor.SIZE - 1f, start.y * Editor.SIZE - 1f,
+                (end.x - start.x + 1) * Editor.SIZE + 3f, (end.y - start.y + 1) * Editor.SIZE + 3f);
+        Rectangle2D inner = new Rectangle2D.Float(start.x * Editor.SIZE + 1f, start.y * Editor.SIZE + 1f,
+                (end.x - start.x + 1) * Editor.SIZE - 1f, (end.y - start.y + 1) * Editor.SIZE - 1f);
+
+
+        double mouseX = p.getX() / editor.getScale();
+        double mouseY = p.getY() / editor.getScale();
+
+        return outer.contains(mouseX, mouseY) && !inner.contains(mouseX, mouseY);
+    }
 }

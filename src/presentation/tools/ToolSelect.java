@@ -5,9 +5,11 @@ import presentation.gui.editor.Editor;
 import presentation.gui.editor.SelectionPanel;
 import presentation.main.Cord2S;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class ToolSelect extends Tool {
+public class ToolSelect extends Tool implements MouseMotionListener {
 
     /**
      * True if we're dragging over other tiles
@@ -30,7 +32,7 @@ public class ToolSelect extends Tool {
     private Cord2S prevStartCord;
 
 	public ToolSelect(MainController mainController) {
-		super(mainController, "Select", "select.png", false);
+		super(mainController, "Select", "select.png", true);
 
         dragging = false;
 	}
@@ -56,7 +58,7 @@ public class ToolSelect extends Tool {
 
         if (shift && prevStartCord != null)
 
-            selectionPanel.selectRegion(prevStartCord, getSelectedCord2D(), select, true);
+            selectionPanel.selectRegion(prevStartCord, getSelectedCord2D(), select, false);
 
         else {
             prevStartCord = getSelectedCord2D();
@@ -73,7 +75,7 @@ public class ToolSelect extends Tool {
 	public void mouseReleased(MouseEvent e) {
 
         draggingEditor.getSelectionPanel().selectRegion(prevStartCord, getSelectedCord2D(), select, true);
-        draggingEditor.getSelectionPanel().repaint();
+        draggingEditor.repaint();
 
         dragging = false;
         draggingEditor = null;
@@ -95,4 +97,24 @@ public class ToolSelect extends Tool {
             draggingEditor.getSelectionPanel().repaint();
         }
 	}
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+        Editor editor = (Editor) e.getSource();
+
+        if (editor.getSelectionPanel().isPositionOnBorder(e.getPoint())) {
+
+            editor.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+
+        } else {
+            editor.setCursor(Cursor.getDefaultCursor());
+        }
+
+    }
 }
