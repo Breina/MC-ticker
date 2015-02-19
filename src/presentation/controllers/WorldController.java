@@ -4,7 +4,7 @@ import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.Editor;
-import presentation.gui.editor.LayerManager;
+import presentation.gui.editor.layer.LayerManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
@@ -16,6 +16,7 @@ import presentation.objects.ViewData;
 import sim.logic.SimWorld;
 import utils.Tag;
 
+import javax.swing.*;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ public class WorldController {
 	
 	private ViewData viewData;
 	
-	private CopyOnWriteArrayList<DrawingWindow> windows;
+	private CopyOnWriteArrayList<Editor> editors;
 	private WorldMenu worldMenu;
 	private TimeController timeController;
 	
@@ -40,6 +41,8 @@ public class WorldController {
 	private NBTController nbtController;
 
 	private File lastSavedFile;
+
+    private LayerManager layerManager;
 
 	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
@@ -79,57 +82,46 @@ public class WorldController {
 		nbtViewer = new NBTviewer(this);
 		nbtController = new NBTController(this, nbtViewer);
 
-		// Adds the world to the menu
-		mainController.getWindowMenu().addWorldMenu(worldMenu);
+        layerManager = new LayerManager(this);
 
-		// This will fill ViewData
-		timeController.init();
+        // Adds the world to the menu
+        mainController.getWindowMenu().addWorldMenu(worldMenu);
 
-		windows = new CopyOnWriteArrayList<>();
-		addNewPerspective(Orientation.TOP);
+        // This will fill ViewData
+        timeController.init();
+
+        editors = new CopyOnWriteArrayList<>();
+        addNewPerspective(Orientation.TOP);
+
 	}
 	
 	public void addNewPerspective(Orientation orientation) {
 		
 		DrawingWindow drawingWindow = new DrawingWindow(this, orientation);
         Editor editor = drawingWindow.getEditor();
-        LayerManager layerManager = editor.getLayerManager();
-		
-		for (DrawingWindow dw : windows) {
 
-            layerManager.addLayer(dw.getEditor());
-			dw.getEditor().getLayerManager().addLayer(editor);
-		}
+        layerManager.addLayer(editor);
 
-		windows.add(drawingWindow);
+        editors.add(editor);
 	}
 	
 	public void drawingWindowClosed(DrawingWindow source) {
 
-		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
-
-		while (drawingWindowIterator.hasNext()) {
-
-            DrawingWindow dw = drawingWindowIterator.next();
-
-            if (source != dw)
-                dw.getEditor().getLayerManager().removeLayer(source.getEditor());
-        }
-
+		layerManager.removeLayer(source.getEditor());
 		
-		windows.remove(source);
+		editors.remove(source);
 		
-		if (windows.isEmpty())
+		if (editors.isEmpty())
 			close();
 	}
 	
 	public void close() {
 
-		Iterator<DrawingWindow> drawingWindowIterator = windows.iterator();
+		Iterator<Editor> editorIterator = editors.iterator();
 
-		while (drawingWindowIterator.hasNext()) {
-			drawingWindowIterator.next().dispose();
-		}
+        // I'm so sorry :(
+		while (editorIterator.hasNext())
+            ((JInternalFrame) editorIterator.next().getParent().getParent().getParent()).dispose();
 
 		timeController.stopThread();
 		
@@ -153,8 +145,8 @@ public class WorldController {
 	public void onSchematicUpdated() {
 		nbtController.onSchematicUpdated();
 
-        for (DrawingWindow dw : windows)
-            dw.getEditor().onSchematicUpdated();
+        for (Editor editor : editors)
+            editor.onSchematicUpdated();
 	}
 	
 	public ViewData getWorldData() {
@@ -173,8 +165,8 @@ public class WorldController {
 		return worldMenu;
 	}
 	
-	public List<DrawingWindow> getOpenWindows() {
-		return windows;
+	public List<Editor> getEditors() {
+		return editors;
 	}
 
 	private int updateSavedFile() {
@@ -247,31 +239,13 @@ public class WorldController {
 		mainController.onSelectionUpdated(this, cord2D, cord3D, true);
 		
 		if (source != null)
-			for (DrawingWindow dw : windows) {
-				
-				Editor editor = dw.getEditor();
+			for (Editor editor : editors) {
 				
 				if (!editor.equals(source)) {
 					
 					editor.selectCord(cord3D);
 				}
 			}
-	}
-
-	public void updateLayers(Editor source) {
-		
-		for (DrawingWindow dw : windows) {
-			
-			Editor editor = dw.getEditor();
-			
-			if (editor.getOrientation() == source.getOrientation())
-				continue;
-			
-			if (!editor.equals(source)) {
-				
-				editor.getLayerManager().updateLayer(source);
-			}
-		}
 	}
 
 	public void debug(int x, int y, int z) {
@@ -287,4 +261,8 @@ public class WorldController {
 	public SimController getSimController() {
 		return simController;
 	}
+
+    public LayerManager getLayerManager() {
+        return layerManager;
+    }
 }

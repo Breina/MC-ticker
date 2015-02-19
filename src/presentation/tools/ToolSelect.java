@@ -2,7 +2,7 @@ package presentation.tools;
 
 import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
-import presentation.gui.editor.SelectionPanel;
+import presentation.gui.editor.selection.SelectionPanel;
 import presentation.main.Cord2S;
 
 import java.awt.*;
@@ -20,11 +20,6 @@ public class ToolSelect extends Tool implements MouseMotionListener {
      * The editor in which we're dragging
      */
     private Editor draggingEditor;
-
-    /**
-     * True if we're enabling the selection, false to remove selections
-     */
-    private boolean select;
 
     /**
      * The starting corner of the drag
@@ -108,13 +103,14 @@ public class ToolSelect extends Tool implements MouseMotionListener {
 
         Editor editor = (Editor) e.getSource();
 
-        if (editor.getSelectionPanel().isPositionOnBorder(e.getPoint())) {
+        if (editor.getSelectionPanel().isPositionOnBorder(e.getPoint()))
 
             editor.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
-        } else {
+        else
+
             editor.setCursor(Cursor.getDefaultCursor());
-        }
 
     }
+    boolean select; // TODO remove
 }

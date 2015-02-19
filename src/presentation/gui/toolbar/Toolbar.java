@@ -4,7 +4,6 @@ import presentation.Util;
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
-import presentation.gui.windows.world.DrawingWindow;
 import presentation.tools.*;
 
 import javax.swing.*;
@@ -57,8 +56,7 @@ public class Toolbar extends JToolBar {
 
     private void selectTool(Tool tool) {
         for (WorldController worldController : mainController.getWorldControllers())
-            for (DrawingWindow window : worldController.getOpenWindows()) {
-                Editor editor = window.getEditor();
+            for (Editor editor : worldController.getEditors()) {
 
                 editor.removeMouseListener(currentTool);
                 if (currentTool.hasMouseMotionListener())

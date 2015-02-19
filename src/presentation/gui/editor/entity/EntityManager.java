@@ -1,6 +1,7 @@
-package presentation.gui.editor;
+package presentation.gui.editor.entity;
 
 import logging.Log;
+import presentation.gui.editor.Editor;
 import presentation.objects.Entity;
 
 import java.util.HashMap;

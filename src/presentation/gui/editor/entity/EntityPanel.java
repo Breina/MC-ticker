@@ -1,5 +1,7 @@
-package presentation.gui.editor;
+package presentation.gui.editor.entity;
 
+import presentation.gui.editor.Editor;
+import presentation.gui.editor.EditorSubComponent;
 import presentation.main.Constants;
 import presentation.objects.Entity;
 import presentation.objects.Orientation;

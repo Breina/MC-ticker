@@ -1,6 +1,8 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
+import presentation.gui.editor.entity.EntityManager;
+import presentation.gui.editor.selection.SelectionPanel;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
@@ -74,11 +76,6 @@ public class Editor extends JLayeredPane {
     private SelectionPanel selectionPanel;
 
     /**
-     * The layer manager to handle all the layers xD
-     */
-    private LayerManager layerManager;
-
-    /**
      * The manager of all the entities
      */
     private EntityManager entityManager;
@@ -93,7 +90,6 @@ public class Editor extends JLayeredPane {
         this.worldController = worldController;
         this.orientation = orientation;
 
-        layerManager = new LayerManager(this);
         entityManager = new EntityManager(this);
 
         setLayerHeight(layer);
@@ -239,10 +235,6 @@ public class Editor extends JLayeredPane {
 
     public WorldController getWorldController() {
         return worldController;
-    }
-
-    public LayerManager getLayerManager() {
-        return layerManager;
     }
 
     /**
