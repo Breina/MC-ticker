@@ -18,9 +18,20 @@ public class Log {
 	
 	public static void i(String s) {	addMsg(s, TimeString.Types.info);		}
 	public static void w(String s) {	addMsg(s, TimeString.Types.warning);	}
-	public static void e(String s) {	addMsg(s, TimeString.Types.error);		}
+	public static void e(String s) {	addMsg(s, TimeString.Types.error);	    }
+    public static void d(String s) {    addMsg(s, TimeString.Types.debug);      }
 	
-	private static void addMsg(String s, TimeString.Types type) {
+	private static void addMsg(Object msg, TimeString.Types type) {
+
+        String s;
+
+        if (msg instanceof String)
+            s = (String) msg;
+        else
+            s = String.valueOf(msg);
+
+        if (type == TimeString.Types.debug)
+            s = getCallerName() + s;
 		
 		long curTime = System.currentTimeMillis();		
 		long interval = curTime - lastTime;
@@ -66,4 +77,9 @@ public class Log {
 	public static void setTest(boolean isTest) {
 		Log.isTest = isTest;
 	}
+
+    private static String getCallerName() {
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
+        return stackTraceElement.getClassName() + '.' + stackTraceElement.getMethodName() + ": ";
+    }
 }

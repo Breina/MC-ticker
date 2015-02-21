@@ -4,6 +4,7 @@ import logging.Log;
 import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.Editor;
+import presentation.gui.editor.entity.EntityManager;
 import presentation.gui.editor.layer.LayerManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
@@ -43,6 +44,7 @@ public class WorldController {
 	private File lastSavedFile;
 
     private LayerManager layerManager;
+    private EntityManager entityManager;
 
 	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
@@ -84,6 +86,8 @@ public class WorldController {
 
         layerManager = new LayerManager(this);
 
+        entityManager = new EntityManager(this);
+
         // Adds the world to the menu
         mainController.getWindowMenu().addWorldMenu(worldMenu);
 
@@ -101,6 +105,7 @@ public class WorldController {
         Editor editor = drawingWindow.getEditor();
 
         layerManager.addLayer(editor);
+        entityManager.addEditor(editor);
 
         editors.add(editor);
 	}
@@ -144,6 +149,8 @@ public class WorldController {
 	
 	public void onSchematicUpdated() {
 		nbtController.onSchematicUpdated();
+
+        entityManager.updateEntities();
 
         for (Editor editor : editors)
             editor.onSchematicUpdated();
@@ -264,5 +271,9 @@ public class WorldController {
 
     public LayerManager getLayerManager() {
         return layerManager;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

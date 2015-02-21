@@ -143,8 +143,6 @@ public class DrawingWindow extends InternalWindow {
 			
 			editor.setLayerHeight(layer);
 			updateTitle(layer);
-			
-			worldController.getLayerManager().updateLayer(getEditor());
 		}
 	}
 

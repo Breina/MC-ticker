@@ -1,10 +1,10 @@
 package logging;
 
+import sim.constants.Constants;
+
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
-import sim.constants.Constants;
 
 public class TimeString {
 	
@@ -15,7 +15,8 @@ public class TimeString {
 	public enum Types {
 		info,
 		warning,
-		error
+		error,
+        debug
 	};
 	
 	public TimeString(Types type, long millis, String msg) {
@@ -45,6 +46,10 @@ public class TimeString {
 			case error:
 				sb.append('E');
 				break;
+
+            case debug:
+                sb.append('D');
+                break;
 			
 			default:
 				sb.append('?');

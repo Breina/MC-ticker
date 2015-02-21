@@ -99,4 +99,18 @@ public class Entity {
     public String getPosString() {
         return "(" + x + ", " + y + ", " + z + ")";
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object entity) {
+
+        if (!(entity instanceof Entity))
+            return false;
+
+        return ((Entity) entity).getUUID().equals(uuid);
+    }
 }

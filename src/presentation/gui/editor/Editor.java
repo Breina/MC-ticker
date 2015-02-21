@@ -1,7 +1,6 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
-import presentation.gui.editor.entity.EntityManager;
 import presentation.gui.editor.selection.SelectionPanel;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
@@ -75,11 +74,6 @@ public class Editor extends JLayeredPane {
      */
     private SelectionPanel selectionPanel;
 
-    /**
-     * The manager of all the entities
-     */
-    private EntityManager entityManager;
-
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
     }
@@ -89,8 +83,6 @@ public class Editor extends JLayeredPane {
 
         this.worldController = worldController;
         this.orientation = orientation;
-
-        entityManager = new EntityManager(this);
 
         setLayerHeight(layer);
         setScale(scale);
@@ -190,7 +182,9 @@ public class Editor extends JLayeredPane {
     public void setLayerHeight(short layer) {
         this.layer = layer;
 
-        entityManager.checkVisibility();
+        // If the constructor isn't finished, don't check visibility, it will be added in EntityManager later
+        if (this != null)
+            getWorldController().getEntityManager().checkVisibility(this);
     }
 
     /**
@@ -246,8 +240,6 @@ public class Editor extends JLayeredPane {
     }
 
     public void onSchematicUpdated() {
-        entityManager.updateEntities();
-
         repaint();
     }
 
