@@ -137,7 +137,11 @@ public class EntityManager {
         Iterator<HashMap<Editor, EntityPanel>> panelHashMapIterator = entities.values().iterator();
 
         while (panelHashMapIterator.hasNext()) {
-            panelHashMapIterator.next().get(editor).checkVisibility();
+
+//            HashMap<Editor, EntityPanel> panelHashMap = panelHashMapIterator.next();
+
+//            if (panelHashMap.containsKey(editor))
+                panelHashMapIterator.next().get(editor).checkVisibility();
         }
     }
 }

@@ -83,8 +83,8 @@ public class Editor extends JLayeredPane {
 
         this.worldController = worldController;
         this.orientation = orientation;
+        this.layer = layer;
 
-        setLayerHeight(layer);
         setScale(scale);
 
         extractWorldDimensions();
@@ -182,9 +182,9 @@ public class Editor extends JLayeredPane {
     public void setLayerHeight(short layer) {
         this.layer = layer;
 
-        // If the constructor isn't finished, don't check visibility, it will be added in EntityManager later
-        if (this != null)
-            getWorldController().getEntityManager().checkVisibility(this);
+        worldController.getLayerManager().updateLayer(this);
+
+        getWorldController().getEntityManager().checkVisibility(this);
     }
 
     /**

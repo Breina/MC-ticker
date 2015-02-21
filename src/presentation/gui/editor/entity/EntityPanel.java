@@ -138,7 +138,7 @@ public class EntityPanel extends EditorSubComponent {
                     x += entity.getvX() * Constants.ENTITYVELOCITYMULTIPLIER;
 
                 if (entity.getvY() != 0)
-                    y += entity.getvY() * Constants.ENTITYVELOCITYMULTIPLIER;
+                    y -= entity.getvY() * Constants.ENTITYVELOCITYMULTIPLIER;
 
                 break;
 
@@ -147,7 +147,7 @@ public class EntityPanel extends EditorSubComponent {
                     x -= entity.getvZ() * Constants.ENTITYVELOCITYMULTIPLIER;
 
                 if (entity.getvY() != 0)
-                    y += entity.getvY() * Constants.ENTITYVELOCITYMULTIPLIER;
+                    y -= entity.getvY() * Constants.ENTITYVELOCITYMULTIPLIER;
         }
 
         if (x != 0.5f | y != 0.5f) {
