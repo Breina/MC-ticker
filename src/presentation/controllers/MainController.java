@@ -1,18 +1,10 @@
 package presentation.controllers;
 
 import logging.Log;
-import presentation.StatusPanel;
 import presentation.exceptions.SchematicException;
-import presentation.gui.BlockPanel;
-import presentation.gui.DesktopPane;
 import presentation.gui.RSFrame;
 import presentation.gui.WorldListener;
-import presentation.gui.menu.FileMenu;
-import presentation.gui.menu.WindowMenu;
-import presentation.gui.toolbar.Timebar;
-import presentation.gui.toolbar.Toolbar;
 import presentation.gui.windows.main.ExportWindow;
-import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.NewWorldWindow;
 import presentation.main.Constants;
 import presentation.main.Cord2S;
@@ -33,18 +25,18 @@ import java.util.List;
 
 public class MainController {
 	
-	private DesktopPane desktopPane;
-	private WindowMenu windowMenu;
-	private FileMenu fileMenu;
-	private LogWindow logWindow;
-	private BlockPanel blockPanel;
-	private RSFrame mainframe;
-	private ExportWindow exportWindow;
-	private StatusPanel statusPanel;
-	private NewWorldWindow newWorldWindow;
-	private Toolbar toolbar;
-	private Timebar timebar;
-	
+//	private Timebar timebar;
+//	private Toolbar toolbar;
+//	private NewWorldWindow newWorldWindow;
+//	private StatusPanel statusPanel;
+//	private ExportWindow exportWindow;
+//	private DesktopPane desktopPane;
+//	private WindowMenu windowMenu;
+//	private FileMenu fileMenu;
+//	private LogWindow logWindow;
+//	private BlockPanel blockPanel;
+    private RSFrame mainframe;
+
 	private TileController tileController;
 	private BlockController blockController;
 	private List<WorldController> worldControllers;
@@ -74,17 +66,19 @@ public class MainController {
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
 
 		// TODO The most emberassing part of the sim, fix this man :(
-		desktopPane = new DesktopPane();
-		statusPanel = new StatusPanel();
-		toolbar = new Toolbar(this);
-		timebar = new Timebar(this);
-		fileMenu = new FileMenu(this);
-		windowMenu = new WindowMenu(this);
-		logWindow = new LogWindow(this);
-		blockPanel = new BlockPanel(this);
-		mainframe = new RSFrame(this);
-		exportWindow = new ExportWindow(this);
-		newWorldWindow = new NewWorldWindow(this);
+//		desktopPane = new DesktopPane();
+//		statusPanel = new StatusPanel();
+//		toolbar = new Toolbar(this);
+//		timebar = new Timebar(this);
+//		fileMenu = new FileMenu(this);
+//		windowMenu = new WindowMenu(this);
+//		logWindow = new LogWindow(this);
+//		blockPanel = new BlockPanel(this);
+//		mainframe = new RSFrame(this);
+//		exportWindow = new ExportWindow(this);
+//		newWorldWindow = new NewWorldWindow(this);
+
+        mainframe = new RSFrame(this);
 		
 		setupSim();
 	}
@@ -126,11 +120,9 @@ public class MainController {
 			Log.e("Could not initlialize the Simulator" + SimController.analyseException(e));
 		}
 	}
-	
-	
-	public void openNewWorldDialog() {
 
-		newWorldWindow.setVisible(true);
+	public void openNewWorldDialog() {
+        new NewWorldWindow(mainframe, this);
 	}
 	
 	public void openSchematic(File schematicFile) {
@@ -242,7 +234,7 @@ public class MainController {
         selectionCord2D = cord2D;
 		selectionCord3D = cord3D;
 		
-		statusPanel.updateSelection(source, cord3D);
+		mainframe.getStatusPanel().updateSelection(source, cord3D);
 
 		if (dragTools)
 			tool.onSelectionChanged();
@@ -255,7 +247,7 @@ public class MainController {
 	}
 	
 	public void export() {
-		exportWindow.setVisible(true);
+        new ExportWindow(mainframe, this);
 	}
 	
 	public void exit() {
@@ -263,33 +255,33 @@ public class MainController {
 		System.exit(0);		
 	}
 
-	public DesktopPane getDesktop() {
-		return desktopPane;
-	}
-	
-	public FileMenu getFileMenu() {
-		return fileMenu;
-	}
-	
-	public WindowMenu getWindowMenu() {
-		return windowMenu;
-	}
-
-	public BlockPanel getBlockPanel() {
-		return blockPanel;
-	}
-
-	public Toolbar getToolbar() { return toolbar; }
-
-	public Timebar getTimebar() { return timebar; }
-	
-	public RSFrame getRSframe() {
+//	public DesktopPane getDesktop() {
+//		return desktopPane;
+//	}
+//
+//	public FileMenu getFileMenu() {
+//		return fileMenu;
+//	}
+//
+	public RSFrame getFrame() {
 		return mainframe;
 	}
-	
-	public StatusPanel getStatusPanel() {
-		return statusPanel;
-	}
+//
+//	public BlockPanel getBlockPanel() {
+//		return blockPanel;
+//	}
+//
+//	public Toolbar getToolbar() { return toolbar; }
+//
+//	public Timebar getTimebar() { return timebar; }
+//
+//	public RSFrame getRSframe() {
+//		return mainframe;
+//	}
+//
+//	public StatusPanel getStatusPanel() {
+//		return statusPanel;
+//	}
 	
 	public List<WorldController> getWorldControllers() {
 		return worldControllers;

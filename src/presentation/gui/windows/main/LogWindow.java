@@ -1,27 +1,21 @@
 package presentation.gui.windows.main;
 
-import java.awt.Dimension;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.text.DefaultCaret;
-
-import presentation.controllers.MainController;
 import logging.ILogger;
 import logging.Log;
+import presentation.controllers.MainController;
+
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import java.awt.*;
 
 public class LogWindow extends MainWindow implements ILogger {
 	
 	private static final long serialVersionUID = 3272280523525631777L;
 
 	private JTextArea textBox;
-	
-	private MainController controller;
 
-	public LogWindow(MainController controller) {
-		super(controller, "Log", true);
-		
-		this.controller = controller;
+	public LogWindow(JComponent parent, MainController controller) {
+		super(parent, controller, "Log", true);
 
 		textBox = new JTextArea();
 		textBox.setEditable(false);

@@ -61,7 +61,7 @@ public class FileMenu extends JMenu {
 			public void actionPerformed(ActionEvent e) {
 				
 				SchematicChooser chooser = new SchematicChooser(new File(Constants.SCHEMATICSDIR));
-				int result =  chooser.showOpenDialog(controller.getRSframe());
+				int result =  chooser.showOpenDialog(controller.getFrame());
 				
 				if (result != SchematicChooser.APPROVE_OPTION) {
 					if (result == SchematicChooser.ERROR_OPTION)

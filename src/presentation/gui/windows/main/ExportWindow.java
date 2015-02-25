@@ -13,10 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class ExportWindow extends MainWindow implements WorldListener {
+public class ExportWindow extends JDialog implements WorldListener {
 	private static final long serialVersionUID = 4399955648841335487L;
-	
-	private MainController controller;
 	
 	private final JComboBox<WorldController> worldChooser;
 	private final JCheckBox topLayers, topGif, rightLayers, rightGif, frontLayers, frontGif, publish;
@@ -24,10 +22,9 @@ public class ExportWindow extends MainWindow implements WorldListener {
 	private final JTextField filePath;
 	private final JSpinner gifSpeed, scale;
 
-	public ExportWindow(MainController controller) {
-		super(controller, "Export", false);
-		
-		this.controller = controller;
+	public ExportWindow(JFrame parent, MainController controller) {
+		super(parent, "Export", false);
+
 		controller.addWorldListener(this);
 		
 		JPanel p0 = new JPanel();
@@ -110,6 +107,8 @@ public class ExportWindow extends MainWindow implements WorldListener {
 		setPreferredSize(new Dimension(200, 360));
 		setLocation(200, 200);
 		pack();
+
+        setVisible(true);
 	}
 
 	@Override

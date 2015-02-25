@@ -20,13 +20,13 @@ public class NBTviewer extends WorldWindow {
 	private JTree tree;
 	private JScrollPane scrollPane;
 	
-	public NBTviewer(WorldController controller) {
-		super(controller, "NBTviewer", false);
+	public NBTviewer(JComponent parent, WorldController controller) {
+		super(parent, controller, "NBTviewer", false);
 		
-		buildGUI(controller);
+		buildGUI();
 	}
 	
-	public void buildGUI(WorldController controller) {
+	public void buildGUI() {
 		
 		setSize(new Dimension(200, 200));
 		setLocation(500, 500);
@@ -53,10 +53,6 @@ public class NBTviewer extends WorldWindow {
 
 		add(scrollPane);
 	}
-
-//	protected class DontScrollScrollPane extends JScrollPane {
-//		getVer
-//	}
 	
 	private void createNodes(DefaultMutableTreeNode parent, Tag tag) {
 		
@@ -198,10 +194,9 @@ public class NBTviewer extends WorldWindow {
 				
 			default:
 				node = new DefaultMutableTreeNode("unknown " + tag.getName());
+                parent.add(node);
 				break;
 		}
-		
-		
 	}
 	
 	protected class TreeExpansionHandler implements TreeExpansionListener {
@@ -239,7 +234,7 @@ public class NBTviewer extends WorldWindow {
 	}
 
 	/**
-	 * Oh noes everything here is hack just to make the scrollbar remember where it was
+	 * Oh noes everything here is a hack just to make the scrollbar remember where it was
 	 * after updating. Not pretty but it works 99% of the time.
 	 * http://stackoverflow.com/questions/2039373/maintaing-jtextarea-scroll-position
  	 */

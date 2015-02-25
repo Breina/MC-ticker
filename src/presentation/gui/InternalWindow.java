@@ -1,7 +1,5 @@
 package presentation.gui;
 
-import presentation.controllers.MainController;
-
 import javax.swing.*;
 
 public class InternalWindow extends JInternalFrame {
@@ -9,27 +7,26 @@ public class InternalWindow extends JInternalFrame {
 	
 	private static int spawnDelta = 0; 
 	
-	private MainController controller;
+	private JComponent parent;
 	
-	public InternalWindow(MainController controller, String title, boolean visibleByDefault) {
+	public InternalWindow(JComponent parent, String title, boolean visibleByDefault) {
 		super(title, true, true, false, true);
 		
-		this.controller = controller;
+		this.parent = parent;
 		
 		setLocation(spawnDelta, spawnDelta);
 //		spawnDelta += 50;
 		setVisible(visibleByDefault);
-		
-		controller.getDesktop().add(this);
+
+        parent.add(this);
 		moveToFront();
 	}
 
     @Override
     public void setBounds(int x, int y, int width, int height) {
-    	
-    	DesktopPane desktop = controller.getDesktop();
-    	int maxWidth = desktop.getWidth();
-    	int maxHeight = desktop.getHeight();
+
+    	int maxWidth = parent.getWidth();
+    	int maxHeight = parent.getHeight();
     	
     	if (maxWidth == 0 || maxHeight == 0) {
     		super.setBounds(x, y, width, height);

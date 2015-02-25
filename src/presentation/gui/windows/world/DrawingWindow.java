@@ -24,8 +24,8 @@ public class DrawingWindow extends InternalWindow {
 	
 	private JButton up, down;
 
-	public DrawingWindow(WorldController controller, Orientation orientation) {
-		super(controller.getMainController(), "Loading window...", true);
+	public DrawingWindow(JComponent parent, WorldController controller, Orientation orientation) {
+		super(parent, "Loading window...", true);
 		
 		this.worldController = controller;
 		

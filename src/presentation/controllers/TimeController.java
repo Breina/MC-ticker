@@ -29,7 +29,7 @@ public class TimeController implements Runnable {
 		this.worldController = worldController;
 		this.simController = worldController.getSimController();
 
-		timeInfo = worldController.getMainController().getTimebar();
+		timeInfo = worldController.getMainController().getFrame().getTimebar();
 		viewData = worldController.getWorldData();
 		
 		timeLine = new TimeLine<>(100);

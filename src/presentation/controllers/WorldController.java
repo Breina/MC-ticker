@@ -83,7 +83,7 @@ public class WorldController {
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
 
-		nbtViewer = new NBTviewer(this);
+		nbtViewer = new NBTviewer(mainController.getFrame().getDesktop(), this);
 		nbtController = new NBTController(this, nbtViewer);
 
         layerManager = new LayerManager(this);
@@ -91,7 +91,7 @@ public class WorldController {
         selectionManager = new SelectionManager(this);
 
         // Adds the world to the menu
-        mainController.getWindowMenu().addWorldMenu(worldMenu);
+        mainController.getFrame().getWindowMenu().addWorldMenu(worldMenu);
 
         // This will fill ViewData
         timeController.init();
@@ -103,7 +103,7 @@ public class WorldController {
 	
 	public void addNewPerspective(Orientation orientation) {
 		
-		DrawingWindow drawingWindow = new DrawingWindow(this, orientation);
+		DrawingWindow drawingWindow = new DrawingWindow(mainController.getFrame().getDesktop(), this, orientation);
         Editor editor = drawingWindow.getEditor();
 
         layerManager.addLayer(editor);
@@ -134,7 +134,7 @@ public class WorldController {
 		
 		nbtViewer.dispose();
 		
-		mainController.getWindowMenu().removeWorldMenu(worldMenu);
+		mainController.getFrame().getWindowMenu().removeWorldMenu(worldMenu);
 		mainController.onWorldRemoved(this);
 	}
 	
@@ -183,7 +183,7 @@ public class WorldController {
 		SchematicChooser chooser = new SchematicChooser(new File("schems"));
 		chooser.setSelectedFile(new File(getWorldData().getName() + ".schematic"));
 
-		int result = chooser.showOpenDialog(mainController.getRSframe());
+		int result = chooser.showOpenDialog(mainController.getFrame());
 
 		if (result == SchematicChooser.APPROVE_OPTION)
 			lastSavedFile = chooser.getSelectedFile();

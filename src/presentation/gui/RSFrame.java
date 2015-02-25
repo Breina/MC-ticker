@@ -1,7 +1,12 @@
 package presentation.gui;
 
 import logging.Log;
+import presentation.StatusPanel;
 import presentation.controllers.MainController;
+import presentation.gui.menu.FileMenu;
+import presentation.gui.menu.WindowMenu;
+import presentation.gui.toolbar.Timebar;
+import presentation.gui.toolbar.Toolbar;
 import presentation.gui.toolbar.WrappingLayout;
 import presentation.main.Constants;
 
@@ -15,8 +20,15 @@ public class RSFrame extends JFrame {
 	private static final long serialVersionUID = -5737200021101047512L;
 	
 	private MainController controller;
+    private StatusPanel statusPanel;
+    private DesktopPane desktop;
+    private BlockPanel blockPanel;
+    private Toolbar toolbar;
+    private Timebar timebar;
+    private FileMenu fileMenu;
+    private WindowMenu windowMenu;
 
-	public RSFrame(MainController controller) {
+    public RSFrame(MainController controller) {
 		super(Constants.APPLICATIONTITLE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setSize(1200, 800);
@@ -39,28 +51,52 @@ public class RSFrame extends JFrame {
         }
 
         setLayout(new BorderLayout());
-		DesktopPane desktop = controller.getDesktop();
+		desktop = new DesktopPane();
 		add(desktop, BorderLayout.CENTER);
-		
-		add(controller.getStatusPanel(), BorderLayout.SOUTH);
-		add(controller.getBlockPanel(), BorderLayout.WEST);
 
-		JPanel toolbar = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
+        statusPanel = new StatusPanel();
+		add(statusPanel, BorderLayout.SOUTH);
 
-		toolbar.add(controller.getToolbar());
-		toolbar.add(controller.getTimebar());
+        blockPanel = new BlockPanel(controller);
+		add(blockPanel, BorderLayout.WEST);
 
-		add(toolbar, BorderLayout.NORTH);
+		JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
 
-		Log.i("Logwindow loaded.");
+            toolbar = new Toolbar(controller);
+            toolbarContainer.add(toolbar);
+
+            timebar = new Timebar(controller);
+            toolbarContainer.add(timebar);
+
+		add(toolbarContainer, BorderLayout.NORTH);
 
 		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		menuBar.add(controller.getFileMenu());
-		menuBar.add(controller.getWindowMenu());
 
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+            fileMenu = new FileMenu(controller);
+            menuBar.add(fileMenu);
+
+            windowMenu = new WindowMenu(controller);
+            menuBar.add(windowMenu);
+
+        setJMenuBar(menuBar);
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}
+
+    public WindowMenu getWindowMenu() {
+        return windowMenu;
+    }
+
+    public StatusPanel getStatusPanel() {
+        return statusPanel;
+    }
+
+    public JDesktopPane getDesktop() {
+        return desktop;
+    }
+
+    public Timebar getTimebar() {
+        return timebar;
+    }
 }

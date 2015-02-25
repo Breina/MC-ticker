@@ -1,7 +1,6 @@
 package presentation.gui.windows.main;
 
 import presentation.controllers.MainController;
-import presentation.gui.InternalWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +8,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class NewWorldWindow extends InternalWindow {
+public class NewWorldWindow extends JDialog {
 
     private JTextField txtName, txtSeed;
     private JComboBox cmbWorldType, cmbGameType, cmbWorldProvider, cmbDifficulty;
@@ -18,8 +17,8 @@ public class NewWorldWindow extends InternalWindow {
 
     private MainController mainController;
 
-    public NewWorldWindow(MainController controller) {
-        super(controller, "New world", false);
+    public NewWorldWindow(JFrame parent, MainController controller) {
+        super(parent, "New world", true);
 
         this.mainController = controller;
 
@@ -104,7 +103,10 @@ public class NewWorldWindow extends InternalWindow {
                     worldType.id, worldType.name, gameType, seed, worldProvider, hardcore, difficulty);
 
             setVisible(false);
+            dispose();
         });
+
+        setVisible(true);
     }
 
     protected class IdStringMapping {

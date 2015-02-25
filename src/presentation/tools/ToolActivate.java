@@ -38,7 +38,8 @@ public class ToolActivate extends Tool {
 		worldController.getSimController().activateBlock(c.x, c.y, c.z);
 		
 		worldController.getTimeController().updateCurrentSchematic();
-		worldController.getMainController().getStatusPanel().updateSelection(worldController, c);
+
+        worldController.getMainController().onSelectionUpdated(getWorldController(), getSelectedCord2D(), c, false);
 	}
 
 	@Override

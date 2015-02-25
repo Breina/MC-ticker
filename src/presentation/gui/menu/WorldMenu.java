@@ -77,7 +77,7 @@ public class WorldMenu extends JMenu {
 		
 		revert.addActionListener(e -> {
 
-            int reply = JOptionPane.showConfirmDialog(controller.getMainController().getRSframe(),
+            int reply = JOptionPane.showConfirmDialog(controller.getMainController().getFrame(),
                     "Are you sure you want to revert all changes?", "Revert changes", JOptionPane.YES_NO_OPTION);
 
             if (reply == JOptionPane.YES_OPTION) {

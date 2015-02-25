@@ -41,7 +41,7 @@ public class ToolRotate extends Tool {
 		block.setData(blockLogic.rotate(block.getData(), dragButton == MouseEvent.BUTTON1));
 		getWorldController().setBlock(c.x, c.y, c.z, block);
 
-		getWorldController().getMainController().getStatusPanel().updateSelection(getWorldController(), c);
+        getWorldController().getMainController().onSelectionUpdated(getWorldController(), getSelectedCord2D(), c, false);
 	}
 
 	@Override

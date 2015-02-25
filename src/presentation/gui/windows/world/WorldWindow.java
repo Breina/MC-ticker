@@ -4,16 +4,17 @@ import presentation.controllers.WorldController;
 import presentation.gui.InternalWindow;
 import presentation.gui.menu.LinkedCheckbox;
 
+import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class WorldWindow extends InternalWindow {
 	
-	private WorldController controller;
+	protected WorldController controller;
 	private LinkedCheckbox checkbox;
 
-	public WorldWindow(WorldController controller, String title, boolean visibleByDefault) {
-		super(controller.getMainController(), title, visibleByDefault);
+	public WorldWindow(JComponent parent, WorldController controller, String title, boolean visibleByDefault) {
+		super(parent, title, visibleByDefault);
 		
 		this.controller = controller;
 		
