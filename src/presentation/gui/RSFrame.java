@@ -39,7 +39,7 @@ public class RSFrame extends JFrame {
         }
 
         setLayout(new BorderLayout());
-		final DesktopPane desktop = controller.getDesktop();
+		DesktopPane desktop = controller.getDesktop();
 		add(desktop, BorderLayout.CENTER);
 		
 		add(controller.getStatusPanel(), BorderLayout.SOUTH);

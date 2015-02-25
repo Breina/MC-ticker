@@ -1,7 +1,6 @@
 package presentation.gui.editor.selection;
 
 import presentation.controllers.WorldController;
-import presentation.gui.editor.Editor;
 import presentation.main.Cord3S;
 import presentation.objects.ViewData;
 
@@ -30,14 +29,16 @@ public class SelectionManager {
      */
     private Cord3S prevStartCord;
 
-    private Editor editor;
+    /**
+     * If anything is selected, to make it possible to skip drawing
+     */
+    private boolean anythingSelected;
 
     private WorldController worldController;
 
-    public SelectionManager(Editor editor) {
+    public SelectionManager(WorldController worldController) {
 
-        this.editor = editor;
-        worldController = editor.getWorldController();
+        this.worldController = worldController;
 
         clearSelection();
     }
@@ -45,16 +46,20 @@ public class SelectionManager {
     /**
      * Clears the entire selection
      */
-    public void clearSelection() {
+    private void clearSelection() {
         ViewData vd = worldController.getWorldData();
         selection = new boolean[vd.getXSize()][vd.getYSize()][vd.getZSize()];
+
+        anythingSelected = false;
     }
 
     /**
      * Selects a single block
      * @param cord The cord to be selected
      */
-    public void selectPoint(Cord3S cord) {
+    private void selectPoint(Cord3S cord) {
+
+        anythingSelected = true;
 
         this.start = cord;
         this.end = cord;
@@ -62,7 +67,9 @@ public class SelectionManager {
         selectBoundedRectangle(cord, cord);
     }
 
-    public void selectRegion(Cord3S start, Cord3S end) {
+    private void selectRegion(Cord3S start, Cord3S end) {
+
+        anythingSelected = true;
 
         selectBoundedRectangle(start, end);
 
@@ -78,7 +85,7 @@ public class SelectionManager {
      * @param start One of the 2 points
      * @param end The other of the two
      */
-    public void selectBoundedRectangle(Cord3S start, Cord3S end) {
+    private void selectBoundedRectangle(Cord3S start, Cord3S end) {
 
         // If we selected a point, skip everything
         if (start == end) {
@@ -158,12 +165,11 @@ public class SelectionManager {
      * @param z The z coordinate
      * @return True if the block is selected
      */
-    public boolean getSelected(int x, int y, int z) {
+    public boolean isSelected(int x, int y, int z) {
         return selection[x][y][z];
     }
 
     public void startSelection(Cord3S cord, boolean shift, boolean ctrl) {
-
         if (!ctrl)
             clearSelection();
 
@@ -178,8 +184,6 @@ public class SelectionManager {
             prevStartCord = cord;
             selectPoint(cord);
         }
-
-        editor.repaint();
     }
 
     public void dragSelection(Cord3S cord) {
@@ -192,4 +196,15 @@ public class SelectionManager {
         selectRegion(start, end);
     }
 
+    public Cord3S getStart() {
+        return start;
+    }
+
+    public Cord3S getEnd() {
+        return end;
+    }
+
+    public boolean isAnythingSelected() {
+        return anythingSelected;
+    }
 }

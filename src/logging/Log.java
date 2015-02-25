@@ -82,4 +82,13 @@ public class Log {
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
         return stackTraceElement.getClassName() + '.' + stackTraceElement.getMethodName() + ": ";
     }
+
+    public static void printEntireStackTraceAndBeDoneWithIt() {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+
+        for (StackTraceElement stackTraceElement : elements)
+            System.out.println(stackTraceElement);
+
+        System.exit(1);
+    }
 }

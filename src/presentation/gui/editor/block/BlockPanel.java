@@ -1,9 +1,11 @@
-package presentation.gui.editor;
+package presentation.gui.editor.block;
 
 import logging.Log;
 import presentation.controllers.TileController;
 import presentation.exceptions.UnhandledBlockDataException;
 import presentation.exceptions.UnhandledBlockIdException;
+import presentation.gui.editor.Editor;
+import presentation.gui.editor.EditorSubComponent;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.objects.ViewData;
@@ -37,7 +39,7 @@ public class BlockPanel extends EditorSubComponent {
 
         for (short y = 0; y < this.height; y++)
             for (short x = 0; x < this.width; x++) {
-                Cord3S cords = getCords(x, y);
+                Cord3S cords = getCord3D(x, y);
                 BufferedImage image;
 
                 try {

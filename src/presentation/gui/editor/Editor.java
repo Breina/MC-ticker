@@ -1,6 +1,7 @@
 package presentation.gui.editor;
 
 import presentation.controllers.WorldController;
+import presentation.gui.editor.block.BlockPanel;
 import presentation.gui.editor.selection.SelectionPanel;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
@@ -86,7 +87,6 @@ public class Editor extends JLayeredPane {
         this.layer = layer;
 
         setScale(scale);
-
         extractWorldDimensions();
 
         pixelWidth = (int) (width * SIZE * scale);
@@ -139,6 +139,8 @@ public class Editor extends JLayeredPane {
 
     @Override
     protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
         Graphics2D g = (Graphics2D) graphics;
         g.scale(scale, scale);
     }
@@ -233,7 +235,7 @@ public class Editor extends JLayeredPane {
 
     /**
      * Returns the selection panel
-     * @return
+     * @return The selection panel
      */
     public SelectionPanel getSelectionPanel() {
         return selectionPanel;

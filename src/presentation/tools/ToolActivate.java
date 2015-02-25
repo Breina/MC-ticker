@@ -32,7 +32,7 @@ public class ToolActivate extends Tool {
 	
 	private void activate() {
 		
-		Cord3S c = getSelectionCord3D();
+		Cord3S c = getSelectedCord3D();
 
 		WorldController worldController = mainController.getSelectedWorld();
 		worldController.getSimController().activateBlock(c.x, c.y, c.z);

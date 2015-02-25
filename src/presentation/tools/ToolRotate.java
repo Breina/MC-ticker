@@ -30,7 +30,7 @@ public class ToolRotate extends Tool {
 	}
 	
 	private void rotate() {
-		Cord3S c = getSelectionCord3D();
+		Cord3S c = getSelectedCord3D();
 
 		Block block = getWorldController().getWorldData().getBlock(c.x, c.y, c.z);
 		

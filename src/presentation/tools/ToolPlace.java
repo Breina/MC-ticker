@@ -37,7 +37,7 @@ public class ToolPlace extends Tool {
 	}
 	
 	private void setBlock() {
-		Cord3S c = getSelectionCord3D();
+		Cord3S c = getSelectedCord3D();
 
 		if (c == null)
 			Log.e("Selected cord is null!");

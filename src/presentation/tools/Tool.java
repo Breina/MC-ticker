@@ -44,7 +44,7 @@ public abstract class Tool implements MouseListener {
         return mainController.getSelectedCord2D();
     }
 	
-	protected Cord3S getSelectionCord3D() {
+	protected Cord3S getSelectedCord3D() {
 		return mainController.getSelectedCord3D();
 	}
 

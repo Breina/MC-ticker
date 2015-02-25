@@ -1,5 +1,7 @@
 package presentation.gui;
 
+import logging.Log;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -48,4 +50,20 @@ public class DesktopPane extends JDesktopPane {
 			c.setBounds(c.getBounds());
 		}
 	}
+
+    private int DEBUGCOUNTER = 0;
+
+    @Override
+    public void paint(Graphics g) {
+
+        Log.d("painting");
+
+        DEBUGCOUNTER++;
+
+        if (DEBUGCOUNTER == 10) {
+            Log.printEntireStackTraceAndBeDoneWithIt();
+        }
+
+        super.paint(g);
+    }
 }

@@ -1,4 +1,4 @@
-package presentation.gui.editor;
+package presentation.gui.editor.block;
 
 import presentation.main.Constants;
 import presentation.objects.Orientation;

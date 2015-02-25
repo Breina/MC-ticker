@@ -6,6 +6,7 @@ import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.Editor;
 import presentation.gui.editor.entity.EntityManager;
 import presentation.gui.editor.layer.LayerManager;
+import presentation.gui.editor.selection.SelectionManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
@@ -45,6 +46,7 @@ public class WorldController {
 
     private LayerManager layerManager;
     private EntityManager entityManager;
+    private SelectionManager selectionManager;
 
 	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
@@ -85,8 +87,8 @@ public class WorldController {
 		nbtController = new NBTController(this, nbtViewer);
 
         layerManager = new LayerManager(this);
-
         entityManager = new EntityManager(this);
+        selectionManager = new SelectionManager(this);
 
         // Adds the world to the menu
         mainController.getWindowMenu().addWorldMenu(worldMenu);
@@ -275,5 +277,9 @@ public class WorldController {
 
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
     }
 }

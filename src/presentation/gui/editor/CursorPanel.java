@@ -50,7 +50,7 @@ public class CursorPanel extends EditorSubComponent {
 
         selectCord(curX, curY);
 
-        Cord3S cord3D = getCords(mouseX, mouseY);
+        Cord3S cord3D = getCord3D(mouseX, mouseY);
         Cord2S cord2D = new Cord2S(curX, curY);
         worldController.onSelectionUpdated(cord2D, cord3D, editor);
     }
@@ -63,7 +63,7 @@ public class CursorPanel extends EditorSubComponent {
 
     public void selectCord(short x, short y, short z) {
 
-        Cord2S cord = getCord(x, y, z);
+        Cord2S cord = getCord2D(x, y, z);
 
         setVisible(cord != null);
 

@@ -52,7 +52,7 @@ public abstract class EditorSubComponent extends JPanel {
      * @param y The 2D y coord, which is between 0 inclusive and height exclusive
      * @return The 3D cord
      */
-    protected Cord3S getCords(short x, short y) {
+    protected Cord3S getCord3D(short x, short y) {
 
         short layer = editor.getLayerHeight();
 
@@ -77,7 +77,7 @@ public abstract class EditorSubComponent extends JPanel {
      * @param z
      * @return The 2D cord if the layer is in the range, otherwise null.
      */
-    protected Cord2S getCord(short x, short y, short z) {
+    protected Cord2S getCord2D(short x, short y, short z) {
 
         short layer = editor.getLayerHeight();
 

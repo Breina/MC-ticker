@@ -19,8 +19,7 @@ public class DrawingWindow extends InternalWindow {
 	private int max;
 	
 	private WorldController worldController;
-	
-//	private EditorPanel editor;
+
     private Editor editor;
 	
 	private JButton up, down;
@@ -99,8 +98,8 @@ public class DrawingWindow extends InternalWindow {
 		
 		setLocation(164, 109);
 	}
-	
-	/**
+
+    /**
 	 * Handler for the zoom function
 	 */
 	public class ZoomHandler implements ActionListener {

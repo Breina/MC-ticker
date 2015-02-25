@@ -1,9 +1,9 @@
 package presentation.tools;
 
+import logging.Log;
 import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
-import presentation.gui.editor.selection.SelectionPanel;
-import presentation.main.Cord2S;
+import presentation.gui.editor.selection.SelectionManager;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -17,14 +17,9 @@ public class ToolSelect extends Tool implements MouseMotionListener {
     private boolean dragging;
 
     /**
-     * The editor in which we're dragging
+     * Keeps track of which selection manager (thus which world) we're dragging
      */
-    private Editor draggingEditor;
-
-    /**
-     * The starting corner of the drag
-     */
-    private Cord2S prevStartCord;
+    private SelectionManager prevSelection;
 
 	public ToolSelect(MainController mainController) {
 		super(mainController, "Select", "select.png", true);
@@ -43,37 +38,41 @@ public class ToolSelect extends Tool implements MouseMotionListener {
         boolean shift = (MouseEvent.SHIFT_DOWN_MASK & modifiers) == MouseEvent.SHIFT_DOWN_MASK;
         boolean ctrl = (MouseEvent.CTRL_DOWN_MASK & modifiers) == MouseEvent.CTRL_DOWN_MASK;
 
-        Editor editor = (Editor) e.getSource();
-        SelectionPanel selectionPanel = editor.getSelectionPanel();
+        SelectionManager selection = getWorldController().getSelectionManager();
 
-        if (!ctrl)
-            selectionPanel.clearSelection();
+        selection.startSelection(getSelectedCord3D(), shift, ctrl);
 
-        select = !selectionPanel.tileSelected(getSelectedCord2D());
+//        if (!ctrl)
+//            selection.clearSelection();
+//
+//        Cord3S c = getSelectedCord3D();
+//
+//        if (shift && prevStartCord != null && selection == prevSelection) {
+//
+//            selection.selectRegion(prevStartCord, c);
+//
+//        } else {
+//            prevStartCord = c;
+//            selection.selectPoint(c);
+//        }
 
-        if (shift && prevStartCord != null)
-
-            selectionPanel.selectRegion(prevStartCord, getSelectedCord2D(), select, false);
-
-        else {
-            prevStartCord = getSelectedCord2D();
-            selectionPanel.selectTile(getSelectedCord2D(), select);
-        }
-
-        editor.repaint();
-
-        draggingEditor = editor;
+        prevSelection = selection;
         dragging = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
-        draggingEditor.getSelectionPanel().selectRegion(prevStartCord, getSelectedCord2D(), select, true);
-        draggingEditor.repaint();
-
         dragging = false;
-        draggingEditor = null;
+
+        if (getWorldController().getSelectionManager() != prevSelection) {
+            Log.w("The selection drag started on a different schematic than it ended, selecting nothing.");
+            return;
+        }
+
+        prevSelection.endSelection();
+
+//        prevSelection.selectRegion(prevStartCord, getSelectedCord3D());
 	}
 
 	@Override
@@ -88,8 +87,13 @@ public class ToolSelect extends Tool implements MouseMotionListener {
 	public void onSelectionChanged() {
 
         if (dragging) {
-            draggingEditor.getSelectionPanel().selectRegion(prevStartCord, getSelectedCord2D(), select, false);
-            draggingEditor.getSelectionPanel().repaint();
+
+            if (getWorldController().getSelectionManager() != prevSelection) {
+                Log.w("The selection is dragging through another selection, selecting nothing.");
+                return;
+            }
+
+            prevSelection.dragSelection(getSelectedCord3D());
         }
 	}
 
@@ -112,5 +116,4 @@ public class ToolSelect extends Tool implements MouseMotionListener {
             editor.setCursor(Cursor.getDefaultCursor());
 
     }
-    boolean select; // TODO remove
 }
