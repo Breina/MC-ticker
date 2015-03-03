@@ -86,7 +86,7 @@ public abstract class EditorSubComponent extends JPanel {
                 if (y != layer)
                     return null;
 
-                return new Cord2S(x,  z);
+                return new Cord2S(x, z);
 
             case FRONT:
                 if (z != layer)

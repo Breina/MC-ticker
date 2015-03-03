@@ -1,8 +1,11 @@
 package presentation.gui.editor.selection;
 
 import presentation.controllers.WorldController;
+import presentation.gui.editor.Editor;
 import presentation.main.Cord3S;
 import presentation.objects.ViewData;
+
+import java.util.Iterator;
 
 /**
  * A manager which manages the 3D selection
@@ -74,9 +77,9 @@ public class SelectionManager {
         selectBoundedRectangle(start, end);
 
         // This part requires the cords to be sorted
-        for (int x = start.x; x < end.x; x++)
-            for (int y = start.y; y < end.y; y++)
-                for (int z = start.z; z < end.z; z++)
+        for (int x = start.x; x <= end.x; x++)
+            for (int y = start.y; y <= end.y; y++)
+                for (int z = start.z; z <= end.z; z++)
                     selection[x][y][z] = positiveSelection;
     }
 
@@ -194,6 +197,11 @@ public class SelectionManager {
     public void endSelection() {
 
         selectRegion(start, end);
+
+        Iterator<Editor> editorIterator = worldController.getEditors().iterator();
+
+        while (editorIterator.hasNext())
+            editorIterator.next().repaint();
     }
 
     public Cord3S getStart() {

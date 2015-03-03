@@ -6,8 +6,6 @@ import presentation.gui.choosers.SchematicChooser;
 import presentation.main.Constants;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 public class FileMenu extends JMenu {
@@ -49,50 +47,27 @@ public class FileMenu extends JMenu {
 		exitItem				.setMnemonic('x');
 		add(exitItem);
 		
-		newItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.openNewWorldDialog();
-			}
-		});
-		
-		openItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				SchematicChooser chooser = new SchematicChooser(new File(Constants.SCHEMATICSDIR));
-				int result =  chooser.showOpenDialog(controller.getFrame());
-				
-				if (result != SchematicChooser.APPROVE_OPTION) {
-					if (result == SchematicChooser.ERROR_OPTION)
-						Log.e("Failed to open schematic.");
-					
-					return;
-				}
-				
-				controller.openSchematic(chooser.getSelectedFile());
-			}
-		});
-		
-		saveItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.saveAll();
-			}
-		});
-		
-		exportItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.export();
-			}
-		});
-		
-		exitItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.exit();
-			}
-		});
-	}
+		newItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.openNewWorldDialog()));
+
+        openItem.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+
+            SchematicChooser chooser = new SchematicChooser(new File(Constants.SCHEMATICSDIR));
+            int result = chooser.showOpenDialog(controller.getFrame());
+
+            if (result != SchematicChooser.APPROVE_OPTION) {
+                if (result == SchematicChooser.ERROR_OPTION)
+                    Log.e("Failed to open schematic.");
+
+                return;
+            }
+
+            controller.openSchematic(chooser.getSelectedFile());
+        }));
+
+        saveItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.saveAll()));
+
+        exportItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.export()));
+
+        exitItem.addActionListener(e -> controller.exit());
+    }
 }

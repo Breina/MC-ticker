@@ -38,17 +38,18 @@ public class SelectionPanel extends EditorSubComponent {
         Cord3S start3D = selectionManager.getStart();
         Cord3S end3D = selectionManager.getEnd();
 
-        start = getCord2D(start3D.x, start3D.y, start3D.z);
-        end = getCord2D(end3D.x, end3D.y, end3D.z);
+        projectBoundedRectangle(start3D, end3D);
 
         Graphics2D g = (Graphics2D) gr;
 
         // Border
-        g.setColor(Constants.COLORSELECTIONBORDER);
-        g.setStroke(new BasicStroke(2));
+        if (start != null && end != null) {
+            g.setColor(Constants.COLORSELECTIONBORDER);
+            g.setStroke(new BasicStroke(2));
 
-        g.draw(new Rectangle2D.Float(start.x * Editor.SIZE, start.y * Editor.SIZE,
-                (end.x - start.x + 1) * Editor.SIZE + 1f, (end.y - start.y + 1) * Editor.SIZE + 1f));
+            g.draw(new Rectangle2D.Float(start.x * Editor.SIZE, start.y * Editor.SIZE,
+                    (end.x - start.x + 1) * Editor.SIZE + 1f, (end.y - start.y + 1) * Editor.SIZE + 1f));
+        }
 
         // Interior
         g.setColor(Constants.COLORSELECTIONINTERIOR);
@@ -81,5 +82,50 @@ public class SelectionPanel extends EditorSubComponent {
         double mouseY = p.getY() / editor.getScale();
 
         return outer.contains(mouseX, mouseY) && !inner.contains(mouseX, mouseY);
+    }
+
+    private void projectBoundedRectangle(Cord3S start, Cord3S end) {
+
+        short layer = editor.getLayerHeight();
+
+        switch (orientation) {
+            case TOP:
+                if (layer < start.y || layer > end.y) {
+                    this.start = null;
+                    this.end = null;
+                    return;
+                }
+
+                this.start = new Cord2S(start.x, start.z);
+                this.end = new Cord2S(end.x, end.z);
+                break;
+
+            case FRONT:
+                if (layer < start.z || layer > end.z) {
+                    this.start = null;
+                    this.end = null;
+                    return;
+                }
+
+                this.start = new Cord2S(start.x, (short) (height - end.y - 1));
+                this.end = new Cord2S(end.x, (short) (height - start.y - 1));
+                break;
+
+            case RIGHT:
+                if (layer < start.x || layer > end.x) {
+                    this.start = null;
+                    this.end = null;
+                    return;
+                }
+
+                this.end = new Cord2S((short) (width - start.z - 1), (short) (height - start.y - 1));
+                this.start = new Cord2S((short) (width - end.z - 1), (short) (height - end.y - 1));
+                break;
+
+            case UNDEFINED:
+            default:
+                throw new IllegalStateException("Badly defined layer :(");
+        }
+
     }
 }

@@ -115,8 +115,6 @@ public class LayerManager {
 
             Editor editor = editorIterator.next();
             LayerPanel layer = layers.get(editor).get(layerEditor);
-
-            editor.remove(layer);
         }
     }
 }

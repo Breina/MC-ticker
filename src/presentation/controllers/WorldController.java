@@ -10,6 +10,7 @@ import presentation.gui.editor.selection.SelectionManager;
 import presentation.gui.menu.WorldMenu;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
+import presentation.main.Constants;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
@@ -48,6 +49,11 @@ public class WorldController {
     private EntityManager entityManager;
     private SelectionManager selectionManager;
 
+    private long lastUpdateTime;
+    private boolean doUpdate;
+    private TimerUpdater timerUpdater;
+    private Thread timerUpdaterThread;
+
 	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
 		this.mainController = mainController;
@@ -80,6 +86,10 @@ public class WorldController {
 
 	private void loadSim() {
 
+        timerUpdater = new TimerUpdater();
+        timerUpdaterThread = new Thread(timerUpdater);
+        timerUpdaterThread.start();
+
 		worldMenu = new WorldMenu(this);
 		timeController = new TimeController(this);
 
@@ -99,6 +109,7 @@ public class WorldController {
         editors = new CopyOnWriteArrayList<>();
         addNewPerspective(Orientation.TOP);
 
+        setDoUpdate(true);
 	}
 	
 	public void addNewPerspective(Orientation orientation) {
@@ -150,12 +161,20 @@ public class WorldController {
 	}
 	
 	public void onSchematicUpdated() {
+
+        if (!shouldUpdate())
+            return;
+
+        doUpdate = false;
+
 		nbtController.onSchematicUpdated();
 
         entityManager.updateEntities();
 
         for (Editor editor : editors)
             editor.onSchematicUpdated();
+
+        doUpdate = true;
 	}
 	
 	public ViewData getWorldData() {
@@ -281,5 +300,60 @@ public class WorldController {
 
     public SelectionManager getSelectionManager() {
         return selectionManager;
+    }
+
+    public void setDoUpdate(boolean doUpdate)  {
+
+        this.doUpdate = doUpdate;
+
+        if (doUpdate)
+            onSchematicUpdated();
+    }
+
+    public synchronized boolean shouldUpdate() {
+
+        if (!doUpdate)
+            return false;
+
+        long newTime = System.currentTimeMillis();
+        boolean result = newTime - lastUpdateTime >= Constants.MIN_FRAME_DELAY;
+
+        if (result)
+            lastUpdateTime = newTime;
+
+        timerUpdater.setTimeTarget(newTime + Constants.MIN_FRAME_DELAY);
+
+        return result;
+    }
+
+    protected class TimerUpdater implements Runnable {
+
+        private long timeTarget;
+
+        @Override
+        public void run() {
+
+            for (;;) {
+                try {
+
+                    while (System.currentTimeMillis() < timeTarget)
+                            Thread.sleep(Constants.MIN_FRAME_DELAY);
+
+                    onSchematicUpdated();
+
+                    synchronized (this) {
+                        wait();
+                    }
+
+                } catch (InterruptedException e) {
+                    Log.w("Frame updater thread was awoken from its sleep.");
+                }
+            }
+        }
+
+        public synchronized void setTimeTarget(long timeTarget) {
+            this.timeTarget = timeTarget;
+            notify();
+        }
     }
 }

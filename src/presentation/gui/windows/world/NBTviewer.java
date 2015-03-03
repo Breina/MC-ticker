@@ -217,7 +217,7 @@ public class NBTviewer extends WorldWindow {
 		
 	}
 	
-	public void updateNBTContents(Tag schematic) {
+	public synchronized void updateNBTContents(Tag schematic) {
 
 		Point prevScroll = scrollPane.getViewport().getViewPosition();
 

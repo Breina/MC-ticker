@@ -1,7 +1,5 @@
 package presentation.gui;
 
-import logging.Log;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -30,8 +28,6 @@ public class DesktopPane extends JDesktopPane {
 		
 		ImageIcon icon = new ImageIcon("img/background.png");
 		backgroundImage = icon.getImage();
-
-//	    backgroundImage = image.getScaledInstance(1500, 1000, Image.SCALE_SMOOTH);
 	}
 	
     @Override
@@ -51,19 +47,19 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-    private int DEBUGCOUNTER = 0;
-
-    @Override
-    public void paint(Graphics g) {
-
-        Log.d("painting");
-
-        DEBUGCOUNTER++;
-
-        if (DEBUGCOUNTER == 10) {
-            Log.printEntireStackTraceAndBeDoneWithIt();
-        }
-
-        super.paint(g);
-    }
+//    private int DEBUGCOUNTER = 0;
+//
+//    @Override
+//    public void paint(Graphics g) {
+//
+//        Log.d("painting");
+//
+//        DEBUGCOUNTER++;
+//
+////        if (DEBUGCOUNTER == 100) {
+////            Log.printEntireStackTraceAndBeDoneWithIt();
+////        }
+//
+//        super.paint(g);
+//    }
 }

@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import logging.Log;
+import presentation.debug.TracingEventQueue;
 import presentation.exceptions.SchematicException;
 import presentation.gui.RSFrame;
 import presentation.gui.WorldListener;
@@ -16,6 +17,7 @@ import sim.logic.SimWorld;
 import sim.logic.Simulator;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,17 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
-	
-//	private Timebar timebar;
-//	private Toolbar toolbar;
-//	private NewWorldWindow newWorldWindow;
-//	private StatusPanel statusPanel;
-//	private ExportWindow exportWindow;
-//	private DesktopPane desktopPane;
-//	private WindowMenu windowMenu;
-//	private FileMenu fileMenu;
-//	private LogWindow logWindow;
-//	private BlockPanel blockPanel;
+
     private RSFrame mainframe;
 
 	private TileController tileController;
@@ -56,7 +48,10 @@ public class MainController {
 	public MainController() {
 
 		Log.i(Constants.MOTD);
-		
+
+        // This will debug actions that hog Swing's thread (EDT)
+        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new TracingEventQueue());
+
 		setLF();
 		
 		worldControllers = new ArrayList<>();
@@ -64,19 +59,6 @@ public class MainController {
 		
 		tileController = new TileController(new File(presentation.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
-
-		// TODO The most emberassing part of the sim, fix this man :(
-//		desktopPane = new DesktopPane();
-//		statusPanel = new StatusPanel();
-//		toolbar = new Toolbar(this);
-//		timebar = new Timebar(this);
-//		fileMenu = new FileMenu(this);
-//		windowMenu = new WindowMenu(this);
-//		logWindow = new LogWindow(this);
-//		blockPanel = new BlockPanel(this);
-//		mainframe = new RSFrame(this);
-//		exportWindow = new ExportWindow(this);
-//		newWorldWindow = new NewWorldWindow(this);
 
         mainframe = new RSFrame(this);
 		
