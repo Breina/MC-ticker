@@ -1,6 +1,7 @@
 package sim.loading;
 
 import logging.Log;
+import sim.constants.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,20 +67,6 @@ public class ClassExtractor {
 					throw e;
 				}
 			}
-
-			// TODO remove
-//			System.out.println("LOADING RAW CLASSES");
-//
-//			for (String unobfClass : Constants.UNOBFUSCATEDCLASSES) {
-//
-//				System.out.println("CLASS: " + unobfClass);
-//
-//				Class<?> clazzMeister = cl.loadClass(unobfClass);
-//
-//				System.out.println("clazzMeister= " + clazzMeister);
-//
-//				classes.put(unobfClass, clazzMeister);
-//			}
 			
 		} finally {
 				
@@ -88,4 +75,66 @@ public class ClassExtractor {
 		
 		return classes;
 	}
+
+    public void addLibaryClasses(String minecraftFolder, String[][] libraryClasses, HashMap<String, Class<?>> classes) throws IOException, ClassNotFoundException {
+
+        for (String[] line : libraryClasses) {
+            if (line.length != 3)
+                throw new IllegalStateException("Malformed library classes array in Constants.");
+
+            File jarFile = new File(minecraftFolder + Constants.LIBRARYFOLDER + line[2]);
+            Class<?> classy = getClassFromJar(line[0], line[1], jarFile);
+
+            classes.put(line[0], classy);
+        }
+    }
+
+    public Class<?> getClassFromJar(String requiredClassName, String _package, File _jarFile) throws IOException, ClassNotFoundException {
+
+        JarFile jarFile = null;
+        Enumeration<JarEntry> jarEntries;
+        URLClassLoader cl;
+
+        String fullClass = _package + requiredClassName;
+
+        System.out.println("Searching for " + fullClass);
+
+        try {
+            jarFile = new JarFile(_jarFile);
+            jarEntries = jarFile.entries();
+
+            URL[] urls = { new URL("jar:file:" + _jarFile.getPath() + "!/") };
+            cl = URLClassLoader.newInstance(urls);
+
+            while (jarEntries.hasMoreElements()) {
+
+                try {
+                    JarEntry jarEntry = jarEntries.nextElement();
+                    if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class"))
+                        continue;
+
+                    // -6 because of .class
+                    String className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
+
+                    if (className.equals(fullClass))
+                        return cl.loadClass(className.replace('/', '.'));
+
+                } catch (ClassNotFoundException e) {
+
+                    if (requiredClassName != null)
+                        Log.e("Class " + requiredClassName + " was not found.");
+                    else
+                        Log.e("Some class was not found");
+
+                    throw e;
+                }
+            }
+
+        } finally {
+
+            jarFile.close();
+        }
+
+        return null;
+    }
 }

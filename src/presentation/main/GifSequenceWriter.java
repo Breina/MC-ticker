@@ -11,10 +11,14 @@ package presentation.main;
 //Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
 
 import javax.imageio.*;
-import javax.imageio.metadata.*;
-import javax.imageio.stream.*;
-import java.awt.image.*;
-import java.io.*;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 public class GifSequenceWriter {
@@ -39,7 +43,7 @@ public class GifSequenceWriter {
 	 * @author Elliot Kroo (elliot[at]kroo[dot]net)
 	 */
 	public GifSequenceWriter(ImageOutputStream outputStream, int imageType, int timeBetweenFramesMS,
-			boolean loopContinuously) throws IIOException, IOException {
+			boolean loopContinuously) throws IOException {
 		// my method to create a writer
 		gifWriter = getWriter();
 		imageWriteParam = gifWriter.getDefaultWriteParam();

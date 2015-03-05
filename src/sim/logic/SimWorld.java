@@ -63,7 +63,7 @@ public class SimWorld {
 		Log.i("Creating new world");
 		world = rWorld.createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
 				Constants.SEED, Constants.WORLDPROVIDER, Constants.MAPFEATURESENABLED, Constants.HARDCOREENABLED, rChunk, rChunkProvider,
-				rProfiler, Constants.CANSPAWNANIMALS, Constants.CANSPAWNNPCS);
+				rProfiler);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class SimWorld {
 	 */
 	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty, boolean canSpawnAnimals, boolean canSpawnNPCs) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler, canSpawnAnimals, canSpawnNPCs);
+		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler);
 	}
 	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -93,9 +93,9 @@ public class SimWorld {
 						blocks[x][y][z] = Block.B_SOLID;
 			
 		setBlockObjects(xSize, ySize, zSize, blocks);
-		world.setxSize((int) xSize);
-		world.setySize((int) ySize);
-		world.setzSize((int) zSize);
+		world.setxSize(xSize);
+		world.setySize(ySize);
+		world.setzSize(zSize);
 	}
 
 	public void setSchematic(InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {

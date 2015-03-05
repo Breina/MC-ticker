@@ -45,8 +45,7 @@ public class Constants {
 		{"write", "Write the actual data"}, {"createEntityFromNBT"}, {"writeToNBT","Save the entity"}, {"spawnEntityInWorld"},
 		{"onChunkLoad", "Called when this Chunk"}, {"getItemById"}, {"registerItems"},
 		{"getUnlocalizedName", ""}, {"getTagList"}, {"getCompoundTagAt"},
-		{"onBlockActivated"}, {"setCanSpawnAnimals"}, {"setCanSpawnNPCs"},
-		{"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
+		{"onBlockActivated"}, {"register", "Registers blocks, items"}, {"getBlockState"}, {"getMetaFromState"}, {"getBlockFromName"},
 		{"incrementTotalWorldTime"}, {"create","PropertyDirection with the given name"}, {"getValue", "Get the value"},
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
 		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
@@ -76,32 +75,29 @@ public class Constants {
 	public final static String WORLD_SETBLOCKSTATE = "a";
 	public final static String IBLOCKSTATE_GETBLOCK = "c";
 	public final static String WORLD_ADDTICKENTRY = "b";
-	public final static String TILEENTITY_READFROMNBT = "b";
-	public final static String NBTTAGCOMPOUND_LOAD = "a";
+    public final static String TILEENTITY_READFROMNBT = "b";
+    public final static String NBTTAGCOMPOUND_LOAD = "a";
 	public final static String BLOCKEVENTDATA_GETBLOCKPOS = "a";
-	
-	// Untranslated fields
+
+    // Untranslated fields
 	public final static String CHUNKPRIMER_DATA = "a";
-	public final static String WORLD_THEPROFILER = "B";
-	public final static String NEXTTICKLISTENTRY_BLOCK = "e";
-	public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
-	public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
-	public final static String BLOCK_UNLOCALIZEDNAME = "N";
+    public final static String WORLD_THEPROFILER = "B";
+    public final static String NEXTTICKLISTENTRY_BLOCK = "e";
+    public final static String NEXTTICKLISTENTRY_BLOCKPOS = "a";
+    public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
+    public final static String BLOCK_UNLOCALIZEDNAME = "N";
 	public final static String WORLDSERVER_SERVERBLOCKEVENTLIST = "S";
 
-	
-	// Properties of the World object
-	public final static String WORLDTYPE = "Simulation";
-	public final static int WORLDTYPEID = 1;
-	public final static String APPNAME = "Simulator";
-	public final static String GAMETYPE = "CREATIVE";
-	public final static long SEED = 420l;
-	public final static boolean MAPFEATURESENABLED = false;
-	public final static boolean HARDCOREENABLED = false;
-	public final static int WORLDPROVIDER = 0;
-	public final static boolean CANSPAWNANIMALS = true;
-	public final static boolean CANSPAWNNPCS = true;
+    // Classes that need to be gotten out of a library {className, package, libPath}
+    public static final String[][] LIBRARYCLASSES = {{"GameProfile", "com/mojang/authlib/", "/com/mojang/authlib/1.5.17/authlib-1.5.17.jar"}};
 
-	public final static String LOGENTRY = "[SIM]";
-	public final static String LOGFILE = "log.txt";
+    // Properties of the World object
+	public final static String WORLDTYPE = "Simulation";
+    public final static int WORLDTYPEID = 1;
+    public final static String APPNAME = "Simulator";
+    public final static String GAMETYPE = "CREATIVE";
+    public final static long SEED = 420l;
+    public final static boolean MAPFEATURESENABLED = false;
+    public final static boolean HARDCOREENABLED = false;
+    public final static int WORLDPROVIDER = 0;
 }

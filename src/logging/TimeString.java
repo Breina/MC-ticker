@@ -17,9 +17,9 @@ public class TimeString {
 		warning,
 		error,
         debug
-	};
-	
-	public TimeString(Types type, long millis, String msg) {
+	}
+
+    public TimeString(Types type, long millis, String msg) {
 		this.type = type;
 		this.millis = millis;
 		this.msg = msg;

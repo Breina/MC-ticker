@@ -150,6 +150,8 @@ public class WorldController {
 	}
 	
 	public void setBlock(final int x, final int y, final int z, final Block block) {
+
+        setDoUpdate(false);
 		
 		timeController.loadCurrentTimeIntoSchematic(true);
 		
@@ -157,7 +159,7 @@ public class WorldController {
 		
 		timeController.updateCurrentSchematic();
 
-        onSchematicUpdated();
+        setDoUpdate(true);
 	}
 	
 	public void onSchematicUpdated() {

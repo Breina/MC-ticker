@@ -81,7 +81,7 @@ public class TileController {
 		
 		BufferedImage rot = new BufferedImage(h, w, BufferedImage.TYPE_INT_RGB);
 		
-	    Graphics2D g = (Graphics2D) rot.createGraphics();
+	    Graphics2D g = rot.createGraphics();
 	    
 	    AffineTransform xform = new AffineTransform(); 
 	    xform.translate(0.5*h, 0.5*w);

@@ -1,15 +1,15 @@
 package sim.logic;
 
+import logging.Log;
+import sim.constants.Constants;
+import sim.loading.Linker;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
-import logging.Log;
-import sim.constants.Constants;
-import sim.loading.Linker;
 
 public class RProfiler {
 	
@@ -71,7 +71,7 @@ public class RProfiler {
 		
 		while (i.hasNext()) {
 			
-			Entry<String, Long> entry = (Entry<String, Long>) i.next();
+			Entry<String, Long> entry = i.next();
 			
 			String key = entry.getKey();
 			sb.append(key);

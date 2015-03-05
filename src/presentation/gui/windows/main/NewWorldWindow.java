@@ -25,7 +25,7 @@ public class NewWorldWindow extends JDialog {
         setLocation(200, 200);
         setSize(250, 250);
 
-        buildGUI();;
+        buildGUI();
     }
 
     private void buildGUI() {

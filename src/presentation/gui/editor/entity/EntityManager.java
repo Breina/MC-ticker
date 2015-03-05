@@ -30,7 +30,7 @@ public class EntityManager {
      * Update the entities, will check which ones can be created, updated and destroyed.
      * Reuses existing panels as much as possible.
      */
-    public void updateEntities() {
+    public synchronized void updateEntities() {
 
         Entity[] inputEntities = worldController.getWorldData().getEntities();
         HashMap<Entity, HashMap<Editor, EntityPanel>> newEntities = new HashMap<>(inputEntities.length);

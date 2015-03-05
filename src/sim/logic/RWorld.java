@@ -31,7 +31,7 @@ public class RWorld {
 			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
-			c_serverBlockEvents;
+			c_serverBlockEvents, c_gameProfile;
 
 	private Enum<?> e_GameType;
 
@@ -74,7 +74,8 @@ public class RWorld {
 		Class<?> EntityOtherPlayerMP		= linker.getClass("EntityOtherPlayerMP");
 		Class<?> IUpdatePlayerListBox		= linker.getClass("IUpdatePlayerListBox");
 		Class<?> BlockEventData				= linker.getClass("BlockEventData");
-		
+        Class<?> GameProfile                = linker.getClass("GameProfile");
+
 		GameType							= linker.getClass("WorldSettings$GameType");
 		
 		f_provider							= linker.field("provider", World);
@@ -96,8 +97,6 @@ public class RWorld {
 		f_worldAccesses						= linker.field("worldAccesses", World);
 		f_loadedEntityList					= linker.field("loadedEntityList", World);
 		f_unloadedEntityList				= linker.field("unloadedEntityList", World);
-
-		
 		
 		f_loadedTileEntityList				= linker.field("loadedTileEntityList", World);
 		f_tickableTileEntities				= linker.field("tickableTileEntities", World);
@@ -117,14 +116,16 @@ public class RWorld {
 		c_worldSettings						= WorldSettings.getConstructor(long.class, GameType, boolean.class, boolean.class,
 				WorldType);
 		c_worldInfo							= WorldInfo.getConstructor(WorldSettings, String.class);
-//		c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile.class);
 		c_worldBorder						= WorldBorder.getDeclaredConstructor();
 
-		c_serverBlockEvents					= ServerBlockEventList.getDeclaredConstructor();
-		c_serverBlockEvents					.setAccessible(true);
+        c_serverBlockEvents					= ServerBlockEventList.getDeclaredConstructor();
+        c_serverBlockEvents					.setAccessible(true);
+
+        c_gameProfile                       = GameProfile.getDeclaredConstructor(UUID.class, String.class);
+        c_entityOtherPlayerMP				= EntityOtherPlayerMP.getDeclaredConstructor(World, GameProfile);
 
 		m_getProviderForDimension			= linker.method("getProviderForDimension", WorldProvider, int.class);
-		m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
+        m_tickUpdates						= linker.method("tickUpdates", WorldServer, boolean.class);
 		
 		m_setWorldTime 						= linker.method("setWorldTime", World, long.class );
 		m_incrementTotalWorldTime			= linker.method("incrementTotalWorldTime", WorldInfo, long.class);
@@ -136,10 +137,6 @@ public class RWorld {
 
 		m_getEventID						= linker.method("getEventID", BlockEventData);
 		m_getEventParameter					= linker.method("getEventParameter", BlockEventData);
-
-		// TODO remove
-//		m_setCanSpawnAnimals				= linker.method("setCanSpawnAnimals", MinecraftServer, boolean.class);
-//		m_setCanSpawnNPCs					= linker.method("setCanSpawnNPCs", MinecraftServer, boolean.class);
 
         // TODO can't use linker yet for these
 		m_getBlockState						= World.getDeclaredMethod(Constants.WORLD_GETBLOCKSTATE, BlockPos);
@@ -170,8 +167,8 @@ public class RWorld {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public WorldInstance createInstance(int _worldTypeId, String _worldType, String _gameType, long _seed, int _worldProvider,
-			boolean _mapFeaturesEnabled, boolean _hardcoreEnabled, RChunk rChunk, RChunkProvider rChunkProvider,
-			RProfiler rProfiler, boolean canSpawnAnimals, boolean canSpawnNPCs)
+                                        boolean _mapFeaturesEnabled, boolean _hardcoreEnabled, RChunk rChunk, RChunkProvider rChunkProvider,
+                                        RProfiler rProfiler)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		Objenesis objenesis = new ObjenesisStd(false); // <3 I LOVE YOU OBJENESIS <3
@@ -208,8 +205,9 @@ public class RWorld {
 		
 		f_isRemote.setBoolean(worldServer, false);
 
-		Object blockEventArray = Array.newInstance(ServerBlockEventList, 1);
+		Object blockEventArray = Array.newInstance(ServerBlockEventList, 2);
 		Array.set(blockEventArray, 0, c_serverBlockEvents.newInstance());
+        Array.set(blockEventArray, 1, c_serverBlockEvents.newInstance());
 		f_serverBlockEvents.set(worldServer, blockEventArray);
 
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
@@ -235,10 +233,9 @@ public class RWorld {
 		
 		f_lightUpdateBlockList.set(worldServer, new int[32768]);
 
-		// UUID.fromString("4865726f-6272-696e-6520-3d207265616c")
-//		GameProfile gameProfile = new GameProfile(null, Constants.PLAYERNAME);
-
-//		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
+		Object gameProfile = c_gameProfile.newInstance(
+                UUID.fromString("4865726f-6272-696e-6520-3d207265616c"), Constants.PLAYERNAME);
+		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
 
 		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
 		
@@ -252,7 +249,8 @@ public class RWorld {
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
-//			world.setPlayer(entityPlayer); // TODO uncomment accordingly
+            world.setBlockEventCacheIndex(0);
+			world.setPlayer(entityPlayer);
 		return world;
 	}
 	
@@ -267,15 +265,19 @@ public class RWorld {
 		advanceTicks(world, advanceTicks);
 
 		// The order of these is cast in stone
-		boolean moreUpdatesExist = (boolean) m_tickUpdates.invoke(world.getWorld(), false);
-		tickBlockEvents(world);
-		tickEntities(world);
-		tickTileEntities(world);
+        boolean moreUpdatesExist = tickUpdates(world);
+        tickBlockEvents(world);
+        tickEntities(world);
+        tickTileEntities(world);
 
 		world.setDoTimeUpdate(true);
 
 		return moreUpdatesExist;
 	}
+
+    public boolean tickUpdates(WorldInstance world) throws InvocationTargetException, IllegalAccessException {
+        return (boolean) m_tickUpdates.invoke(world.getWorld(), false);
+    }
 
 	public void tickTileEntities(WorldInstance world) throws InvocationTargetException, IllegalAccessException {
 
@@ -309,33 +311,39 @@ public class RWorld {
 	public void tickBlockEvents(WorldInstance world) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
 		Object blockEvents = f_serverBlockEvents.get(world.getWorld());
-		int length = Array.getLength(blockEvents);
 
-		for (int i = 0; i < length; i++) {
+        int index = world.getBlockEventCacheIndex();
+        Object blockEventDataArray = Array.get(blockEvents, index);
+        index ^= 1;
+        world.setBlockEventCacheIndex(index);
 
-			Object blockEventDataArray = Array.get(blockEvents, i);
+        // Repeat until there are no more block events (meaning instantwire)
+        while (!((ArrayList) blockEventDataArray).isEmpty()) {
 
-			// Repeat until there are no more block events (meaning instantwire)
-			while (!((ArrayList) blockEventDataArray).isEmpty()) {
+            Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
+            ((ArrayList) blockEventDataArray).clear();
 
-				Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
-				((ArrayList) blockEventDataArray).clear();
+            for (int j = 0; j < blockEventDataObjects.length; j++) {
 
-				for (int j = 0; j < blockEventDataObjects.length; j++) {
+                Object blockEventData = blockEventDataObjects[j];
 
-					Object blockEventData = blockEventDataObjects[j];
+                int eventId = (int) m_getEventID.invoke(blockEventData);
+                int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
+                Object blockPos = m_getEventPos.invoke(blockEventData);
 
-					int eventId = (int) m_getEventID.invoke(blockEventData);
-					int eventParameter = (int) m_getEventParameter.invoke(blockEventData);
-					Object blockPos = m_getEventPos.invoke(blockEventData);
+                Object blockState = getBlockState(world, rBlockPos.getX(blockPos), rBlockPos.getY(blockPos), rBlockPos.getZ(blockPos));
+                Object block = rBlock.getBlockFromState(blockState);
 
-					Object blockState = getBlockState(world, rBlockPos.getX(blockPos), rBlockPos.getY(blockPos), rBlockPos.getZ(blockPos));
-					Object block = rBlock.getBlockFromState(blockState);
+                Object worldBlock = rBlock.getBlockFromState(getBlockState(world, blockPos));
 
-					rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
-				}
-			}
-		}
+                if (block.equals(worldBlock))
+                    rBlock.onBlockEventReceived(block, world.getWorld(), blockPos, blockState, eventId, eventParameter);
+                else
+                    Log.w("Ignored block event at " + blockPos);
+            }
+
+            ((ArrayList) blockEventDataArray).clear();
+        }
 	}
 	
 	public void advanceTicks(WorldInstance world, long amount) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -384,10 +392,15 @@ public class RWorld {
 	
 	public Object getBlockState(WorldInstance world, int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
-		Object blockState = m_getBlockState.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z));
-		
-		return blockState;
+		return getBlockState(world, rBlockPos.createInstance(x, y, z));
 	}
+
+    private Object getBlockState(WorldInstance world, Object blockPos) throws InvocationTargetException, IllegalAccessException {
+
+        Object blockState = m_getBlockState.invoke(world.getWorld(), blockPos);
+
+        return blockState;
+    }
 	
 	public boolean setBlockState(WorldInstance world, int x, int y, int z, Object blockState, boolean update, boolean sendChange) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
@@ -399,15 +412,6 @@ public class RWorld {
 			Log.w("Set block: no changes");
 		
 		return succes;
-	}
-	
-	/**
-	 * Returns the hashset containing NextTickListEntry objects
-	 * @return
-	 */
-	public Object getPendingTicks(WorldInstance world) {
-		
-		return world.getPendingTickListEntries();
 	}
 	
 	public List<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {

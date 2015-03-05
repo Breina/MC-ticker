@@ -64,37 +64,37 @@ public class NBTviewer extends WorldWindow {
 		        	break;
 			
 			case TAG_Byte:
-		        	node = new DefaultMutableTreeNode("byte " + tag.getName() + ": " + (byte) tag.getValue());
+		        	node = new DefaultMutableTreeNode("byte " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 					
 			case TAG_Short:
-		        	node = new DefaultMutableTreeNode("short " + tag.getName() + ": " + (short) tag.getValue());
+		        	node = new DefaultMutableTreeNode("short " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Int:
-		        	node = new DefaultMutableTreeNode("int " + tag.getName() + ": " + (int) tag.getValue());
+		        	node = new DefaultMutableTreeNode("int " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Long:
-		        	node = new DefaultMutableTreeNode("long " + tag.getName() + ": " + (long) tag.getValue());
+		        	node = new DefaultMutableTreeNode("long " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Float:
-		        	node = new DefaultMutableTreeNode("float " + tag.getName() + ": " + (float) tag.getValue());
+		        	node = new DefaultMutableTreeNode("float " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Double:
-		        	node = new DefaultMutableTreeNode("double " + tag.getName() + ": " + (double) tag.getValue());
+		        	node = new DefaultMutableTreeNode("double " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
@@ -133,7 +133,7 @@ public class NBTviewer extends WorldWindow {
 					break;
 		        	
 			case TAG_String:
-		        	node = new DefaultMutableTreeNode("string " + tag.getName() + ": " + (String) tag.getValue());
+		        	node = new DefaultMutableTreeNode("string " + tag.getName() + ": " + tag.getValue());
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;

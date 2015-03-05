@@ -1,20 +1,15 @@
 package sim.logic;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import logging.Log;
 import sim.constants.Constants;
-import sim.loading.ClassTester;
 import sim.loading.Linker;
 import utils.CircularByteBuffer;
 import utils.Tag;
+
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class RNBTTags {
 	
@@ -65,7 +60,7 @@ public class RNBTTags {
 		Object nbtSizeTracker = c_NBTSizeTracker.newInstance(MAXSIZE);
 		Object instance = c_NBTTagCompound.newInstance();
 		
-		m_load.invoke(instance, new Object[]{input, complexity, nbtSizeTracker});
+		m_load.invoke(instance, input, complexity, nbtSizeTracker);
 		
 		return instance;
 	}

@@ -45,6 +45,7 @@ public class Linker {
 		// Extracts and buffers the required classes from minecraft.jar
 		ClassExtractor extractor = new ClassExtractor();
 		classes = extractor.extractClasses(new File(minecraftFolder + Constants.MINECRAFTJAR), translator.getClasses());
+        extractor.addLibaryClasses(minecraftFolder, Constants.LIBRARYCLASSES, classes);
 
 		Log.i("Parsing and extracting");
 	}

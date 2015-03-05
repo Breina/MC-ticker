@@ -105,9 +105,9 @@ public class LayerPanel extends EditorSubComponent {
     public void setLayerHeight(short layerHeight) {
 
         if (horizontal)
-            setBounds(0, (int) (Editor.SIZE * layerHeight), (int) (width * Editor.SIZE), (int) ((Editor.SIZE + 1)));
+            setBounds(0, Editor.SIZE * layerHeight, width * Editor.SIZE, (Editor.SIZE + 1));
 
         else
-            setBounds((int) (Editor.SIZE * layerHeight), 0, (int) ((Editor.SIZE + 1)), (int) (height * Editor.SIZE));
+            setBounds(Editor.SIZE * layerHeight, 0, (Editor.SIZE + 1), height * Editor.SIZE);
     }
 }
