@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module classpath="eclipse" classpath-dir="$MODULE_DIR$" type="JAVA_MODULE" version="4">
+<module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/lib/objenesis-2.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/authlib-1.5.17.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
       <src_folder value="file://$MODULE_DIR$/tst" expected_position="1" />
+      <src_folder value="file://$MODULE_DIR$/conf" expected_position="2" />
+      <src_folder value="file://$MODULE_DIR$/img" expected_position="3" />
+      <src_folder value="file://$MODULE_DIR$/lib" expected_position="4" />
+      <src_folder value="file://$MODULE_DIR$/mcp" expected_position="5" />
+      <src_folder value="file://$MODULE_DIR$/schems" expected_position="6" />
     </src_description>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
     <output url="file://$MODULE_DIR$/bin" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -18,15 +24,10 @@
       <sourceFolder url="file://$MODULE_DIR$/lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/mcp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/schems" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/ancient backups" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="MCsim/src" />
-    <orderEntry type="module" module-name="MCsim/img" />
-    <orderEntry type="module" module-name="MCsim/tst" />
-    <orderEntry type="module" module-name="MCsim/minecraft" />
-    <orderEntry type="module" module-name="MCsim/schems" />
-    <orderEntry type="module" module-name="MCsim/schems/tests" />
-    <orderEntry type="module" module-name="MCsim/conf" />
     <orderEntry type="module-library" exported="">
       <library name="objenesis-2.1.jar">
         <CLASSES>
@@ -47,14 +48,5 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="org.hamcrest:hamcrest-core:1.4-atlassian-1" level="project" />
-    <orderEntry type="module-library" scope="RUNTIME">
-      <library name="authlib-1.5.17.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/authlib-1.5.17.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

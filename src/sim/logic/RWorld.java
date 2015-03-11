@@ -28,7 +28,7 @@ public class RWorld {
 			f_isRemote, f_worldAccesses, f_loadedEntityList, f_unloadedEntityList, f_playerEntities, f_weatherEffects,
 			f_entitiesById, f_entitiesByUuid, f_rand, f_pendingTickListEntriesHashSet, f_pendingTickListEntriesThisTick,
 			f_worldInfo, f_worldBorder, f_lightUpdateBlockList, f_tickableTileEntities, f_loadedTileEntityList,
-			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents;
+			f_addedTileEntityList, f_tileEntitiesToBeRemoved, f_serverBlockEvents, f_blockEventCacheIndex;
 
 	private Constructor<?> c_worldType, c_worldSettings, c_worldInfo, c_entityOtherPlayerMP, c_worldBorder,
 			c_serverBlockEvents, c_gameProfile;
@@ -109,7 +109,7 @@ public class RWorld {
 		f_rand								= linker.field("rand", World);
 		f_lightUpdateBlockList				= linker.field("lightUpdateBlockList", World);
 		f_worldBorder						= linker.field("worldBorder", World);
-
+        f_blockEventCacheIndex              = linker.field("blockEventCacheIndex", WorldServer);
 		
 		c_worldType							= WorldType.getDeclaredConstructor(int.class, String.class);
 		c_worldType							.setAccessible(true);
@@ -209,6 +209,7 @@ public class RWorld {
 		Array.set(blockEventArray, 0, c_serverBlockEvents.newInstance());
         Array.set(blockEventArray, 1, c_serverBlockEvents.newInstance());
 		f_serverBlockEvents.set(worldServer, blockEventArray);
+        f_blockEventCacheIndex.set(worldServer, 0);
 
 		ArrayList<Object> loadedTileEntities = new ArrayList<>();
 		ArrayList<Object> tickableTileEntities = new ArrayList<>();
@@ -249,7 +250,6 @@ public class RWorld {
 			world.setPendingTickListEntries(pendingTickListEntriesTreeSet);
 			world.setPendingTickListHashSet(pendingTickListEntriesHashSet);
 			world.setDoTimeUpdate(true);
-            world.setBlockEventCacheIndex(0);
 			world.setPlayer(entityPlayer);
 		return world;
 	}
@@ -310,15 +310,19 @@ public class RWorld {
 	 */
 	public void tickBlockEvents(WorldInstance world) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
-		Object blockEvents = f_serverBlockEvents.get(world.getWorld());
-
-        int index = world.getBlockEventCacheIndex();
-        Object blockEventDataArray = Array.get(blockEvents, index);
-        index ^= 1;
-        world.setBlockEventCacheIndex(index);
 
         // Repeat until there are no more block events (meaning instantwire)
-        while (!((ArrayList) blockEventDataArray).isEmpty()) {
+        for (;;) {
+
+            Object blockEvents = f_serverBlockEvents.get(world.getWorld());
+
+            int index = f_blockEventCacheIndex.getInt(world.getWorld());
+            List<Object[]> blockEventDataArray = (List<Object[]>) Array.get(blockEvents, index);
+            index ^= 1;
+            f_blockEventCacheIndex.set(world.getWorld(), index);
+
+            if (blockEventDataArray.isEmpty())
+                break;
 
             Object[] blockEventDataObjects = ((ArrayList) blockEventDataArray).toArray();
             ((ArrayList) blockEventDataArray).clear();
@@ -342,7 +346,7 @@ public class RWorld {
                     Log.w("Ignored block event at " + blockPos);
             }
 
-            ((ArrayList) blockEventDataArray).clear();
+            blockEventDataArray.clear();
         }
 	}
 	

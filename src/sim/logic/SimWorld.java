@@ -438,7 +438,7 @@ public class SimWorld {
 
 		isSchematicUpToDate = false;
 
-		boolean reachedEnd = !rWorld.tick(world, 2l);
+		boolean reachedEnd = !rWorld.tick(world, 1l);
 
 		return reachedEnd;
 	}

@@ -97,8 +97,6 @@ public class ClassExtractor {
 
         String fullClass = _package + requiredClassName;
 
-        System.out.println("Searching for " + fullClass);
-
         try {
             jarFile = new JarFile(_jarFile);
             jarEntries = jarFile.entries();

@@ -18,7 +18,6 @@ public class WorldInstance {
 	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
 	private List<Object> loadedTileEntities, loadedEntities, tickableTileEntities;
 	private long worldTime;
-    private int blockEventCacheIndex;
 
 	 // TODO make this so time is only updated when time changes, doesn't need to setTime when ticking
 	private boolean doTimeUpdate;
@@ -158,12 +157,4 @@ public class WorldInstance {
 	public void setzSize(int zSize) {
 		this.zSize = zSize;
 	}
-
-    public int getBlockEventCacheIndex() {
-        return blockEventCacheIndex;
-    }
-
-    public void setBlockEventCacheIndex(int blockEventCacheIndex) {
-        this.blockEventCacheIndex = blockEventCacheIndex;
-    }
 }

@@ -61,7 +61,8 @@ public class Constants {
 		{"lightUpdateBlockList"}, {"tickableTileEntities"}, {"loadedTileEntityList"}, {"worldBorder"},
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
 		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"}, {"isDead"},
-		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}, {"entityUniqueID"}};
+		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}, {"entityUniqueID"},
+        {"blockEventCacheIndex"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",

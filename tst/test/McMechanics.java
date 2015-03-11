@@ -27,8 +27,8 @@ public class McMechanics {
 	private SimWorld world;
 	private SimController controller;
 	
-	private static final int WATERSPREADSPEED = 3;
-	private static final int LAVASPREADSPEED = 15;
+	private static final int WATERSPREADSPEED = 6;
+	private static final int LAVASPREADSPEED = 30;
 
 	@Before
 	public void setUp() throws Exception {
@@ -241,7 +241,7 @@ public class McMechanics {
 		try {
 			byte prev = getData(1, 1, 0);
 
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < 14; i++)
 				world.tickWorld();
 
 			byte next = getData(1, 1, 0);
