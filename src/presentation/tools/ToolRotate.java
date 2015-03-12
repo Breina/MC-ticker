@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 public class ToolRotate extends Tool {
 	
 	private int dragButton;
-	private BlockController blockController;
+	private final BlockController blockController;
 
 	public ToolRotate(MainController mainController) {
 		super(mainController, "Rotate", "rotate.png", false);

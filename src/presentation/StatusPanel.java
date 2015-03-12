@@ -11,7 +11,9 @@ import java.awt.*;
 public class StatusPanel extends JPanel {
 	private static final long serialVersionUID = 8458427057926796379L;
 
-	private JLabel lblWorld, lblSelection, lblValue;
+	private final JLabel lblWorld;
+    private final JLabel lblSelection;
+    private final JLabel lblValue;
 	
 	public StatusPanel() {
 		super();

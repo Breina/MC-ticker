@@ -19,13 +19,10 @@ import java.io.IOException;
 public class RSFrame extends JFrame {
 	private static final long serialVersionUID = -5737200021101047512L;
 	
-	private MainController controller;
+	private final MainController controller;
     private StatusPanel statusPanel;
     private DesktopPane desktop;
-    private BlockPanel blockPanel;
-    private Toolbar toolbar;
     private Timebar timebar;
-    private FileMenu fileMenu;
     private WindowMenu windowMenu;
 
     public RSFrame(MainController controller) {
@@ -57,12 +54,12 @@ public class RSFrame extends JFrame {
         statusPanel = new StatusPanel();
 		add(statusPanel, BorderLayout.SOUTH);
 
-        blockPanel = new BlockPanel(controller);
+        BlockPanel blockPanel = new BlockPanel(controller);
 		add(blockPanel, BorderLayout.WEST);
 
 		JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
 
-            toolbar = new Toolbar(controller);
+        Toolbar toolbar = new Toolbar(controller);
             toolbarContainer.add(toolbar);
 
             timebar = new Timebar(controller);
@@ -72,7 +69,7 @@ public class RSFrame extends JFrame {
 
 		JMenuBar menuBar = new JMenuBar();
 
-            fileMenu = new FileMenu(controller);
+        FileMenu fileMenu = new FileMenu(controller);
             menuBar.add(fileMenu);
 
             windowMenu = new WindowMenu(controller);
@@ -80,7 +77,7 @@ public class RSFrame extends JFrame {
 
         setJMenuBar(menuBar);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 

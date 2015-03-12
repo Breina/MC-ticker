@@ -1,7 +1,6 @@
 package sim.loading;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 // TODO Provide proper error handling for this entire class instead of returning null
 /**
@@ -9,12 +8,14 @@ import java.util.Iterator;
  */
 public class Translator {
 	
-	private HashMap<String, String> classes, methods, fields;
+	private final HashMap<String, String> classes;
+    private final HashMap<String, String> methods;
+    private final HashMap<String, String> fields;
 	
 	public Translator() {
-		classes = new HashMap<String, String>();
-		methods = new HashMap<String, String>();
-		fields = new HashMap<String, String>();
+		classes = new HashMap<>();
+		methods = new HashMap<>();
+		fields = new HashMap<>();
 	}
 	
 	public void addClass(String original, String obfuscated) {

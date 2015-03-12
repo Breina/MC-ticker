@@ -9,17 +9,17 @@ import utils.Tag;
 
 public class TimeController implements Runnable {
 	
-	private TimeLine<Tag> timeLine;
+	private final TimeLine<Tag> timeLine;
 
 	private int tickCounter = 0;
 	private int maxCount = 0;
 	
-	private WorldController worldController;
-	private SimController simController;
+	private final WorldController worldController;
+	private final SimController simController;
 	
-	private ViewData viewData;
+	private final ViewData viewData;
 
-	private TimeInfo timeInfo;
+	private final TimeInfo timeInfo;
 
 	private boolean goForward, isPaused, hasDelay;
 	private boolean go;

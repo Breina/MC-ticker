@@ -1,12 +1,10 @@
 package sim.constants;
 
-import java.io.File;
-
-import javax.swing.JFrame;
-
 import logging.Log;
-import presentation.gui.choosers.MCPFolderChooser;
 import presentation.gui.choosers.MinecraftFolderChooser;
+
+import javax.swing.*;
+import java.io.File;
 
 public class Globals {
 	
@@ -15,7 +13,7 @@ public class Globals {
 		return getMinecraftFolder(null);
 	}
 
-	public static String getMinecraftFolder(JFrame parent) {
+	private static String getMinecraftFolder(JFrame parent) {
 		// Dumb windows attempt
 		String minecraftFolder = System.getenv("APPDATA") + sim.constants.Constants.MINECRAFTFOLDER;
 		

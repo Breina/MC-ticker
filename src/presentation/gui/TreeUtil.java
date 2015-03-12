@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 public class TreeUtil {
 
     // is path1 descendant of path2
-    public static boolean isDescendant(TreePath path1, TreePath path2){
+    private static boolean isDescendant(TreePath path1, TreePath path2){
         int count1 = path1.getPathCount();
         int count2 = path2.getPathCount();
         if(count1<=count2)
@@ -23,13 +23,13 @@ public class TreeUtil {
 
     public static String getExpansionState(JTree tree, int row){
         TreePath rowPath = tree.getPathForRow(row);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int rowCount = tree.getRowCount();
         for(int i=row; i<rowCount; i++){
             TreePath path = tree.getPathForRow(i);
             if(i==row || isDescendant(path, rowPath)){
                 if(tree.isExpanded(path))
-                    buf.append(","+String.valueOf(i-row));
+                    buf.append(",").append(String.valueOf(i - row));
             }else
                 break;
         }

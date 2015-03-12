@@ -26,7 +26,7 @@ public class NBTviewer extends WorldWindow {
 		buildGUI();
 	}
 	
-	public void buildGUI() {
+	void buildGUI() {
 		
 		setSize(new Dimension(200, 200));
 		setLocation(500, 500);
@@ -199,7 +199,7 @@ public class NBTviewer extends WorldWindow {
 		}
 	}
 	
-	protected class TreeExpansionHandler implements TreeExpansionListener {
+	private class TreeExpansionHandler implements TreeExpansionListener {
 
 		@Override
 		public void treeExpanded(TreeExpansionEvent event) {
@@ -239,7 +239,7 @@ public class NBTviewer extends WorldWindow {
 	 * http://stackoverflow.com/questions/2039373/maintaing-jtextarea-scroll-position
  	 */
 	class LaterUpdater implements Runnable {
-		private Point o;
+		private final Point o;
 
 		public LaterUpdater(Point o) {
 			this.o = o;

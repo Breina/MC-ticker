@@ -22,16 +22,17 @@ import java.util.concurrent.TimeUnit;
 
 public class ExportRunnable implements Runnable {
 
-	private boolean[] opt;
-	private WorldController worldController;
-	private File folder;
-	private int mils;
-	private float scale;
-	private boolean publish;
-	private JButton btn;
+	private final boolean[] opt;
+	private final WorldController worldController;
+	private final File folder;
+	private final int mils;
+	private final float scale;
+	private final boolean publish;
+	private final JButton btn;
 
-	private ExecutorService uploadExecutor, albumExecutor;
-	private List<ImgCode> imgCodes;
+	private final ExecutorService uploadExecutor;
+    private final ExecutorService albumExecutor;
+	private final List<ImgCode> imgCodes;
 
 	public ExportRunnable(JButton btn, boolean[] opt, WorldController worldController, File folder, int mils, float scale,
 			boolean publish) {
@@ -78,59 +79,53 @@ public class ExportRunnable implements Runnable {
 				else
 					Log.i("Upload complete.");
 
-				if (publish) {
+                Orientation prevSide = Orientation.UNDEFINED;
+                Orientation curSide;
+                List<String> albumImgBuffer = new ArrayList<>();
+                List<AlbumCode> albums = new ArrayList<>();
 
-					Orientation prevSide = Orientation.UNDEFINED;
-					Orientation curSide;
-					List<String> albumImgBuffer = new ArrayList<>();
-					List<AlbumCode> albums = new ArrayList<>();
+                for (ImgCode imgCode : imgCodes) {
 
-					for (ImgCode imgCode : imgCodes) {
+                    curSide = imgCode.getSide();
 
-						curSide = imgCode.getSide();
+                    if (prevSide == curSide) {
+                        albumImgBuffer.add(imgCode.getCode());
+                    } else {
+                        String[] imageArray = new String[albumImgBuffer.size()];
+                        imageArray = albumImgBuffer.toArray(imageArray);
+                        AlbumCode albumCode = new AlbumCode(imgCode.getSide() == Orientation.TOP ? "Top L"
+                                : imgCode.getSide() == Orientation.RIGHT ? "Right L" : "Front L"
+                                        + imgCode.getLayer(), imageArray);
+                        albums.add(albumCode);
 
-						if (prevSide == curSide) {
-							albumImgBuffer.add(imgCode.getCode());
-						} else {
-							String[] imageArray = new String[albumImgBuffer.size()];
-							imageArray = albumImgBuffer.toArray(imageArray);
-							AlbumCode albumCode = new AlbumCode(imgCode.getSide() == Orientation.TOP ? "Top L"
-									: imgCode.getSide() == Orientation.RIGHT ? "Right L" : "Front L"
-											+ imgCode.getLayer(), imageArray);
-							albums.add(albumCode);
-
-							// TODO
+                        // TODO
 //							albumExecutor.execute(new AlbumRunnable(albumCode));
-						}
-						/*
-						 * if (imgCode.getSide() >= 4)
-						 * System.out.println("GIF: " + imgCode.getSide() + ", "
-						 * + imgCode.getCode()); // TODO: HERE88!!! else
-						 * System.out.println("Layer: " + imgCode.getSide() +
-						 * ", " + imgCode.getCode() + ", " +
-						 * imgCode.getLayer());
-						 */
-					}
+                    }
+                    /*
+                     * if (imgCode.getSide() >= 4)
+                     * System.out.println("GIF: " + imgCode.getSide() + ", "
+                     * + imgCode.getCode()); // TODO: HERE88!!! else
+                     * System.out.println("Layer: " + imgCode.getSide() +
+                     * ", " + imgCode.getCode() + ", " +
+                     * imgCode.getLayer());
+                     */
+                }
 
-					Log.i("Awaiting album creation response...");
-					albumExecutor.shutdown();
+                Log.i("Awaiting album creation response...");
+                albumExecutor.shutdown();
 
-					if (!albumExecutor.awaitTermination(5000, TimeUnit.MILLISECONDS))
-						Log.w("WARNING: Some or all albums were not properly created.");
-					else
-						Log.i("Albums created.");
+                if (!albumExecutor.awaitTermination(5000, TimeUnit.MILLISECONDS))
+                    Log.w("WARNING: Some or all albums were not properly created.");
+                else
+                    Log.i("Albums created.");
 
-					for (AlbumCode ac : albums) {
-						System.out.println("Album title=" + ac.getTitle() + " url=" + ac.getUrl());
-					}
-				}
-			}
+                for (AlbumCode ac : albums) {
+                    System.out.println("Album title=" + ac.getTitle() + " url=" + ac.getUrl());
+                }
+            }
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			Log.e(e.getMessage());
-
-		} catch (InterruptedException e) {
-
 		}
 
 		Log.i("Export complete");

@@ -11,7 +11,7 @@ public class ConditionData extends Condition {
 		this(matchData, (byte) 0b1111111);
 	}
 	
-	public ConditionData(byte matchData, byte matchMask) {
+	private ConditionData(byte matchData, byte matchMask) {
 		super();
 		
 		this.matchData = matchData;

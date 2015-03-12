@@ -20,7 +20,7 @@ public class SelectionPanel extends EditorSubComponent {
     private Cord2S start;
     private Cord2S end;
 
-    private SelectionManager selectionManager;
+    private final SelectionManager selectionManager;
 
     public SelectionPanel(Editor editor) {
         super(editor);

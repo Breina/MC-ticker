@@ -2,7 +2,6 @@ package presentation.controllers;
 
 import logging.Log;
 import presentation.debug.TracingEventQueue;
-import presentation.exceptions.SchematicException;
 import presentation.gui.RSFrame;
 import presentation.gui.WorldListener;
 import presentation.gui.windows.main.ExportWindow;
@@ -28,17 +27,17 @@ import java.util.List;
 
 public class MainController {
 
-    private RSFrame mainframe;
+    private final RSFrame mainframe;
 
-	private TileController tileController;
-	private BlockController blockController;
-	private List<WorldController> worldControllers;
+	private final TileController tileController;
+	private final BlockController blockController;
+	private final List<WorldController> worldControllers;
 	
 	private WorldController activeWorldController;
     private Cord2S selectionCord2D;
 	private Cord3S selectionCord3D;
 
-	private List<WorldListener> worldListeners;
+	private final List<WorldListener> worldListeners;
 	
 	private Tool tool;
 	
@@ -51,7 +50,8 @@ public class MainController {
 		Log.i(Constants.MOTD);
 
         // This will debug actions that hog Swing's thread (EDT)
-        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new TracingEventQueue());
+        if (sim.constants.Constants.DEBUG_SWING)
+            Toolkit.getDefaultToolkit().getSystemEventQueue().push(new TracingEventQueue());
 
 		setLF();
 		
@@ -123,7 +123,7 @@ public class MainController {
 			
 			onWorldAdded(worldController);
 			
-		} catch (SchematicException | IOException | NoSuchAlgorithmException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
+		} catch (IOException | NoSuchAlgorithmException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			Log.e("Failed to load schematic: " + e.getMessage());
 			e.printStackTrace();
 		}
@@ -185,7 +185,7 @@ public class MainController {
 			}
 
 			SimWorld simWorld = simulator.createWorld();
-			simWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, hardcoreEnabled, difficulty, false, false);
+			simWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, hardcoreEnabled);
 
 			WorldController worldController = new WorldController(this, simWorld, name, xSize, ySize, zSize);
 			worldControllers.add(worldController);
@@ -199,7 +199,7 @@ public class MainController {
 		}
 	}
 	
-	public void onWorldAdded(WorldController worldController) {
+	void onWorldAdded(WorldController worldController) {
 
 		for (WorldListener listener : worldListeners)
 			listener.onWorldAdded(worldController);

@@ -6,24 +6,23 @@ import sim.exceptions.UnimplementedException;
 import sim.objects.ChunkCord;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
 /**
  * This is basically our input into the world. World will get blocks from here.
  */
-public class RChunkProvider implements InvocationHandler {
+class RChunkProvider implements InvocationHandler {
 	
 	// Buffers all loaded chunks
-	private HashMap<ChunkCord, Object> chunks;
+	private final HashMap<ChunkCord, Object> chunks;
 	private Object emptyChunk;
 
-	private RBlockPos rBlockPos;
+	private final RBlockPos rBlockPos;
 
 	public RChunkProvider(RBlockPos rBlockPos) {
 		
-		chunks = new HashMap<ChunkCord, Object>();
+		chunks = new HashMap<>();
 		this.rBlockPos = rBlockPos;
 	}
 	
@@ -31,7 +30,7 @@ public class RChunkProvider implements InvocationHandler {
 	 * I don't know if it's a smart idea to direct a stacktrace through the reflection part.
 	 * The alternative to this would be to call onChunkLoad anywhere outside of chunkProvider.
 	 */
-	public void addChunk(Object chunk, int x, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void addChunk(Object chunk, int x, int z) throws IllegalArgumentException {
 		
 		ChunkCord cord = new ChunkCord(x, z);
 		
@@ -49,14 +48,14 @@ public class RChunkProvider implements InvocationHandler {
 		chunks.clear();
 	}
 	
-	public boolean chunkExists(int x, int z) {
+	boolean chunkExists(int x, int z) {
 
 		ChunkCord cord = new ChunkCord(x, z);
 		
 		return chunkExists(cord);
 	}
 	
-	public boolean chunkExists(ChunkCord cord) {
+	boolean chunkExists(ChunkCord cord) {
 		
 		boolean exists = chunks.containsKey(cord);
 		
@@ -77,13 +76,11 @@ public class RChunkProvider implements InvocationHandler {
 		if (!chunkExists(cord)) {
 			return emptyChunk;
 		}
-		
-		Object chunk = chunks.get(cord);
 
-		return chunk;
+        return chunks.get(cord);
 	}
 
-	public Object getChunk(Object blockPos) {
+	Object getChunk(Object blockPos) {
 
 		try {
 			int x = rBlockPos.getX(blockPos) << 4;
@@ -91,14 +88,14 @@ public class RChunkProvider implements InvocationHandler {
 
 			return getChunk(x, z);
 
-		} catch (IllegalAccessException | InvocationTargetException e) {
+		} catch (IllegalAccessException e) {
 
 			Log.e("Failed to provide chunk for " + blockPos);
 			return null;
 		}
 	}
 
-	public String makeString() {
+	String makeString() {
 		
 		if (Constants.DEBUG_CHUNKPROVIDER)
 			System.out.println("Getting chunk provider string");
@@ -106,7 +103,7 @@ public class RChunkProvider implements InvocationHandler {
 		return Constants.CHUNKPROVIDERSTRING;
 	}
 
-	public int getLoadedChunkCount() {
+	int getLoadedChunkCount() {
 		
 		int count = chunks.size();
 		

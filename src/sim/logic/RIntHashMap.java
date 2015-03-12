@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 
 public class RIntHashMap {
 
-    private Class<?> IntHashMap;
     private Method m_clearMap;
 
     public RIntHashMap(Linker linker) throws NoSuchMethodException {
@@ -18,9 +17,9 @@ public class RIntHashMap {
 
     private void prepareIntHashMap(Linker linker) throws NoSuchMethodException {
 
-        IntHashMap = linker.getClass("IntHashMap");
+        Class<?> intHashMap = linker.getClass("IntHashMap");
 
-        m_clearMap = linker.method("clearMap", IntHashMap);
+        m_clearMap = linker.method("clearMap", intHashMap);
     }
 
     public void clearMap(Object instance) throws InvocationTargetException, IllegalAccessException {

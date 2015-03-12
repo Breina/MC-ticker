@@ -2,7 +2,9 @@ package presentation.main;
 
 public class Cord3S {
 
-	public short x, y, z;
+	public final short x;
+    public final short y;
+    public final short z;
 	
 	public Cord3S(short x, short y, short z) {
 		this.x = x;

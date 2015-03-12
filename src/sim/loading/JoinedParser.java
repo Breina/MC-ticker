@@ -5,10 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class JoinedParser {
+class JoinedParser {
 	
 	/* DEBUG
 	private String[] getObfuscatedNames() {
@@ -34,8 +35,7 @@ public class JoinedParser {
 	 */
 	private String getTrailingPart(String source) {
 		String[] sArr = source.split("/");
-		String s = sArr[sArr.length - 1];
-		return s;
+        return sArr[sArr.length - 1];
 	}
 	
 	/**
@@ -54,9 +54,8 @@ public class JoinedParser {
 		Translator translator = new Translator();
 		
 		ArrayList<String> requiredClasses = new ArrayList<>(reqClasses.length);
-		
-		for (int i = 0; i < reqClasses.length; i++)
-			requiredClasses.add(reqClasses[i]);
+
+        Collections.addAll(requiredClasses, reqClasses);
 		
 		BufferedReader br = null;
 		String line = "";

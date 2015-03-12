@@ -11,14 +11,13 @@ import java.lang.reflect.Method;
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Chunk's reflection
  */
-public class RChunk {
-	
-	private Class<?> Chunk;
-	private Constructor<?> c_chunk;
+class RChunk {
+
+    private Constructor<?> c_chunk;
 	private Method m_genHeightMap, m_addTileEntity, m_onChunkLoad;
 	private RChunkPrimer rChunkPrimer;
 	
-	public RChunk(Linker linker, RChunkPrimer rChunkPrimer) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public RChunk(Linker linker, RChunkPrimer rChunkPrimer) throws NoSuchMethodException, SecurityException, IllegalArgumentException {
 		
 		prepareChunk(linker);
 		this.rChunkPrimer = rChunkPrimer;
@@ -30,17 +29,17 @@ public class RChunk {
 	 * Prepares all reflection about to happen
 	 */
 	private void prepareChunk(Linker linker) throws NoSuchMethodException, SecurityException {
-		
-		Chunk = linker.getClass("Chunk");
+
+        Class<?> chunk = linker.getClass("Chunk");
 		Class<?> World = linker.getClass("World");
 		Class<?> TileEntity = linker.getClass("TileEntity");
 		Class<?> ChunkPrimer = linker.getClass("ChunkPrimer");
 		
-		c_chunk = Chunk.getDeclaredConstructor(World, ChunkPrimer, int.class, int.class);
+		c_chunk = chunk.getDeclaredConstructor(World, ChunkPrimer, int.class, int.class);
 
-		m_genHeightMap = linker.method("generateSkylightMap", Chunk);
-		m_addTileEntity = linker.method("addTileEntity", Chunk, TileEntity);
-		m_onChunkLoad = linker.method("onChunkLoad", Chunk);
+		m_genHeightMap = linker.method("generateSkylightMap", chunk);
+		m_addTileEntity = linker.method("addTileEntity", chunk, TileEntity);
+		m_onChunkLoad = linker.method("onChunkLoad", chunk);
 	}
 	
 	public void addTileEntity(Object chunk, Object tileEntity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -48,7 +47,7 @@ public class RChunk {
 		m_addTileEntity.invoke(chunk, tileEntity);
 	}
 	
-	public void onChunkLoad(Object chunk) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	void onChunkLoad(Object chunk) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		m_onChunkLoad.invoke(chunk);
 	}

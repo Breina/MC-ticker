@@ -62,11 +62,11 @@ public class Loading {
 		ensureWorldIsReady();
 		
 		try {
-			world.createInstance(0, "default", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(1, "flat", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(2, "largeBiomes", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(3, "amplified", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(8, "default_1_1", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(0, "default", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(1, "flat", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(2, "largeBiomes", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(3, "amplified", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(8, "default_1_1", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -90,7 +90,7 @@ public class Loading {
 					case 8:
 						continue;
 					default:
-						world.createInstance(i, UNICODETEST, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+						world.createInstance(i, UNICODETEST, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 				}
 			
 		} catch (IllegalAccessException | IllegalArgumentException
@@ -106,10 +106,10 @@ public class Loading {
 		ensureWorldIsReady();
 		
 		try {
-			world.createInstance(0, "minusOneWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(-1, "minusOneWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(16, "sixteenWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(Integer.MAX_VALUE, "integerMaxWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(0, "minusOneWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(-1, "minusOneWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(16, "sixteenWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(Integer.MAX_VALUE, "integerMaxWorldType", GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -124,9 +124,9 @@ public class Loading {
 		ensureWorldIsReady();
 
 		try {
-			world.createInstance(WORLDTYPEID, WORLDTYPE, "SURVIVAL", SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, "CREATIVE", SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, "ADVENTURE", SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, "SURVIVAL", SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, "CREATIVE", SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, "ADVENTURE", SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -141,7 +141,7 @@ public class Loading {
 		ensureWorldIsReady();
 
 		try {
-			world.createInstance(WORLDTYPEID, WORLDTYPE, "NOT_SET", SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, "NOT_SET", SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -157,8 +157,8 @@ public class Loading {
 
 		try {
 			
-			world.createInstance(WORLDTYPEID, WORLDTYPE, "CUSTOM", SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, UNICODETEST, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, "CUSTOM", SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, UNICODETEST, SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -173,10 +173,10 @@ public class Loading {
 		ensureWorldIsReady();
 		
 		try {
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, 0, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, -1, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, Integer.MAX_VALUE, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, Integer.MIN_VALUE, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, 0, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, -1, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, Integer.MAX_VALUE, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, Integer.MIN_VALUE, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -192,8 +192,8 @@ public class Loading {
 		
 		try {
 			
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, false, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, true, DIFFICULTY, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, false);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, true);
 		
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -209,10 +209,10 @@ public class Loading {
 
 		try {
 			
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, 0, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, 1, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, 2, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, 3, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -228,10 +228,10 @@ public class Loading {
 
 		try {
 			
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, 4, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, -1, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, Integer.MAX_VALUE, CANSSPAWNANIMALS, CANSPAWNNPCS);
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, Integer.MIN_VALUE, CANSSPAWNANIMALS, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -246,7 +246,7 @@ public class Loading {
 		ensureWorldIsReady();
 
 		try {
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, true, CANSPAWNNPCS);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
@@ -261,7 +261,7 @@ public class Loading {
 		ensureWorldIsReady();
 
 		try {
-			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED, DIFFICULTY, CANSSPAWNANIMALS, true);
+			world.createInstance(WORLDTYPEID, WORLDTYPE, GAMETYPE, SEED, WORLDPROVIDER, HARDCOREENABLED);
 
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {

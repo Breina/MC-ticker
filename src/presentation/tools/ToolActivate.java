@@ -10,7 +10,7 @@ public class ToolActivate extends Tool {
 	
 	private int dragButton;
 //	private BlockController blockController;
-	private MainController mainController;
+	private final MainController mainController;
 
 	public ToolActivate(MainController mainController) {
 		super(mainController, "Activate", "cursor.png", false);

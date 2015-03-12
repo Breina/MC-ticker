@@ -1,28 +1,23 @@
 package test;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
-
 import logging.Log;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import presentation.controllers.SimController;
-
 import sim.constants.Constants;
 import sim.constants.Globals;
 import sim.logic.SimWorld;
 import sim.logic.Simulator;
 import utils.Tag;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
+
+import static org.junit.Assert.fail;
 
 public class SetBlock {
 	
@@ -30,9 +25,8 @@ public class SetBlock {
 	
 	private Simulator simulator;
 	private SimWorld world;
-	private SimController controller;
-	
-	private static final String SCHEMATIC = "3x3x3-box.schematic";
+
+    private static final String SCHEMATIC = "3x3x3-box.schematic";
 
 	@Before
 	public void setUp() throws Exception {
@@ -54,7 +48,7 @@ public class SetBlock {
 		try {
 			world = simulator.createWorld();
 			world.createInstance();
-			controller = new SimController(world);
+            SimController controller = new SimController(world);
 			
 			Tag schematic = Tag.readFrom(new FileInputStream(file));
 			controller.setSchematic(schematic);
@@ -92,32 +86,16 @@ public class SetBlock {
 					if (data != getBlockData) {
 						
 						if (id != getBlockId || getBlockData != 0) {
-						
-							StringBuilder sb = new StringBuilder();
-							
-							sb.append("SetBlock / GetBlock mismatch (id/data): ");
-							sb.append(id >= 0 ? id : id + 128);
-							sb.append('/');
-							sb.append(data);
-							sb.append(" -> ");
-							sb.append(getBlockId);
-							sb.append('/');
-							sb.append(getBlockData);
-							
-							System.out.println(sb.toString());
+
+                            System.out.println("SetBlock / GetBlock mismatch (id/data): " + (id >= 0 ? id : id + 128) + '/' + data + " -> " + getBlockId + '/' + getBlockData);
 							
 							errors++;
 							
 						} else {
 							
 							if (!metaAllowedMessage) {
-								
-								StringBuilder sb = new StringBuilder();
-								
-								sb.append("Meta data not allowed for id: ");
-								sb.append(id);
-								
-								System.out.println(sb.toString());
+
+                                System.out.println("Meta data not allowed for id: " + id);
 								
 								metaAllowedMessage = true;
 							}
@@ -127,17 +105,8 @@ public class SetBlock {
 				} catch (IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException
 						| InstantiationException e) {
-					
-					StringBuilder sb = new StringBuilder();
-					
-					sb.append("Could not setBlock with id=");
-					sb.append(id >= 0 ? id : id + 128);
-					sb.append(" data=");
-					sb.append(data);
-					sb.append(": ");
-					sb.append(e.getCause().getClass());
-					
-					System.out.println(sb.toString());
+
+                    System.out.println("Could not setBlock with id=" + (id >= 0 ? id : id + 128) + " data=" + data + ": " + e.getCause().getClass());
 					
 					errors++;
 					

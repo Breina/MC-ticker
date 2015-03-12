@@ -29,7 +29,7 @@ public abstract class EditorSubComponent extends JPanel {
      */
     protected final Editor editor;
 
-    public EditorSubComponent(Editor editor) {
+    protected EditorSubComponent(Editor editor) {
         super();
 
         this.editor = editor;
@@ -77,7 +77,7 @@ public abstract class EditorSubComponent extends JPanel {
      * @param z
      * @return The 2D cord if the layer is in the range, otherwise null.
      */
-    protected Cord2S getCord2D(short x, short y, short z) {
+    Cord2S getCord2D(short x, short y, short z) {
 
         short layer = editor.getLayerHeight();
 

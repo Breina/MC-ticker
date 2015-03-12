@@ -18,7 +18,7 @@ public class DrawingWindow extends InternalWindow {
 	private String title;
 	private int max;
 	
-	private WorldController worldController;
+	private final WorldController worldController;
 
     private Editor editor;
 	
@@ -102,7 +102,7 @@ public class DrawingWindow extends InternalWindow {
     /**
 	 * Handler for the zoom function
 	 */
-	public class ZoomHandler implements ActionListener {
+    private class ZoomHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {			
 			JButton btn = (JButton) ae.getSource();
@@ -117,7 +117,7 @@ public class DrawingWindow extends InternalWindow {
 	/**
 	 * Handler for the layer switching.
 	 */
-	public class LayerHandler implements ActionListener {
+    private class LayerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			
@@ -156,7 +156,7 @@ public class DrawingWindow extends InternalWindow {
 		return editor;
 	}
 	
-    public class InternalFrameHandler extends InternalFrameAdapter {
+    private class InternalFrameHandler extends InternalFrameAdapter {
 		@Override
 		public void internalFrameClosing(InternalFrameEvent e) {
 			worldController.drawingWindowClosed((DrawingWindow) e.getSource());

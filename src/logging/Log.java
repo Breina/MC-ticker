@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Log {
 	
-	private static ArrayList<TimeString> messages = new ArrayList<TimeString>();
+	private static final ArrayList<TimeString> messages = new ArrayList<>();
 	
 	private static ILogger output;
 	

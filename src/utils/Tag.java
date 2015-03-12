@@ -1,14 +1,9 @@
 package utils;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.Normalizer.Form;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -148,7 +143,7 @@ public class Tag {
         return value;
     }
 
-    public void setValue(Object newValue)
+    void setValue(Object newValue)
     {
         switch (type) {
         case TAG_End:
@@ -212,7 +207,7 @@ public class Tag {
         value = newValue;
     }
 
-    public Type getListType() {
+    Type getListType() {
         return listType;
     }
 
@@ -236,7 +231,7 @@ public class Tag {
     /**
      * Add a tag to a TAG_List or a TAG_Compound at the specified index.
      */
-    public void insertTag(Tag tag, int index) {
+    void insertTag(Tag tag, int index) {
         if (type != Type.TAG_List && type != Type.TAG_Compound)
             throw new RuntimeException();
         Tag[] subtags = (Tag[]) value;
@@ -257,7 +252,7 @@ public class Tag {
      *
      * @return the removed tag
      */
-    public Tag removeTag(int index) {
+    Tag removeTag(int index) {
         if (type != Type.TAG_List && type != Type.TAG_Compound)
             throw new RuntimeException();
         Tag[] subtags = (Tag[]) value;
@@ -275,7 +270,7 @@ public class Tag {
      *
      * @param tag tag to look for
      */
-    public void removeSubTag(Tag tag) {
+    void removeSubTag(Tag tag) {
         if (type != Type.TAG_List && type != Type.TAG_Compound)
             throw new RuntimeException();
         if (tag == null)
@@ -319,11 +314,8 @@ public class Tag {
                 return subtag;
             } else {
                 Tag newFound = subtag.findTagByName(name);
-                if (newFound != null)
-                    if (newFound == found)
-                        continue;
-                    else
-                        return newFound;
+                if (newFound != null && newFound != found)
+                    return newFound;
             }
         }
         return null;
@@ -370,10 +362,8 @@ public class Tag {
     	
         Tag[] tPayload = (Tag[]) readPayload(dis, (byte) 10);
         dis.close();
-        
-        Tag tList = new Tag(Type.TAG_Compound, null, tPayload);
 
-        return tList;
+        return new Tag(Type.TAG_Compound, null, tPayload);
     }
 
     private static Object readPayload(DataInputStream dis, byte type) throws IOException {
@@ -488,20 +478,18 @@ public class Tag {
         case TAG_Compound:
             Tag[] subtags = (Tag[]) value;
             for (Tag st : subtags) {
-                Tag subtag = st;
-                Type type = subtag.getType();
+                Type type = st.getType();
                 dos.writeByte(type.ordinal());
                 if (type != Type.TAG_End) {
-                    dos.writeUTF(subtag.getName());
-                    subtag.writePayload(dos);
+                    dos.writeUTF(st.getName());
+                    st.writePayload(dos);
                 }
             }
             break;
         case TAG_Int_Array: 
         	 int[] ia = (int[]) value; 
-        	 dos.writeInt(ia.length); 
-        	 for (int i=0;i<ia.length;i++) 
-        		 dos.writeInt(ia[i]); 
+        	 dos.writeInt(ia.length);
+            for (int anIa : ia) dos.writeInt(anIa);
         	 break;
         }
     }
@@ -566,13 +554,13 @@ public class Tag {
         indent(indent);
         sb.append(getTypeString(t.getType()));
         if (name != null)
-        	sb.append("(\"" + t.getName() + "\")");
+        	sb.append("(\"").append(t.getName()).append("\")");
         if (type == Type.TAG_Byte_Array) {
             byte[] b = (byte[]) t.getValue();
-            sb.append(": [" + b.length + " bytes]");
+            sb.append(": [").append(b.length).append(" bytes]");
         } else if (type == Type.TAG_List) {
             Tag[] subtags = (Tag[]) t.getValue();
-            sb.append(": " + subtags.length + " entries of type " + getTypeString(t.getListType()));
+            sb.append(": ").append(subtags.length).append(" entries of type ").append(getTypeString(t.getListType()));
             for (Tag st : subtags) {
                 print(st, indent + 1);
             }
@@ -580,7 +568,7 @@ public class Tag {
             sb.append("}");
         } else if (type == Type.TAG_Compound) {
             Tag[] subtags = (Tag[]) t.getValue();
-            sb.append(": " + (subtags.length - 1) + " entries");
+            sb.append(": ").append(subtags.length - 1).append(" entries");
             indent(indent);
             sb.append("{");
             for (Tag st : subtags) {
@@ -590,9 +578,9 @@ public class Tag {
             sb.append("}");
         } else if (type == Type.TAG_Int_Array) { 
         	int[] i = (int[]) t.getValue(); 
-        	sb.append(": [" + i.length * 4 + " bytes]"); 
+        	sb.append(": [").append(i.length * 4).append(" bytes]");
         } else {
-        	sb.append(": " + t.getValue());
+        	sb.append(": ").append(t.getValue());
         }
         
         return sb.toString();
@@ -637,7 +625,7 @@ public class Tag {
         }
     }
     
-    public void setHash(int hash) {
+    void setHash(int hash) {
     	
     	this.hash = hash;
     }
@@ -658,7 +646,7 @@ public class Tag {
      * @param toTag
      * @param fromTag
      */
-    public void replaceTag(Tag toTag, Tag fromTag) {
+    void replaceTag(Tag toTag, Tag fromTag) {
     	
     	if (toTag.getType() != fromTag.getType())
     		throw new RuntimeException("Mismatched types when copying " + toTag.getName() +

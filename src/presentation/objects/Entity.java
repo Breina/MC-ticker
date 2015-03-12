@@ -4,11 +4,17 @@ import java.util.UUID;
 
 public class Entity {
 
-    private double x, y, z, vX, vY, vZ;
-    private float width, height;
-    private boolean isDead;
-    private String id;
-    private UUID uuid;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final double vX;
+    private final double vY;
+    private final double vZ;
+    private final float width;
+    private final float height;
+    private final boolean isDead;
+    private final String id;
+    private final UUID uuid;
 
     public Entity(double x, double y, double z) {
         this(x, y, z, 0, 0, 0, 0, 0, false, "", UUID.randomUUID());
@@ -75,7 +81,7 @@ public class Entity {
         return id;
     }
 
-    public UUID getUUID() {
+    UUID getUUID() {
         return uuid;
     }
 
@@ -108,9 +114,7 @@ public class Entity {
     @Override
     public boolean equals(Object entity) {
 
-        if (!(entity instanceof Entity))
-            return false;
+        return entity instanceof Entity && ((Entity) entity).getUUID().equals(uuid);
 
-        return ((Entity) entity).getUUID().equals(uuid);
     }
 }

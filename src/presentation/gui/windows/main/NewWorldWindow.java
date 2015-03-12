@@ -15,7 +15,7 @@ public class NewWorldWindow extends JDialog {
     private JSpinner spinX, spinY, spinZ;
     private JCheckBox chkHardcore;
 
-    private MainController mainController;
+    private final MainController mainController;
 
     public NewWorldWindow(JFrame parent, MainController controller) {
         super(parent, "New world", true);
@@ -82,9 +82,7 @@ public class NewWorldWindow extends JDialog {
 
         btnCreate.setEnabled(false);
 
-        txtName.addCaretListener(e -> {
-            btnCreate.setEnabled(!txtName.getText().isEmpty());
-        });
+        txtName.addCaretListener(e -> btnCreate.setEnabled(!txtName.getText().isEmpty()));
 
         btnCreate.addActionListener(e -> {
 
@@ -109,9 +107,9 @@ public class NewWorldWindow extends JDialog {
         setVisible(true);
     }
 
-    protected class IdStringMapping {
-        public int id;
-        public String name;
+    class IdStringMapping {
+        public final int id;
+        public final String name;
 
         public IdStringMapping(int id, String name) {
             this.id = id;

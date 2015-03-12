@@ -6,9 +6,9 @@ import java.util.List;
 public class BlockCategory {
 	
 	private String name;
-	private List<BlockLogic> blockLogics;
+	private final List<BlockLogic> blockLogics;
 	
-	public BlockCategory() {
+	private BlockCategory() {
 		blockLogics = new ArrayList<>();
 	}
 	

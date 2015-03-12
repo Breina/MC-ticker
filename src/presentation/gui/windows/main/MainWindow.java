@@ -11,10 +11,10 @@ import java.awt.event.ComponentEvent;
 public class MainWindow extends InternalWindow {
 	private static final long serialVersionUID = -7291404124042489301L;
 	
-	protected MainController controller;
-	private LinkedCheckbox checkbox;
+	private final MainController controller;
+	private final LinkedCheckbox checkbox;
 
-	public MainWindow(JComponent parent, MainController controller, String title, boolean visibleByDefault) {
+	MainWindow(JComponent parent, MainController controller, String title, boolean visibleByDefault) {
 		super(parent, title, visibleByDefault);
 		
 		this.controller = controller;
@@ -28,7 +28,7 @@ public class MainWindow extends InternalWindow {
 		addComponentListener(new CloseHandler());
 	}
 	
-	protected class CloseHandler extends ComponentAdapter {
+	private class CloseHandler extends ComponentAdapter {
 		@Override
 		public void componentHidden(ComponentEvent e) {
 			

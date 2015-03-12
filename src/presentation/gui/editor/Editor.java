@@ -58,22 +58,18 @@ public class Editor extends JLayeredPane {
     /**
      * The width and height of the editor panel in pixels
      */
-    private int pixelWidth, pixelHeight;
-
-    /**
-     * The panel containing the block graphics
-     */
-    private BlockPanel blockPanel;
+    private final int pixelWidth;
+    private final int pixelHeight;
 
     /**
      * The panel containing the mouse cursor block
      */
-    private CursorPanel cursorPanel;
+    private final CursorPanel cursorPanel;
 
     /**
      * The panel containing the selected blocks
      */
-    private SelectionPanel selectionPanel;
+    private final SelectionPanel selectionPanel;
 
     public Editor(WorldController worldController, Orientation orientation) {
         this(worldController, (short) 0, 2.0f, orientation);
@@ -92,7 +88,7 @@ public class Editor extends JLayeredPane {
         pixelWidth = (int) (width * SIZE * scale);
         pixelHeight = (int) (height * SIZE * scale);
 
-        blockPanel = new BlockPanel(this);
+        BlockPanel blockPanel = new BlockPanel(this);
         setLayer(blockPanel, BLOCK_INDEX);
         add(blockPanel);
 
@@ -182,11 +178,16 @@ public class Editor extends JLayeredPane {
      * @param layer The layer height
      */
     public void setLayerHeight(short layer) {
+
+        worldController.setDoUpdate(false);
+
         this.layer = layer;
 
         worldController.getLayerManager().updateLayer(this);
 
         getWorldController().getEntityManager().checkVisibility(this);
+
+        worldController.setDoUpdate(true);
     }
 
     /**
@@ -248,7 +249,7 @@ public class Editor extends JLayeredPane {
     /**
      * Handles updating the selection of the mouse cursor
      */
-    protected class MouseMoveHandler extends MouseMotionAdapter {
+    private class MouseMoveHandler extends MouseMotionAdapter {
 
         @Override
         public void mouseMoved(MouseEvent e) {
@@ -264,7 +265,7 @@ public class Editor extends JLayeredPane {
     /**
      * Handles making the selection (in)visible when moving in and out of the editor
      */
-    protected class MouseHandler extends MouseAdapter {
+    private class MouseHandler extends MouseAdapter {
         @Override
         public void mouseExited(MouseEvent e) {
             cursorPanel.selectCord(null);

@@ -8,14 +8,14 @@ import java.awt.*;
  */
 public class WrappingLayout implements LayoutManager {
     public static final int LEFT     = 0;
-    public static final int CENTER   = 1;
-    public static final int RIGHT    = 2;
-    public static final int LEADING  = 3;
-    public static final int TRAILING = 4;
+    private static final int CENTER   = 1;
+    private static final int RIGHT    = 2;
+    private static final int LEADING  = 3;
+    private static final int TRAILING = 4;
 
-    int align;
-    int hgap;
-    int vgap;
+    private int align;
+    private int hgap;
+    private int vgap;
 
     public WrappingLayout() {
         this(CENTER, 5, 5);
@@ -25,7 +25,7 @@ public class WrappingLayout implements LayoutManager {
         this(align, 5, 5);
     }
 
-    public WrappingLayout(int align, int hgap, int vgap) {
+    private WrappingLayout(int align, int hgap, int vgap) {
         this.hgap = hgap;
         this.vgap = vgap;
         setAlignment(align);
@@ -35,7 +35,7 @@ public class WrappingLayout implements LayoutManager {
         return align;
     }
 
-    public void setAlignment(int align) {
+    void setAlignment(int align) {
         switch (align) {
             case LEADING:
                 this.align = LEFT;

@@ -8,7 +8,7 @@ import java.awt.event.ComponentEvent;
 public class DesktopPane extends JDesktopPane {
 	private static final long serialVersionUID = -8373899151099524323L;
 	
-	private Image backgroundImage;
+	private final Image backgroundImage;
 	
 	public DesktopPane() {
 		super();
@@ -21,8 +21,7 @@ public class DesktopPane extends JDesktopPane {
 			public void componentResized(ComponentEvent ce) {
 				Dimension d = getSize();
 				Component[] comps = getComponents();
-				for (int i = 0; i < comps.length; i++)
-					comps[i].setMaximumSize(d);
+                for (Component comp : comps) comp.setMaximumSize(d);
 			}
 		});
 		

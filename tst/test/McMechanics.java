@@ -25,9 +25,8 @@ public class McMechanics {
 	
 	private Simulator simulator;
 	private SimWorld world;
-	private SimController controller;
-	
-	private static final int WATERSPREADSPEED = 6;
+
+    private static final int WATERSPREADSPEED = 6;
 	private static final int LAVASPREADSPEED = 30;
 
 	@Before
@@ -50,7 +49,7 @@ public class McMechanics {
 		try {
 			world = simulator.createWorld();
 			world.createInstance();
-			controller = new SimController(world);
+            SimController controller = new SimController(world);
 			
 			Tag schematicTag = Tag.readFrom(new FileInputStream(file));
 			controller.setSchematic(schematicTag);
@@ -208,10 +207,9 @@ public class McMechanics {
 			}
 
 			// Update (not the lanps)
-			for (int i = 0; i < coords.length; i++) {
-				int[] coord = coords[i];
-				world.onBlockActivated(coord[0], coord[1], coord[2]);
-			}
+            for (int[] coord : coords) {
+                world.onBlockActivated(coord[0], coord[1], coord[2]);
+            }
 
 			// Next data
 			for  (int i = 0; i < coords.length; i++) {
@@ -227,7 +225,7 @@ public class McMechanics {
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | InstantiationException e) {
 
-			System.out.println(e.getCause());
+			System.out.println(e.getCause().getMessage());
 
 			fail("Activation did not succeed");
 		}
@@ -250,7 +248,7 @@ public class McMechanics {
 
 		} catch (InstantiationException| IllegalAccessException | InvocationTargetException e) {
 
-			System.out.println(e.getCause());
+			System.out.println(e.getCause().getMessage());
 
 			fail("Hopper clock failed");
 		}
@@ -276,7 +274,7 @@ public class McMechanics {
 
 		} catch (InstantiationException| IllegalAccessException | InvocationTargetException e) {
 
-			System.out.println(e.getCause());
+			System.out.println(e.getCause().getMessage());
 
 			fail("Dispenser failed");
 		}

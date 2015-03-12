@@ -1,9 +1,8 @@
 package presentation.gui.choosers;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 public class SchematicChooser extends JFileChooser {
 	private static final long serialVersionUID = 8462800103389729175L;
@@ -32,10 +31,8 @@ public class SchematicChooser extends JFileChooser {
 			
 			@Override
 			public boolean accept(File f) {
-				if ((f.isDirectory()) || (f.getName().toLowerCase().endsWith("schematic")))
-					return true;
-				return false;
-			}
+                return (f.isDirectory()) || (f.getName().toLowerCase().endsWith("schematic"));
+            }
 		});
 	}
 }

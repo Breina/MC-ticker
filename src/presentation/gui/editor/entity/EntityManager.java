@@ -4,6 +4,7 @@ import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
 import presentation.objects.Entity;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -17,7 +18,7 @@ public class EntityManager {
      */
     private HashMap<Entity, HashMap<Editor, EntityPanel>> entities;
 
-    private WorldController worldController;
+    private final WorldController worldController;
 
     public EntityManager(WorldController worldController) {
 
@@ -43,10 +44,14 @@ public class EntityManager {
                 createEntity(inputEntity, newEntities);
         }
 
-        Iterator<Entity> entitiesToBeRemoved = entities.keySet().iterator();
+//        Iterator<Entity> entitiesToBeRemoved = entities.keySet().iterator();
+        Collection<Entity> entitiesToBeRemoved = entities.keySet();
 
-        while (entitiesToBeRemoved.hasNext())
-            removeEntity(entitiesToBeRemoved.next());
+//        while (entitiesToBeRemoved.hasNext())
+//            removeEntity(entitiesToBeRemoved.next());
+
+        for (Entity entityToBeRemoved : entitiesToBeRemoved)
+            removeEntity(entityToBeRemoved);
 
         entities = newEntities;
     }
@@ -61,10 +66,7 @@ public class EntityManager {
         HashMap<Editor, EntityPanel> panelHashMap = entities.remove(entity);
         newEntities.put(entity, panelHashMap);
 
-        Iterator<EntityPanel> entityPanelIterator = panelHashMap.values().iterator();
-
-        while (entityPanelIterator.hasNext())
-            entityPanelIterator.next().setEntity(entity);
+        for (EntityPanel entityPanel : panelHashMap.values()) entityPanel.setEntity(entity);
     }
 
     /**
@@ -76,11 +78,8 @@ public class EntityManager {
 
         HashMap<Editor, EntityPanel> panelHashMap = new HashMap<>(worldController.getEditors().size());
         newEntities.put(entity, panelHashMap);
-        Iterator<Editor> editorIterator = worldController.getEditors().iterator();
 
-        while (editorIterator.hasNext()) {
-
-            Editor editor = editorIterator.next();
+        for (Editor editor : worldController.getEditors()) {
 
             EntityPanel panel = new EntityPanel(editor, entity);
             editor.setLayer(panel, Editor.ENTITY_INDEX);
@@ -134,14 +133,12 @@ public class EntityManager {
      */
     public void checkVisibility(Editor editor) {
 
-        Iterator<HashMap<Editor, EntityPanel>> panelHashMapIterator = entities.values().iterator();
-
-        while (panelHashMapIterator.hasNext()) {
+        for (HashMap<Editor, EntityPanel> panelHashMap : entities.values()) {
 
 //            HashMap<Editor, EntityPanel> panelHashMap = panelHashMapIterator.next();
 
 //            if (panelHashMap.containsKey(editor))
-                panelHashMapIterator.next().get(editor).checkVisibility();
+            panelHashMap.get(editor).checkVisibility();
         }
     }
 }

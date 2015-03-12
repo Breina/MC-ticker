@@ -6,7 +6,8 @@ package sim.objects;
  */
 public class ChunkCord {
 	
-	private int x, z;
+	private final int x;
+    private final int z;
 	
 	public ChunkCord(int x, int z) {
 		

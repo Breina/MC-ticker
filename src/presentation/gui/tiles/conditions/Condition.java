@@ -1,24 +1,24 @@
 package presentation.gui.tiles.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import presentation.gui.tiles.Graphic;
 import presentation.gui.tiles.Mirror;
 import presentation.objects.Orientation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Condition {
 
 	private String name;
 	private int rotation;
 	private Mirror mirror;
-	private List<Condition> conditions;
+	private final List<Condition> conditions;
 	
 	public Condition() {
-		this(new String());
+		this("");
 	}
 	
-	public Condition(String name) {
+	private Condition(String name) {
 		this.name	= name;
 		rotation	= 0;
 		mirror		= Mirror.NONE;
@@ -41,7 +41,7 @@ public class Condition {
 		conditions.add(condition);
 	}
 	
-	protected void addToGraphic(Graphic g) {
+	void addToGraphic(Graphic g) {
 		if (!name.isEmpty())
 			g.addName(name);
 		

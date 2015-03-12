@@ -3,10 +3,10 @@ package presentation.controllers;
 import presentation.gui.windows.world.NBTviewer;
 import utils.Tag;
 
-public class NBTController {
+class NBTController {
 	
-	private SimController controller;
-	private NBTviewer nBTViewer;
+	private final SimController controller;
+	private final NBTviewer nBTViewer;
 	
 	public NBTController(WorldController worldController, NBTviewer nBTViewer) {
 		

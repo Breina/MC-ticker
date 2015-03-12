@@ -4,7 +4,7 @@ import presentation.main.Constants;
 
 public class Graphic {
 
-	private StringBuilder sb;
+	private final StringBuilder sb;
 	private int rotation;
 	private Mirror mirror;
 	

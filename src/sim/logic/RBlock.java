@@ -15,15 +15,14 @@ import java.util.Map;
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Block's reflection
  */
-public class RBlock {
-	
-	private Class<?> Block, EntityPlayer;
-	private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
+class RBlock {
+
+    private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
 		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties,
 		m_getNameForObject, m_onBlockEventReceived;
 	private Field f_unlocalizedName, f_blockRegistry;
 
-	private RBlockPos rBlockPos;
+	private final RBlockPos rBlockPos;
 
 	// TODO fix this
 	private Object propertyFacing;
@@ -31,7 +30,7 @@ public class RBlock {
 	private Object blockRegistry;
 	
 	 // A buffer for all blocks that were once obtained
-	private HashMap<Integer, Object> bufferedBlocks;
+	private final HashMap<Integer, Object> bufferedBlocks;
 	
 	public RBlock(Linker linker, RBlockPos rBlockPos) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		
@@ -47,9 +46,9 @@ public class RBlock {
 	 * Prepares all methods and fills up blockRegistry
 	 */
 	private void prepareBlock(Linker linker) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
-		
-		Block = linker.getClass("Block");
-		EntityPlayer = linker.getClass("EntityPlayer");
+
+        Class<?> block = linker.getClass("Block");
+        Class<?> entityPlayer = linker.getClass("EntityPlayer");
 		
 		Class<?> IBlockState = linker.getClass("IBlockState");
 		Class<?> PropertyDirection = linker.getClass("PropertyDirection");
@@ -58,28 +57,28 @@ public class RBlock {
 		Class<?> World = linker.getClass("World");
 		Class<?> BlockPos = linker.getClass("BlockPos");
 
-		m_getBlockById = linker.method("getBlockById", Block, int.class);
-		m_getStateFromMeta = linker.method("getStateFromMeta", Block, int.class);
-		m_getIdFromBlock = linker.method("getIdFromBlock", Block, Block);
-		m_getMetaFromState = linker.method("getMetaFromState", Block, IBlockState);
-		m_getBlockFromName = linker.method("getBlockFromName", Block, String.class);
+		m_getBlockById = linker.method("getBlockById", block, int.class);
+		m_getStateFromMeta = linker.method("getStateFromMeta", block, int.class);
+		m_getIdFromBlock = linker.method("getIdFromBlock", block, block);
+		m_getMetaFromState = linker.method("getMetaFromState", block, IBlockState);
+		m_getBlockFromName = linker.method("getBlockFromName", block, String.class);
 		m_getValue = linker.method("getValue", IBlockState, IProperty);
-		m_hasTileEntity = linker.method("hasTileEntity", Block);
+		m_hasTileEntity = linker.method("hasTileEntity", block);
 		m_getProperties = linker.method("getProperties", IBlockState);
-		m_onBlockEventReceived = linker.method("onBlockEventReceived", Block, World, BlockPos, IBlockState, int.class, int.class);
+		m_onBlockEventReceived = linker.method("onBlockEventReceived", block, World, BlockPos, IBlockState, int.class, int.class);
 
-		m_onBlockActivated = linker.method("onBlockActivated", Block, linker.getClass("World"), linker.getClass("BlockPos"),
-				IBlockState, EntityPlayer, linker.getClass("EnumFacing"), float.class, float.class, float.class);
+		m_onBlockActivated = linker.method("onBlockActivated", block, linker.getClass("World"), linker.getClass("BlockPos"),
+				IBlockState, entityPlayer, linker.getClass("EnumFacing"), float.class, float.class, float.class);
 
 		propertyFacing = linker.method("create", PropertyDirection, String.class).invoke(null, "facing");
 		m_getNameForObject = linker.method("getNameForObject", RegistryNamespaced, Object.class);
 
-		f_blockRegistry = linker.field("blockRegistry", Block);
+		f_blockRegistry = linker.field("blockRegistry", block);
 
 		// TODO can't use linker yet
 		m_getBlock = IBlockState.getDeclaredMethod(Constants.IBLOCKSTATE_GETBLOCK);
 
-		f_unlocalizedName = Block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
+		f_unlocalizedName = block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
 		f_unlocalizedName.setAccessible(true);
 
 	}
@@ -87,9 +86,8 @@ public class RBlock {
 	public Object getBlockFromName(String name) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		// TODO buffer with name as well
-		Object block = m_getBlockFromName.invoke(null, name);
-		
-		return block;
+
+        return m_getBlockFromName.invoke(null, name);
 	}
 
 	/**
@@ -108,8 +106,7 @@ public class RBlock {
 	 */
 	public String getInternalBlockName(Object block) throws InvocationTargetException, IllegalAccessException {
 
-		String internalName = m_getNameForObject.invoke(f_blockRegistry.get(block), block).toString();
-		return internalName;
+        return m_getNameForObject.invoke(f_blockRegistry.get(block), block).toString();
 	}
 
 	public Object getBlockById(byte byteId) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
@@ -135,10 +132,8 @@ public class RBlock {
 	}
 	
 	public Object getStateFromMeta(Object block, byte data) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object blockState = m_getStateFromMeta.invoke(block, (int) data);
-		
-		return blockState;
+
+        return m_getStateFromMeta.invoke(block, (int) data);
 	}
 
 	// World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
@@ -166,31 +161,23 @@ public class RBlock {
 	 * @return
 	 */
 	public boolean hasTileEntity(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		boolean doesIt = (boolean) m_hasTileEntity.invoke(block);
-		
-		return doesIt;
+
+        return (boolean) m_hasTileEntity.invoke(block);
 	}
 	
 	public int getIdFromBlock(Object block) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		int blockId = (int) m_getIdFromBlock.invoke(null, block);
-		
-		return blockId;
+
+        return (int) m_getIdFromBlock.invoke(null, block);
 	}
 	
 	public int getMetaFromState(Object block, Object blockState) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		int metaData = (int) m_getMetaFromState.invoke(block, blockState);
-		
-		return metaData;
+
+        return (int) m_getMetaFromState.invoke(block, blockState);
 	}
 
 	public Object getBlockFromState(Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object block = m_getBlock.invoke(state);
-		
-		return block;
+
+        return m_getBlock.invoke(state);
 	}
 
 	public boolean onBlockEventReceived(Object block, Object world, Object blockPos, Object blockState, int eventId, int eventParameter) throws InvocationTargetException, IllegalAccessException {
@@ -216,7 +203,7 @@ public class RBlock {
 		}
 		return m_getValue.invoke(blockState, propertyFacing);
 	}
-	public Map getProperties(Object blockState) throws InvocationTargetException, IllegalAccessException {
+	Map getProperties(Object blockState) throws InvocationTargetException, IllegalAccessException {
 
 		return (Map) m_getProperties.invoke(blockState);
 	}

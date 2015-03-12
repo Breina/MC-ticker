@@ -5,11 +5,11 @@ import javax.swing.*;
 public class InternalWindow extends JInternalFrame {
 	private static final long serialVersionUID = 7086467386852495806L;
 	
-	private static int spawnDelta = 0; 
+	private static final int spawnDelta = 0;
 	
-	private JComponent parent;
+	private final JComponent parent;
 	
-	public InternalWindow(JComponent parent, String title, boolean visibleByDefault) {
+	protected InternalWindow(JComponent parent, String title, boolean visibleByDefault) {
 		super(title, true, true, false, true);
 		
 		this.parent = parent;

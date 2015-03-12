@@ -12,7 +12,7 @@ import java.awt.event.MouseMotionListener;
 
 public class Toolbar extends JToolBar {
 
-    private MainController mainController;
+    private final MainController mainController;
     private Tool currentTool;
 
     public Toolbar(MainController mainController) {
@@ -49,9 +49,7 @@ public class Toolbar extends JToolBar {
             selectTool(tool);
         }
 
-        btn.addActionListener(e -> {
-            selectTool(tool);
-        });
+        btn.addActionListener(e -> selectTool(tool));
     }
 
     private void selectTool(Tool tool) {

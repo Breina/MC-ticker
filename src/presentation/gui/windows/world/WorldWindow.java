@@ -8,12 +8,12 @@ import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class WorldWindow extends InternalWindow {
+class WorldWindow extends InternalWindow {
 	
-	protected WorldController controller;
-	private LinkedCheckbox checkbox;
+	final WorldController controller;
+	private final LinkedCheckbox checkbox;
 
-	public WorldWindow(JComponent parent, WorldController controller, String title, boolean visibleByDefault) {
+	WorldWindow(JComponent parent, WorldController controller, String title, boolean visibleByDefault) {
 		super(parent, title, visibleByDefault);
 		
 		this.controller = controller;
@@ -27,7 +27,7 @@ public class WorldWindow extends InternalWindow {
 		addComponentListener(new CloseHandler());
 	}
 	
-	protected class CloseHandler extends ComponentAdapter {
+	private class CloseHandler extends ComponentAdapter {
 		@Override
 		public void componentHidden(ComponentEvent e) {
 			

@@ -7,10 +7,9 @@ import sim.loading.Linker;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class RTileEntity {
+class RTileEntity {
 
-	private Class<?> TileEntity;
-	private Method m_createAndLoadEntity, m_writeToNBT;
+    private Method m_createAndLoadEntity, m_writeToNBT;
 
 
 	public RTileEntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
@@ -20,20 +19,18 @@ public class RTileEntity {
 		Log.i("Preparing tile entities");
 	}
 
-	private void prepareTileEntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+	private void prepareTileEntity(Linker linker) throws NoSuchMethodException, SecurityException {
 
-		TileEntity = linker.getClass("TileEntity");
+        Class<?> tileEntity = linker.getClass("TileEntity");
 		Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
 
-		m_createAndLoadEntity = linker.method("createAndLoadEntity", TileEntity, NBTTagCompound);
-		m_writeToNBT = TileEntity.getMethod(Constants.TILEENTITY_READFROMNBT, NBTTagCompound);
+		m_createAndLoadEntity = linker.method("createAndLoadEntity", tileEntity, NBTTagCompound);
+		m_writeToNBT = tileEntity.getMethod(Constants.TILEENTITY_READFROMNBT, NBTTagCompound);
 	}
 
 	public Object createTileEntityFromNBT(Object nbtTagCompound) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		Object tileEntity = m_createAndLoadEntity.invoke(null, nbtTagCompound);
-
-		return tileEntity;
+        return m_createAndLoadEntity.invoke(null, nbtTagCompound);
 	}
 
 	public void getNBTFromTileEntity(Object tileEntity, Object mcTag) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

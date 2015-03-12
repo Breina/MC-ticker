@@ -18,8 +18,8 @@ public class ExportWindow extends JDialog implements WorldListener {
 	
 	private final JComboBox<WorldController> worldChooser;
 	private final JCheckBox topLayers, topGif, rightLayers, rightGif, frontLayers, frontGif, publish;
-	private final JButton btnOK, btnBrowse;
-	private final JTextField filePath;
+	private final JButton btnOK;
+    private final JTextField filePath;
 	private final JSpinner gifSpeed, scale;
 
 	public ExportWindow(JFrame parent, MainController controller) {
@@ -31,7 +31,7 @@ public class ExportWindow extends JDialog implements WorldListener {
 			p0.setLayout(new BorderLayout());
 			filePath = new JTextField(Constants.EXPORTDIR);
 			p0.add(filePath, BorderLayout.CENTER);
-			btnBrowse = new JButton("Browse...");
+        JButton btnBrowse = new JButton("Browse...");
 			btnBrowse.addActionListener(new BrowsePathHandler());
 			p0.add(btnBrowse, BorderLayout.EAST);
 		

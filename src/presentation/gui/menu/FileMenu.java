@@ -11,7 +11,7 @@ import java.io.File;
 public class FileMenu extends JMenu {
 	private static final long serialVersionUID = 9058054431044220813L;
 
-	private MainController controller;
+	private final MainController controller;
 	
 	public FileMenu(MainController controller) {
 		super("File");
@@ -21,7 +21,7 @@ public class FileMenu extends JMenu {
 		buildGUI();
 	}
 	
-	public void buildGUI() {
+	void buildGUI() {
 		
 		setMnemonic('F');
 		
@@ -47,7 +47,7 @@ public class FileMenu extends JMenu {
 		exitItem				.setMnemonic('x');
 		add(exitItem);
 		
-		newItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.openNewWorldDialog()));
+		newItem.addActionListener(e -> SwingUtilities.invokeLater(controller::openNewWorldDialog));
 
         openItem.addActionListener(e -> SwingUtilities.invokeLater(() -> {
 
@@ -64,9 +64,9 @@ public class FileMenu extends JMenu {
             controller.openSchematic(chooser.getSelectedFile());
         }));
 
-        saveItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.saveAll()));
+        saveItem.addActionListener(e -> SwingUtilities.invokeLater(controller::saveAll));
 
-        exportItem.addActionListener(e -> SwingUtilities.invokeLater(() -> controller.export()));
+        exportItem.addActionListener(e -> SwingUtilities.invokeLater(controller::export));
 
         exitItem.addActionListener(e -> controller.exit());
     }

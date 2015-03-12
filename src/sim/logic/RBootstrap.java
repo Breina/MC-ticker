@@ -7,10 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
-public class RBootstrap {
-	
-	private Class<?> Bootstrap;
-	private Method m_register;
+class RBootstrap {
+
+    private Method m_register;
 	
 //	private Class<?> Item;
 //	private Method m_getIconString, m_getItemById;
@@ -22,11 +21,11 @@ public class RBootstrap {
 		Log.i("Bootstrapping...");
 	}
 	
-	private void prepareBootstrap(Linker linker) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private void prepareBootstrap(Linker linker) throws IllegalArgumentException, NoSuchMethodException, SecurityException {
+
+        Class<?> bootstrap = linker.getClass("Bootstrap");
 		
-		Bootstrap = linker.getClass("Bootstrap");
-		
-		m_register = linker.method("register", Bootstrap);
+		m_register = linker.method("register", bootstrap);
 	}
 	
 	public void register() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * This class is used to parse fields.csv and methods.csv in MCP's conf folder
  */
-public class CSVparser {
+class CSVparser {
 
 	/**
 	 * Reads the first step of the deobfuscation process, does so both for fields and methods

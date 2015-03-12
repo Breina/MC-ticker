@@ -3,15 +3,13 @@ package sim.constants;
 public class Constants {
 
 	public final static boolean DEBUG_TILE_IMAGES = false;
-	public final static boolean DEBUG_STATE = false;
+	public final static boolean DEBUG_SWING = false;
 	public final static boolean DEBUG_WORLD = false;
 	public final static boolean DEBUG_CHUNKPROVIDER = false;
 	public final static boolean DEBUG_MC_SCHEMATICS = false;
 	public final static boolean DEBUG_SCHEMATIC_DATA = false;
 	public final static boolean DEBUG_TAG_COMPOUND = false;
-	
-	public final static boolean LOG_IMMEDIATELY = true;
-	public final static boolean LOG_AFTERWARDS = false;
+
 	public final static boolean LOG_IGNORE_WARNINGS = true;
 	
 	public final static int OUTPUT_INDENT = 90;

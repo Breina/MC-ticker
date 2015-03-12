@@ -11,10 +11,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class RNBTTags {
-	
-	private Class<?> NBTTagCompound, NBTTagList, NBTSizeTracker;
-	private Constructor<?> c_NBTTagCompound, c_NBTSizeTracker;
+class RNBTTags {
+
+    private Constructor<?> c_NBTTagCompound, c_NBTSizeTracker;
 	private Method m_load, m_write;
 	
 	private final static long MAXSIZE = 2097152L;
@@ -30,10 +29,10 @@ public class RNBTTags {
 	}
 	
 	private void prepareNBTTagCompound(Linker linker) throws NoSuchMethodException, SecurityException {
-		
-		NBTTagCompound = linker.getClass("NBTTagCompound");
-		NBTTagList = linker.getClass("NBTTagList");
-		NBTSizeTracker = linker.getClass("NBTSizeTracker");
+
+        Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
+        Class<?> NBTTagList = linker.getClass("NBTTagList");
+        Class<?> NBTSizeTracker = linker.getClass("NBTSizeTracker");
 		
 		c_NBTTagCompound = NBTTagCompound.getDeclaredConstructor();
 		c_NBTSizeTracker = NBTSizeTracker.getDeclaredConstructor(long.class);
@@ -49,13 +48,11 @@ public class RNBTTags {
 	}
 	
 	public Object newInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object instance = c_NBTTagCompound.newInstance();
-		
-		return instance;		
+
+        return c_NBTTagCompound.newInstance();
 	}
 	
-	public Object getInstance(DataInput input, int complexity) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	Object getInstance(DataInput input, int complexity) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		Object nbtSizeTracker = c_NBTSizeTracker.newInstance(MAXSIZE);
 		Object instance = c_NBTTagCompound.newInstance();
@@ -84,23 +81,18 @@ public class RNBTTags {
 		
 		CircularByteBuffer cbb = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
 		m_write.invoke(mcTag, new DataOutputStream(cbb.getOutputStream()));
-		Tag schemTag = Tag.createCompountTag(new DataInputStream(cbb.getInputStream()));
-		
-		return schemTag;
+
+        return Tag.createCompountTag(new DataInputStream(cbb.getInputStream()));
 	}
 	
 	public Object getTagList(Object tag, String name) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object returnTag = m_getTagList.invoke(tag, name, 10);
-		
-		return returnTag;
+
+        return m_getTagList.invoke(tag, name, 10);
 	}
 	
 	public Object getCompoundTagAtObject(Object tag, int pos) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Object compoundTag = m_getCompoundTagAt.invoke(tag, pos);
-		
-		return compoundTag;
+
+        return m_getCompoundTagAt.invoke(tag, pos);
 	}
 
 }

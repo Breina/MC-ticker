@@ -1,6 +1,6 @@
 package presentation.exceptions;
 
-public class ImgurDeniedException extends Exception {
+class ImgurDeniedException extends Exception {
 
 	public ImgurDeniedException(int code) {
 		super("Upload failed: " + code);

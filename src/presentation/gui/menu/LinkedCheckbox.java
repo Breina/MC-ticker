@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class LinkedCheckbox extends JCheckBox {
 	private static final long serialVersionUID = 8837610138802553238L;
 	
-	private InternalWindow window;
+	private final InternalWindow window;
 	
 	public LinkedCheckbox(InternalWindow window, boolean defaultState) {
 		super(window.getTitle(), defaultState);
@@ -19,7 +19,7 @@ public class LinkedCheckbox extends JCheckBox {
 		addActionListener(new ToggleHandler());
 	}
 	
-	protected class ToggleHandler implements ActionListener {
+	private class ToggleHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

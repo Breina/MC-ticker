@@ -19,7 +19,7 @@ import java.util.TimerTask;
  * @author Elliott Hughes <enh@jessies.org>
  */
 
-public final class EventDispatchThreadHangMonitor extends EventQueue {
+final class EventDispatchThreadHangMonitor extends EventQueue {
     private static final EventQueue INSTANCE = new EventDispatchThreadHangMonitor();
     // Time to wait between checks that the event dispatch thread isn't hung.
     private static final long CHECK_INTERVAL_MS = 100;

@@ -12,7 +12,7 @@ public class LogWindow extends MainWindow implements ILogger {
 	
 	private static final long serialVersionUID = 3272280523525631777L;
 
-	private JTextArea textBox;
+	private final JTextArea textBox;
 
 	public LogWindow(JComponent parent, MainController controller) {
 		super(parent, controller, "Log", true);

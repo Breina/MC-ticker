@@ -6,10 +6,10 @@ import presentation.objects.Orientation;
 
 public class TileSet {
 	
-	private String name;
-	private String extension;
+	private final String name;
+	private final String extension;
 	
-	private Condition[] entries;
+	private final Condition[] entries;
 	
 	public TileSet(String name, String extension) {
 		this.name = name;
@@ -23,11 +23,8 @@ public class TileSet {
 	}
 	
 	public boolean containsId(short id) {
-		
-		if (entries[id] == null)
-			return false;
-		else
-			return true;
+
+        return entries[id] != null;
 	}
 
 	public Graphic getGraphic(short id, byte data, Orientation orientation, byte custom) {

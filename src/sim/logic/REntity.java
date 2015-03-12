@@ -8,10 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-public class REntity {
-	
-	private Class<?> Entity, EntityList;
-	private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString, m_onUpdate;
+class REntity {
+
+    private Method m_writeToNBT, m_createEntityFromNBT, m_getEntityString, m_onUpdate;
 	private Field f_posX, f_posY, f_posZ, f_motionX, f_motionY, f_motionZ, f_width, f_height, f_isDead, f_entityUniqueID;
 
 	private RNBTTags rNBTTags;
@@ -25,35 +24,33 @@ public class REntity {
 		Log.i("Preparing entities");		
 	}
 	
-	private void prepareEntity(Linker linker) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-		
-		Entity                  = linker.getClass("Entity");
-		EntityList              = linker.getClass("EntityList");
+	private void prepareEntity(Linker linker) throws NoSuchMethodException, SecurityException, NoSuchFieldException {
+
+        Class<?> entity = linker.getClass("Entity");
+        Class<?> entityList = linker.getClass("EntityList");
 		Class<?> NBTTagCompound = linker.getClass("NBTTagCompound");
 		Class<?> World          = linker.getClass("World");
 
-		f_posX		        = linker.field("posX", Entity);
-		f_posY		        = linker.field("posY", Entity);
-		f_posZ		        = linker.field("posZ", Entity);
-		f_motionX	        = linker.field("motionX", Entity);
-		f_motionY	        = linker.field("motionY", Entity);
-		f_motionZ	        = linker.field("motionZ", Entity);
-		f_width		        = linker.field("width", Entity);
-		f_height	        = linker.field("height", Entity);
-		f_isDead	        = linker.field("isDead", Entity);
-        f_entityUniqueID    = linker.field("entityUniqueID", Entity);
+		f_posX		        = linker.field("posX", entity);
+		f_posY		        = linker.field("posY", entity);
+		f_posZ		        = linker.field("posZ", entity);
+		f_motionX	        = linker.field("motionX", entity);
+		f_motionY	        = linker.field("motionY", entity);
+		f_motionZ	        = linker.field("motionZ", entity);
+		f_width		        = linker.field("width", entity);
+		f_height	        = linker.field("height", entity);
+		f_isDead	        = linker.field("isDead", entity);
+        f_entityUniqueID    = linker.field("entityUniqueID", entity);
 
-		m_writeToNBT            = linker.method("writeToNBT", Entity, NBTTagCompound);
-		m_createEntityFromNBT   = linker.method("createEntityFromNBT", EntityList, NBTTagCompound, World);
-		m_getEntityString       = linker.method("getEntityString", Entity);
-		m_onUpdate              = linker.method("onUpdate", Entity);
+		m_writeToNBT            = linker.method("writeToNBT", entity, NBTTagCompound);
+		m_createEntityFromNBT   = linker.method("createEntityFromNBT", entityList, NBTTagCompound, World);
+		m_getEntityString       = linker.method("getEntityString", entity);
+		m_onUpdate              = linker.method("onUpdate", entity);
 	}
 	
 	public Object createEntityFromNBT(Object nbtTagCompound, Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		Object entity = m_createEntityFromNBT.invoke(null, nbtTagCompound, world);
-		
-		return entity;
+        return m_createEntityFromNBT.invoke(null, nbtTagCompound, world);
 	}
 	
 	public Object getNBTFromEntity(Object entity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

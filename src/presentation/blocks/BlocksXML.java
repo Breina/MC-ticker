@@ -1,32 +1,28 @@
 package presentation.blocks;
 
+import logging.Log;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+import presentation.objects.Orientation;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import logging.Log;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import presentation.objects.Orientation;
-
 public class BlocksXML {
-	
-	private SAXParserFactory factory;
-	private SAXParser saxParser;
+
+    private SAXParser saxParser;
 	
 	private DefaultHandler handler;
 	
 	private List<BlockSet> blockSets;
 	
-	public void prepareHandler() throws ParserConfigurationException, SAXException {
+	void prepareHandler() {
 		
 		handler = new DefaultHandler() {
 			
@@ -323,8 +319,8 @@ public class BlocksXML {
 	}
 	
 	public BlocksXML() throws ParserConfigurationException, SAXException {
-		
-		factory = SAXParserFactory.newInstance();
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
 		saxParser = factory.newSAXParser();
 		
 		prepareHandler();

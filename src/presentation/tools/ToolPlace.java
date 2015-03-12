@@ -39,8 +39,10 @@ public class ToolPlace extends Tool {
 	private void setBlock() {
 		Cord3S c = getSelectedCord3D();
 
-		if (c == null)
-			Log.e("Selected cord is null!");
+		if (c == null) {
+            Log.e("Selected cord is null!");
+            return;
+        }
 		
 		getWorldController().setBlock(c.x, c.y, c.z, dragBlock);
 	}

@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class SimController {
 	
-	private SimWorld simWorld;
+	private final SimWorld simWorld;
 
 	public SimController(SimWorld simWorld) {
 		this.simWorld = simWorld;

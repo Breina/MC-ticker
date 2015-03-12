@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-public class LayerPanel extends EditorSubComponent {
+class LayerPanel extends EditorSubComponent {
 
     private final boolean horizontal;
 

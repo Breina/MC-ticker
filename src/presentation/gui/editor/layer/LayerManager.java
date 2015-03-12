@@ -16,9 +16,9 @@ public class LayerManager {
     /**
      * For every editor, contains layers for all other editors
      */
-    private HashMap<Editor, HashMap<Editor, LayerPanel>> layers;
+    private final HashMap<Editor, HashMap<Editor, LayerPanel>> layers;
 
-    private WorldController worldController;
+    private final WorldController worldController;
 
     public LayerManager(WorldController worldController) {
 
@@ -36,11 +36,7 @@ public class LayerManager {
         HashMap<Editor, LayerPanel> editorLayers = new HashMap<>(layers.size());
         layers.put(newLayer, editorLayers);
 
-        Iterator<Editor> editorIterator = layers.keySet().iterator();
-
-        while (editorIterator.hasNext()) {
-
-            Editor editor = editorIterator.next();
+        for (Editor editor : layers.keySet()) {
 
             if (editor.getOrientation() == newLayer.getOrientation())
                 continue;
@@ -109,11 +105,8 @@ public class LayerManager {
 
         layers.remove(layerEditor);
 
-        Iterator<Editor> editorIterator = layers.keySet().iterator();
+        for (Editor editor : layers.keySet()) {
 
-        while (editorIterator.hasNext()) {
-
-            Editor editor = editorIterator.next();
             LayerPanel layer = layers.get(editor).get(layerEditor);
         }
     }

@@ -1,16 +1,14 @@
 package sim.logic;
 
+import logging.Log;
+import sim.constants.Constants;
+import sim.loading.Linker;
+
 import java.lang.reflect.Field;
 
-import sim.constants.Constants;
-import sim.loading.ClassTester;
-import sim.loading.Linker;
-import logging.Log;
+class RNextTickListEntry {
 
-public class RNextTickListEntry {
-	
-	private Class<?> NextTickListEntry;
-	private Field f_blockPos, f_scheduledTime, f_priority, f_block;
+    private Field f_blockPos, f_scheduledTime, f_priority, f_block;
 	
 	public RNextTickListEntry(Linker linker) throws NoSuchFieldException, SecurityException {
 		
@@ -19,19 +17,19 @@ public class RNextTickListEntry {
 		Log.i("Preparing Ticks");
 	}
 	
-	public void prepareNextTickListEntry(Linker linker) throws NoSuchFieldException, SecurityException {
+	void prepareNextTickListEntry(Linker linker) throws NoSuchFieldException, SecurityException {
+
+        Class<?> nextTickListEntry = linker.getClass("NextTickListEntry");
 		
-		NextTickListEntry = linker.getClass("NextTickListEntry");
+		f_scheduledTime = linker.field("scheduledTime", nextTickListEntry);
 		
-		f_scheduledTime = linker.field("scheduledTime", NextTickListEntry);
-		
-		f_block = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
+		f_block = nextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCK);
 		f_block.setAccessible(true);
 		
-		f_blockPos = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCKPOS);
+		f_blockPos = nextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_BLOCKPOS);
 		f_blockPos.setAccessible(true);
 		
-		f_priority = NextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_PRIORITY);
+		f_priority = nextTickListEntry.getDeclaredField(Constants.NEXTTICKLISTENTRY_PRIORITY);
 	}
 	
 	public Object getBlockPos(Object instance) throws IllegalArgumentException, IllegalAccessException {

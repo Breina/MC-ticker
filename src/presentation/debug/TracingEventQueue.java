@@ -9,7 +9,7 @@ import java.awt.*;
  */
 public class TracingEventQueue extends EventQueue {
 
-    private TracingEventQueueThreadJMX tracingThread;
+    private final TracingEventQueueThreadJMX tracingThread;
 
     public TracingEventQueue() {
         this.tracingThread = new TracingEventQueueThreadJMX(500);

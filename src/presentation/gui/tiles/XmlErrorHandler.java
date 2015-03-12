@@ -1,12 +1,11 @@
 package presentation.gui.tiles;
 
 import logging.Log;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class XmlErrorHandler implements ErrorHandler {
+class XmlErrorHandler implements ErrorHandler {
 	
 	public XmlErrorHandler() {}
 	

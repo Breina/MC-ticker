@@ -7,7 +7,7 @@ import presentation.main.Cord3S;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class CursorPanel extends EditorSubComponent {
+class CursorPanel extends EditorSubComponent {
 
     /**
      * The last tile cords of the mouse pos.
@@ -61,7 +61,7 @@ public class CursorPanel extends EditorSubComponent {
                 (x + 1) * (Editor.SIZE + 1), (y + 1) * (Editor.SIZE + 1));
     }
 
-    public void selectCord(short x, short y, short z) {
+    void selectCord(short x, short y, short z) {
 
         Cord2S cord = getCord2D(x, y, z);
 

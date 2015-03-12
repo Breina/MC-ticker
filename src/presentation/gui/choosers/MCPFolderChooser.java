@@ -1,13 +1,8 @@
 package presentation.gui.choosers;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
-import presentation.controllers.WorldController;
-import logging.Log;
 
 public class MCPFolderChooser extends JFileChooser {
 	private static final long serialVersionUID = 8462800103389729175L;

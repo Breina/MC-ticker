@@ -2,16 +2,15 @@ package presentation.blocks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class BlockSet {
 
 	private String name;
-	private List<BlockCategory> cats;
-	HashMap<Byte, BlockLogic> blockLogics;
+	private final List<BlockCategory> cats;
+	private final HashMap<Byte, BlockLogic> blockLogics;
 	
-	public BlockSet() {
+	private BlockSet() {
 		cats = new ArrayList<>();
 		blockLogics = new HashMap<>();
 	}
@@ -36,14 +35,10 @@ public class BlockSet {
 	
 	public void addCategory(BlockCategory cat) {
 		cats.add(cat);
-		
-		Iterator<BlockLogic> i = cat.getBlocks().iterator();
-		
-		while (i.hasNext()) {
-			
-			BlockLogic b = i.next();
-			blockLogics.put(b.getId(), b);
-		}
+
+        for (BlockLogic b : cat.getBlocks())
+            blockLogics.put(b.getId(), b);
+
 	}
 	
 	public boolean containsBlock(byte id) {

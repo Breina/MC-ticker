@@ -9,8 +9,6 @@ import presentation.objects.Block;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -19,9 +17,9 @@ public class BlockPanel extends JPanel {
 	
 	private final static int BTNSIZE = 25;
 	
-	private MainController mainController;
-	private BlockController blockController;
-	private TileController tileController;
+	private final MainController mainController;
+	private final BlockController blockController;
+	private final TileController tileController;
 
 	public BlockPanel(MainController mainController) {
 		super();
@@ -70,12 +68,9 @@ public class BlockPanel extends JPanel {
 				pnlCategory.add(btn);
 				group.add(btn);
 				
-				btn.addItemListener(new ItemListener() {
-					@Override
-					public void itemStateChanged(ItemEvent e) {
-						mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
-					}
-				});
+				btn.addItemListener(e -> {
+                    mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
+                });
 				
 			}
 			

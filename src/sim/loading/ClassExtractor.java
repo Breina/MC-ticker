@@ -15,7 +15,7 @@ import java.util.jar.JarFile;
 /**
  * Extracts the classes from minecraft.jar
  */
-public class ClassExtractor {
+class ClassExtractor {
 
 	/**
 	 * Extracts the classes from the jar
@@ -27,51 +27,43 @@ public class ClassExtractor {
 	 */
 	public HashMap<String, Class<?>> extractClasses(File _jarFile, HashMap<String, String> reqClasses) throws ClassNotFoundException, IOException {
 		
-		HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
+		HashMap<String, Class<?>> classes = new HashMap<>();
 
-		JarFile jarFile = null;
-		Enumeration<JarEntry> jarEntries;
+        Enumeration<JarEntry> jarEntries;
 		URLClassLoader cl;
 
-		try {
-			jarFile = new JarFile(_jarFile);
-			jarEntries = jarFile.entries();
+        try (JarFile jarFile = new JarFile(_jarFile)) {
+            jarEntries = jarFile.entries();
 
-			URL[] urls = { new URL("jar:file:" + _jarFile.getPath() + "!/") };
-			cl = URLClassLoader.newInstance(urls);
+            URL[] urls = {new URL("jar:file:" + _jarFile.getPath() + "!/")};
+            cl = URLClassLoader.newInstance(urls);
 
-			while (jarEntries.hasMoreElements()) {
+            while (jarEntries.hasMoreElements()) {
 
-				String className = null;
+                String className = null;
 
-				try {
-					JarEntry jarEntry = jarEntries.nextElement();
-					if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class"))
-						continue;
+                try {
+                    JarEntry jarEntry = jarEntries.nextElement();
+                    if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class"))
+                        continue;
 
-					// -6 because of .class
-					className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
+                    // -6 because of .class
+                    className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
 
-					if (reqClasses.containsKey(className)) {
-						String original = reqClasses.get(className);
-						classes.put(original, cl.loadClass(className));
-					}
+                    if (reqClasses.containsKey(className)) {
+                        String original = reqClasses.get(className);
+                        classes.put(original, cl.loadClass(className));
+                    }
 
-				} catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
 
-					if (className != null)
-						Log.e("Class " + className + " was not found.");
-					else
-						Log.e("Some class was not found");
+                    Log.e("Class " + className + " was not found.");
 
-					throw e;
-				}
-			}
-			
-		} finally {
-				
-			jarFile.close();
-		}
+                    throw e;
+                }
+            }
+
+        }
 		
 		return classes;
 	}
@@ -89,19 +81,17 @@ public class ClassExtractor {
         }
     }
 
-    public Class<?> getClassFromJar(String requiredClassName, String _package, File _jarFile) throws IOException, ClassNotFoundException {
+    Class<?> getClassFromJar(String requiredClassName, String _package, File _jarFile) throws IOException, ClassNotFoundException {
 
-        JarFile jarFile = null;
         Enumeration<JarEntry> jarEntries;
         URLClassLoader cl;
 
         String fullClass = _package + requiredClassName;
 
-        try {
-            jarFile = new JarFile(_jarFile);
+        try (JarFile jarFile = new JarFile(_jarFile)) {
             jarEntries = jarFile.entries();
 
-            URL[] urls = { new URL("jar:file:" + _jarFile.getPath() + "!/") };
+            URL[] urls = {new URL("jar:file:" + _jarFile.getPath() + "!/")};
             cl = URLClassLoader.newInstance(urls);
 
             while (jarEntries.hasMoreElements()) {
@@ -128,9 +118,6 @@ public class ClassExtractor {
                 }
             }
 
-        } finally {
-
-            jarFile.close();
         }
 
         return null;

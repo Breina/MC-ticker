@@ -2,7 +2,8 @@ package presentation.main;
 
 public class Cord2S {
 	
-	public short x, y;
+	public final short x;
+    public final short y;
 
 	public Cord2S(short x, short y) {
 		super();

@@ -2,7 +2,7 @@ package presentation.gui.time;
 
 public class TimeLine<T> {
 	
-	private Object[] items;
+	private final Object[] items;
 	private int start, index, end;
 	
 	public TimeLine(int size) {

@@ -152,7 +152,7 @@ public class BlockLogic {
 		return sides[sideIndex];
 	}
 	
-	public byte getIncreaseFromMask(byte mask) {
+	byte getIncreaseFromMask(byte mask) {
 		
 		for (byte b = 1; b <= 8; b *= 2) {
 			

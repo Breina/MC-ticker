@@ -2,7 +2,7 @@ package presentation.threads;
 
 import presentation.objects.Orientation;
 
-public class ImgCode {
+class ImgCode {
 	
 	private Orientation side;
 	private short layer;

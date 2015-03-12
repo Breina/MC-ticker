@@ -5,8 +5,10 @@ package presentation.objects;
  */
 public class ViewData {
 	
-	private short xSize, ySize, zSize;
-	private String name;
+	private final short xSize;
+    private final short ySize;
+    private final short zSize;
+	private final String name;
 	private Block[][][] blocks;
 	private Entity[] entities;
 	
@@ -35,11 +37,11 @@ public class ViewData {
 		setEntities(entities);
 	}
 
-	public void setBlocks(Block[][][] blocks) {
+	void setBlocks(Block[][][] blocks) {
 		this.blocks = blocks;
 	}
 
-	public void setEntities(Entity[] entities) {
+	void setEntities(Entity[] entities) {
 		this.entities = entities;
 	}
 	
@@ -51,7 +53,7 @@ public class ViewData {
 		return blocks[x][y][z];
 	}
 	
-	public boolean isOutbounds(int x, int y, int z) {
+	boolean isOutbounds(int x, int y, int z) {
 		
 		return (x < 0 || x >= xSize ||
 				y < 0 || y >= ySize ||

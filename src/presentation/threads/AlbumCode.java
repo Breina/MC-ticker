@@ -1,6 +1,6 @@
 package presentation.threads;
 
-public class AlbumCode {
+class AlbumCode {
 	
 	private String url, title;
 	private String[] ids;

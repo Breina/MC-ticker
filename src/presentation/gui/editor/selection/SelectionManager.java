@@ -5,8 +5,6 @@ import presentation.gui.editor.Editor;
 import presentation.main.Cord3S;
 import presentation.objects.ViewData;
 
-import java.util.Iterator;
-
 /**
  * A manager which manages the 3D selection
  */
@@ -37,7 +35,7 @@ public class SelectionManager {
      */
     private boolean anythingSelected;
 
-    private WorldController worldController;
+    private final WorldController worldController;
 
     public SelectionManager(WorldController worldController) {
 
@@ -198,10 +196,7 @@ public class SelectionManager {
 
         selectRegion(start, end);
 
-        Iterator<Editor> editorIterator = worldController.getEditors().iterator();
-
-        while (editorIterator.hasNext())
-            editorIterator.next().repaint();
+        for (Editor editor : worldController.getEditors()) editor.repaint();
     }
 
     public Cord3S getStart() {

@@ -10,7 +10,7 @@ import java.net.URLClassLoader;
  * http://stackoverflow.com/a/60766
  * @author Allain Lalonde
  */
-public class ClassPathHack {
+class ClassPathHack {
 	
 	private static final Class[] PARAMETERS = new Class[] {URL.class};
 	
@@ -25,13 +25,13 @@ public class ClassPathHack {
 				addFile(file);
 	}
 	
-	public static void addFile(File f) throws IOException
+	private static void addFile(File f) throws IOException
     {
         addURL(f.toURI().toURL());
     }
 
     
-    public static void addURL(URL u) throws IOException
+    private static void addURL(URL u) throws IOException
     {
         URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         Class sysclass = URLClassLoader.class;

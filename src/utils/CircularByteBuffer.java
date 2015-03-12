@@ -79,69 +79,69 @@ public class CircularByteBuffer {
      *
      * @since ostermillerutils 1.00.00
      */
-    protected byte[] buffer;
+    private byte[] buffer;
     /**
      * Index of the first byte available to be read.
      *
      * @since ostermillerutils 1.00.00
      */
-    protected volatile int readPosition = 0;
+    private volatile int readPosition = 0;
     /**
      * Index of the first byte available to be written.
      *
      * @since ostermillerutils 1.00.00
      */
-    protected volatile int writePosition = 0;
+    private volatile int writePosition = 0;
     /**
      * Index of the first saved byte. (To support stream marking.)
      *
      * @since ostermillerutils 1.00.00
      */
-    protected volatile int markPosition = 0;
+    private volatile int markPosition = 0;
     /**
      * Number of bytes that have to be saved
      * to support mark() and reset() on the InputStream.
      *
      * @since ostermillerutils 1.00.00
      */
-    protected volatile int markSize = 0;
+    private volatile int markSize = 0;
     /**
      * If this buffer is infinite (should resize itself when full)
      *
      * @since ostermillerutils 1.00.00
      */
-    protected volatile boolean infinite = false;
+    private volatile boolean infinite = false;
     /**
      * True if a write to a full buffer should block until the buffer
      * has room, false if the write method should throw an IOException
      *
      * @since ostermillerutils 1.00.00
      */
-    protected boolean blockingWrite = true;
+    private boolean blockingWrite = true;
     /**
      * The InputStream that can empty this buffer.
      *
      * @since ostermillerutils 1.00.00
      */
-    protected InputStream in = new CircularByteBufferInputStream();
+    private final InputStream in = new CircularByteBufferInputStream();
     /**
      * true if the close() method has been called on the InputStream
      *
      * @since ostermillerutils 1.00.00
      */
-    protected boolean inputStreamClosed = false;
+    private boolean inputStreamClosed = false;
     /**
      * The OutputStream that can fill this buffer.
      *
      * @since ostermillerutils 1.00.00
      */
-    protected OutputStream out = new CircularByteBufferOutputStream();
+    private final OutputStream out = new CircularByteBufferOutputStream();
     /**
      * true if the close() method has been called on the OutputStream
      *
      * @since ostermillerutils 1.00.00
      */
-    protected boolean outputStreamClosed = false;
+    private boolean outputStreamClosed = false;
  
     /**
      * Make this buffer ready for reuse.  The contents of the buffer
@@ -402,7 +402,7 @@ public class CircularByteBuffer {
      *
      * @since ostermillerutils 1.00.00
      */
-    public CircularByteBuffer(int size, boolean blockingWrite){
+    private CircularByteBuffer(int size, boolean blockingWrite){
         if (size == INFINITE_SIZE){
             buffer = new byte[DEFAULT_SIZE];
             infinite = true;
@@ -418,7 +418,7 @@ public class CircularByteBuffer {
      *
      * @since ostermillerutils 1.00.00
      */
-    protected class CircularByteBufferInputStream extends InputStream {
+    class CircularByteBufferInputStream extends InputStream {
  
         /**
          * Returns the number of bytes that can be read (or skipped over) from this
@@ -654,7 +654,7 @@ public class CircularByteBuffer {
      *
      * @since ostermillerutils 1.00.00
      */
-    protected class CircularByteBufferOutputStream extends OutputStream {
+    class CircularByteBufferOutputStream extends OutputStream {
  
         /**
          * Close the stream, flushing it first.

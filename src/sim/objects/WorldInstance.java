@@ -24,7 +24,7 @@ public class WorldInstance {
 	
 	private int xSize, ySize, zSize;
 
-	private RIntHashMap rIntHashMap;
+	private final RIntHashMap rIntHashMap;
 	
 	public WorldInstance(RIntHashMap rIntHashMap) {
 		worldTime = 0;

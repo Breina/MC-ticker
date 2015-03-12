@@ -1,15 +1,13 @@
 package presentation.gui.menu;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-
 import presentation.controllers.MainController;
+
+import javax.swing.*;
 
 public class WindowMenu extends JMenu {
 	private static final long serialVersionUID = 9058054431044220813L;
 
-	private MainController mainController;
+	private final MainController mainController;
 	
 	private JMenuItem emptyWorldEntry;
 	private int openWorlds;	
@@ -23,7 +21,7 @@ public class WindowMenu extends JMenu {
 		buildGUI();
 	}
 	
-	public void buildGUI() {
+	void buildGUI() {
 		
 		setMnemonic('W');
 		

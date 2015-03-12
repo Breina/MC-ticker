@@ -1,5 +1,7 @@
 package presentation.debug;
 
+import logging.Log;
+
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.awt.*;
@@ -16,15 +18,15 @@ import java.util.Set;
  * http://lct-eq2.googlecode.com/svn/trunk/LCT/src/com/lct/eq2/debug/
  */
 class TracingEventQueueThreadJMX extends Thread {
-    private long thresholdDelay;
+    private final long thresholdDelay;
 
-    private Map<AWTEvent, Long> eventTimeMap;
+    private final Map<AWTEvent, Long> eventTimeMap;
 
     private ThreadMXBean threadBean;
 
     public TracingEventQueueThreadJMX(long thresholdDelay) {
         this.thresholdDelay = thresholdDelay;
-        this.eventTimeMap = new HashMap<AWTEvent, Long>();
+        this.eventTimeMap = new HashMap<>();
 
         try {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -111,6 +113,7 @@ class TracingEventQueueThreadJMX extends Thread {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ie) {
+                Log.e(ie.getMessage());
             }
         }
     }

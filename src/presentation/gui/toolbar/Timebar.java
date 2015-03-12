@@ -15,7 +15,7 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
 
     private final static int BTNSIZE = 60;
 
-    private MainController controller;
+    private final MainController controller;
     private JComboBox<WorldController> worldChooser;
 
     private TimeController timeController;
@@ -39,7 +39,7 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
         buildGUI();
     }
 
-    public void buildGUI() {
+    void buildGUI() {
 
         worldChooser = new JComboBox<>();
         worldChooser.setPreferredSize(new Dimension(150, 35));
@@ -124,9 +124,7 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
             setPaused(false);
             timeController.setPlaystate(PlayState.PLAYBACK);
         });
-        btnStepBack.addActionListener(ae -> {
-            timeController.setPlaystate(PlayState.STEPBACK);
-        });
+        btnStepBack.addActionListener(ae -> timeController.setPlaystate(PlayState.STEPBACK));
         btnPause.addActionListener(ae -> {
             setPaused(btnPause.isSelected());
 

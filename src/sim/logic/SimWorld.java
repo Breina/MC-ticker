@@ -20,20 +20,19 @@ import java.util.UUID;
 
 public class SimWorld {
 	
-	private RWorld rWorld;
-	private RBlock rBlock;
-	private RChunk rChunk;
-	private RProfiler rProfiler;
-	private RChunkProvider rChunkProvider;
-	private RTileEntity rTileEntity;
-	private RNBTTags rNBTTags;
-	private REntity rEntity;
-	private RNextTickListEntry rNextTickListEntry;
-	private RChunkPrimer rChunkPrimer;
-	private RBlockPos rBlockPos;
-	private RIntHashMap rIntHashMap;
-	
-	private WorldInstance world;
+	private final RWorld rWorld;
+	private final RBlock rBlock;
+	private final RChunk rChunk;
+	private final RProfiler rProfiler;
+	private final RChunkProvider rChunkProvider;
+	private final RTileEntity rTileEntity;
+	private final RNBTTags rNBTTags;
+	private final REntity rEntity;
+	private final RNextTickListEntry rNextTickListEntry;
+	private final RChunkPrimer rChunkPrimer;
+	private final RBlockPos rBlockPos;
+
+    private WorldInstance world;
 
 	private Tag cachedSchematic;
 	private boolean isSchematicUpToDate;
@@ -41,7 +40,7 @@ public class SimWorld {
 	public SimWorld(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
 			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer, RBlockPos rBlockPos,
-			RIntHashMap rIntHashMap) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+			RIntHashMap rIntHashMap) throws IllegalArgumentException {
 		
 		this.rBlock = rBlock;
 		this.rChunk = rChunk;
@@ -54,9 +53,8 @@ public class SimWorld {
 		this.rWorld = rWorld;
 		this.rChunkPrimer = rChunkPrimer;
 		this.rBlockPos = rBlockPos;
-		this.rIntHashMap = rIntHashMap;
 
-		isSchematicUpToDate = false;
+        isSchematicUpToDate = false;
 	}
 	
 	public void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
@@ -67,15 +65,15 @@ public class SimWorld {
 	}
 	
 	/**
-	 * @param worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
-	 * @param worldType The name of the type of world this is.
-	 * @param gameType Should be either "NOT_SET", "SURVIVAL", "CREATIVE" or "ADVENTURE".
-	 * @param seed The seed of the world.
-	 * @param worldProvider -1=nether, 0=overworld, 1=end.
-	 * @param hardcoreEnabled true/false
-	 * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
-	 */
-	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled, int difficulty, boolean canSpawnAnimals, boolean canSpawnNPCs) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+     * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
+     * @param worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
+     * @param worldType The name of the type of world this is.
+     * @param gameType Should be either "NOT_SET", "SURVIVAL", "CREATIVE" or "ADVENTURE".
+     * @param seed The seed of the world.
+     * @param worldProvider -1=nether, 0=overworld, 1=end.
+     * @param hardcoreEnabled true/false
+     */
+	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler);
 	}
@@ -165,7 +163,7 @@ public class SimWorld {
 			setTileTicks((Tag[]) tileTicks.getValue());
 	}
 
-	private void setBlockObjects(int xSize, int ySize, int zSize, Block[][][] blocks) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+	private void setBlockObjects(int xSize, int ySize, int zSize, Block[][][] blocks) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
 		
 		rChunkProvider.clear();
 		
@@ -438,9 +436,7 @@ public class SimWorld {
 
 		isSchematicUpToDate = false;
 
-		boolean reachedEnd = !rWorld.tick(world, 1l);
-
-		return reachedEnd;
+        return !rWorld.tick(world, 1l);
 	}
 
 	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

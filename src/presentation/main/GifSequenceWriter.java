@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class GifSequenceWriter {
-	protected ImageWriter gifWriter;
-	protected ImageWriteParam imageWriteParam;
-	protected IIOMetadata imageMetaData;
+	private ImageWriter gifWriter;
+	private ImageWriteParam imageWriteParam;
+	private IIOMetadata imageMetaData;
 
 	/**
 	 * Creates a new GifSequenceWriter

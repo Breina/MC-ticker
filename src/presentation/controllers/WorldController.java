@@ -1,7 +1,6 @@
 package presentation.controllers;
 
 import logging.Log;
-import presentation.exceptions.SchematicException;
 import presentation.gui.choosers.SchematicChooser;
 import presentation.gui.editor.Editor;
 import presentation.gui.editor.entity.EntityManager;
@@ -22,7 +21,6 @@ import utils.Tag;
 import javax.swing.*;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -37,8 +35,8 @@ public class WorldController {
 	private WorldMenu worldMenu;
 	private TimeController timeController;
 	
-	private MainController mainController;
-	private SimController simController;
+	private final MainController mainController;
+	private final SimController simController;
 	
 	private NBTviewer nbtViewer;
 	private NBTController nbtController;
@@ -52,9 +50,8 @@ public class WorldController {
     private long lastUpdateTime;
     private boolean doUpdate;
     private TimerUpdater timerUpdater;
-    private Thread timerUpdaterThread;
 
-	public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
+    public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
@@ -65,7 +62,7 @@ public class WorldController {
 		loadSim();
 	}
 	
-	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws SchematicException, IOException, NoSuchAlgorithmException {
+	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws IOException, NoSuchAlgorithmException {
 		
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
@@ -87,7 +84,7 @@ public class WorldController {
 	private void loadSim() {
 
         timerUpdater = new TimerUpdater();
-        timerUpdaterThread = new Thread(timerUpdater);
+        Thread timerUpdaterThread = new Thread(timerUpdater);
         timerUpdaterThread.start();
 
 		worldMenu = new WorldMenu(this);
@@ -127,7 +124,7 @@ public class WorldController {
 
 		layerManager.removeLayer(source.getEditor());
 		
-		editors.remove(source);
+		editors.remove(source.getEditor());
 		
 		if (editors.isEmpty())
 			close();
@@ -135,11 +132,8 @@ public class WorldController {
 	
 	public void close() {
 
-		Iterator<Editor> editorIterator = editors.iterator();
-
         // I'm so sorry :(
-		while (editorIterator.hasNext())
-            ((JInternalFrame) editorIterator.next().getParent().getParent().getParent()).dispose();
+        for (Editor editor : editors) ((JInternalFrame) editor.getParent().getParent().getParent()).dispose();
 
 		timeController.stopThread();
 		
@@ -312,7 +306,7 @@ public class WorldController {
             onSchematicUpdated();
     }
 
-    public synchronized boolean shouldUpdate() {
+    synchronized boolean shouldUpdate() {
 
         if (!doUpdate)
             return false;
@@ -328,7 +322,7 @@ public class WorldController {
         return result;
     }
 
-    protected class TimerUpdater implements Runnable {
+    class TimerUpdater implements Runnable {
 
         private long timeTarget;
 

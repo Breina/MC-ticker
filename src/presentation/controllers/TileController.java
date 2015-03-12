@@ -36,8 +36,7 @@ public class TileController {
 			
 			Log.e("Could not parse XML: " + e.getMessage());
 			e.printStackTrace();
-			return;
-		}
+        }
 	}
 	
 	private Graphic getGraphic(byte byteId, byte data, Orientation orientation, byte custom) {
@@ -61,16 +60,13 @@ public class TileController {
 	}
 	
 	private File getFile(Graphic g) {
-		
-		File imageFile = new File(Constants.TILEIMAGES + g.getName() + Constants.IMAGEEXTENSION);
-		
-		return imageFile;
+
+        return new File(Constants.TILEIMAGES + g.getName() + Constants.IMAGEEXTENSION);
 	}
 	
 	private BufferedImage getImage(File imageFile) throws IOException {
-		
-		BufferedImage tileImage = ImageIO.read(imageFile);
-		return tileImage;
+
+        return ImageIO.read(imageFile);
 			
 	}
 	
@@ -159,7 +155,7 @@ public class TileController {
 		return getTile(id, data, orientation, (byte) 0);
 	}
 	
-	public BufferedImage getTile(byte id, byte data, Orientation orientation, byte custom) {
+	BufferedImage getTile(byte id, byte data, Orientation orientation, byte custom) {
 		
 		int hash = getHash(id, data, orientation);
 		
@@ -171,10 +167,8 @@ public class TileController {
 		if (g == null) return null;
 		
 		File file = getFile(g);
-		
-		if (file == null) return null;
-		
-		BufferedImage image = null;
+
+        BufferedImage image = null;
 		
 		try {
 			image = getImage(file);

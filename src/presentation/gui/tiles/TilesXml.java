@@ -1,26 +1,11 @@
 package presentation.gui.tiles;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.Validator;
-import javax.xml.validation.ValidatorHandler;
-
 import logging.Log;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
 import presentation.gui.tiles.conditions.Condition;
 import presentation.gui.tiles.conditions.ConditionData;
 import presentation.gui.tiles.conditions.ConditionId;
@@ -28,25 +13,29 @@ import presentation.gui.tiles.conditions.ConditionOrientation;
 import presentation.main.Constants;
 import presentation.objects.Orientation;
 
-import com.sun.org.apache.xerces.internal.xni.parser.XMLErrorHandler;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class TilesXml {
-	
-	private SAXParserFactory factory;
-	private XMLReader reader;
-	private XmlErrorHandler errorHandler;
-	
-	private DefaultHandler handler;
+
+    private XMLReader reader;
+
+    private DefaultHandler handler;
 	
 	private List<TileSet> tileSets;
 	
-	public void prepareHandler() throws ParserConfigurationException, SAXException {
+	void prepareHandler() {
 		
 		handler = new DefaultHandler() {
 			
 			boolean isName = false;
 			
-			Stack<Condition> stacky = new Stack<>();
+			final Stack<Condition> stacky = new Stack<>();
 			TileSet tileSet = null;
 			
 			@Override
@@ -219,14 +208,17 @@ public class TilesXml {
 						break;
 						
 					case "mirror":
-						if (value.equals("horizontal"))
-							condition.setMirror(Mirror.HORIZONTAL);
-						else if (value.equals("vertical"))
-							condition.setMirror(Mirror.VERTICAL);
-						else {
-							Log.e("XML could not be parsed, unrecognized mirror type: " + value);
-							return;
-						}
+                        switch (value) {
+                            case "horizontal":
+                                condition.setMirror(Mirror.HORIZONTAL);
+                                break;
+                            case "vertical":
+                                condition.setMirror(Mirror.VERTICAL);
+                                break;
+                            default:
+                                Log.e("XML could not be parsed, unrecognized mirror type: " + value);
+                                return;
+                        }
 				}
 				
 				
@@ -298,12 +290,12 @@ public class TilesXml {
 	}
 	
 	public TilesXml() throws ParserConfigurationException, SAXException {
-		
-		factory = SAXParserFactory.newInstance();
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);
 		factory.setValidating(true);
-		
-		errorHandler = new XmlErrorHandler();
+
+        XmlErrorHandler errorHandler = new XmlErrorHandler();
 		
 		reader = factory.newSAXParser().getXMLReader();
 		reader.setErrorHandler(errorHandler);

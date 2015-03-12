@@ -11,10 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class RProfiler {
-	
-	private Class<?> Profiler;
-	private Object profiler;
+class RProfiler {
+
+    private Object profiler;
 	private Field f_profilingMap;
 	private Method m_startSection, m_stopSection;
 
@@ -30,16 +29,16 @@ public class RProfiler {
 	}
 	
 	private void prepareProfiler(Linker linker) throws NoSuchFieldException, SecurityException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+
+        Class<?> profiler1 = linker.getClass("Profiler");
+		profiler = profiler1.newInstance();
+		f_profilingMap = linker.field("profilingMap", profiler1);
 		
-		Profiler = linker.getClass("Profiler");
-		profiler = Profiler.newInstance();
-		f_profilingMap = linker.field("profilingMap", Profiler);
-		
-		Field f_profilingEnabled = linker.field("profilingEnabled", Profiler);
+		Field f_profilingEnabled = linker.field("profilingEnabled", profiler1);
 		f_profilingEnabled.setBoolean(profiler, true);
 		
-		m_startSection = linker.method("startSection", Profiler, String.class);
-		m_stopSection = linker.method("endSection", Profiler);
+		m_startSection = linker.method("startSection", profiler1, String.class);
+		m_stopSection = linker.method("endSection", profiler1);
 	}
 	
 	public void testProfiler(String msg) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -60,7 +59,7 @@ public class RProfiler {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void printOutput() throws IllegalArgumentException, IllegalAccessException {
+    void printOutput() throws IllegalArgumentException, IllegalAccessException {
 		
 		System.out.println("\nMINECRAFT PROFILER:");
 		

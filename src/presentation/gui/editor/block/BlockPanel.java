@@ -1,6 +1,5 @@
 package presentation.gui.editor.block;
 
-import logging.Log;
 import presentation.controllers.TileController;
 import presentation.exceptions.UnhandledBlockDataException;
 import presentation.exceptions.UnhandledBlockIdException;
@@ -18,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class BlockPanel extends EditorSubComponent {
 
-    private TileController tileController;
+    private final TileController tileController;
 
     public BlockPanel(Editor editor) {
         super(editor);
@@ -40,16 +39,9 @@ public class BlockPanel extends EditorSubComponent {
         for (short y = 0; y < this.height; y++)
             for (short x = 0; x < this.width; x++) {
                 Cord3S cords = getCord3D(x, y);
-                BufferedImage image;
 
-                try {
-                    image = getTile(cords.x, cords.y, cords.z);
-                    g.drawImage(image, x * Editor.SIZE + 1, y * Editor.SIZE + 1, null);
-
-                } catch (UnhandledBlockDataException | UnhandledBlockIdException e) {
-
-                    Log.e(e.getMessage());
-                }
+                BufferedImage image = getTile(cords.x, cords.y, cords.z);
+                g.drawImage(image, x * Editor.SIZE + 1, y * Editor.SIZE + 1, null);
             }
     }
 
@@ -62,7 +54,7 @@ public class BlockPanel extends EditorSubComponent {
      * @throws UnhandledBlockDataException
      * @throws UnhandledBlockIdException
      */
-    private BufferedImage getTile(short x, short y, short z) throws UnhandledBlockDataException, UnhandledBlockIdException {
+    private BufferedImage getTile(short x, short y, short z) {
 
         BufferedImage tileImage;
         Block b = worldController.getWorldData().getBlock(x, y, z);
@@ -103,15 +95,15 @@ public class BlockPanel extends EditorSubComponent {
         final short[] XCORDS = {x, (short) (x - 1), x, (short) (x + 1)};
         final short[] ZCORDS = {(short) (z - 1), z, (short) (z + 1), z};
 
-        final boolean up = !viewData.getBlock(x, (short) (y + 1), z).isSolidBlock();
+        final boolean up = viewData.getBlock(x, (short) (y + 1), z).isTransparentBlock();
 
         Block testBlock;
         for (byte i = 0; i < 4; i++) {
             testBlock = viewData.getBlock(XCORDS[i], y, ZCORDS[i]);
             // anything on same level
-            cons[i] = (testBlock.isConnectable(i % 2 == 0) ? true : false)
+            cons[i] = (testBlock.isConnectable(i % 2 == 0))
                     // wire 1 block lower
-                    || (!testBlock.isSolidBlock() && viewData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE)
+                    || (testBlock.isTransparentBlock() && viewData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE)
                     // wire 1 block higher
                     || (up && viewData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE);
         }

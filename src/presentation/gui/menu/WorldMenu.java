@@ -11,7 +11,7 @@ import javax.swing.*;
 public class WorldMenu extends JMenu {
 	private static final long serialVersionUID = 6210179007123517451L;
 	
-	private WorldController controller;
+	private final WorldController controller;
 	
 	public WorldMenu(WorldController controller) {
 		super(controller.getWorldData().getName());
@@ -21,7 +21,7 @@ public class WorldMenu extends JMenu {
 		buildGUI();
 	}
 	
-	public void buildGUI() {
+	void buildGUI() {
 		
 		// Build layout
 		JMenuItem top		= new JMenuItem("Add top-down view");
@@ -55,25 +55,15 @@ public class WorldMenu extends JMenu {
 		add(new JSeparator());
 		
 		// Add functions
-		top.addActionListener(e -> {
-            controller.addNewPerspective(Orientation.TOP);
-        });
+		top.addActionListener(e -> controller.addNewPerspective(Orientation.TOP));
 		
-		front.addActionListener(e -> {
-            controller.addNewPerspective(Orientation.FRONT);
-        });
+		front.addActionListener(e -> controller.addNewPerspective(Orientation.FRONT));
 		
-		right.addActionListener(e -> {
-            controller.addNewPerspective(Orientation.RIGHT);
-        });
+		right.addActionListener(e -> controller.addNewPerspective(Orientation.RIGHT));
 		
-		save.addActionListener(ae -> {
-            controller.save();
-        });
+		save.addActionListener(ae -> controller.save());
 		
-		saveAs.addActionListener(e -> {
-            controller.saveAs();
-        });
+		saveAs.addActionListener(e -> controller.saveAs());
 		
 		revert.addActionListener(e -> {
 
@@ -86,9 +76,7 @@ public class WorldMenu extends JMenu {
 
         });
 		
-		closeAll.addActionListener(e -> {
-            controller.close();
-        });
+		closeAll.addActionListener(e -> controller.close());
 	}
 	
 	/**

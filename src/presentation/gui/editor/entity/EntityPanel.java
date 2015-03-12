@@ -12,7 +12,7 @@ import java.awt.geom.Line2D;
 /**
  * The entity panel used by Editor
  */
-public class EntityPanel extends EditorSubComponent {
+class EntityPanel extends EditorSubComponent {
 
     /**
      * The entity object that is drawn

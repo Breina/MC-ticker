@@ -12,9 +12,9 @@ import java.util.HashMap;
  * Redstone wire has its own drawing class because we don't want 16 * (5 + 3) = 128 images of 174 bytes (avg.) = 22 KB of images, but instead use a 3.5 KB class.
  * That and it's a lot faster.
  */
-public class RedstoneWire {
+class RedstoneWire {
 	
-	private static HashMap<Integer, BufferedImage> bufferedImages = new HashMap<>();
+	private static final HashMap<Integer, BufferedImage> bufferedImages = new HashMap<>();
 	
 	private static final int powerStep	= 9;
 	private static final int minPower	= 120;
@@ -105,9 +105,8 @@ public class RedstoneWire {
 			case FRONT:
 				ori = 2;
 		}
-		
-		int hash = (ori & 0b11) << 8 | (powerLevel & 0b1111) << 4 | con;
-		return hash;
+
+        return (ori & 0b11) << 8 | (powerLevel & 0b1111) << 4 | con;
 	}
 
 	public static BufferedImage draw(byte powerLevel, Orientation orientation, boolean[] connections) {
