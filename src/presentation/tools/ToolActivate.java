@@ -9,15 +9,12 @@ import java.awt.event.MouseEvent;
 public class ToolActivate extends Tool {
 	
 	private int dragButton;
-//	private BlockController blockController;
 	private final MainController mainController;
 
 	public ToolActivate(MainController mainController) {
 		super(mainController, "Activate", "cursor.png", false);
-		
-//		this.blockController = mainController.getBlockController();
-		this.mainController = mainController;
 
+		this.mainController = mainController;
 	}
 
 	@Override
@@ -31,7 +28,6 @@ public class ToolActivate extends Tool {
 	}
 	
 	private void activate() {
-		
 		Cord3S c = getSelectedCord3D();
 
 		WorldController worldController = mainController.getSelectedWorld();

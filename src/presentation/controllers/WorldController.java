@@ -15,10 +15,12 @@ import presentation.main.Cord3S;
 import presentation.objects.Block;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
+import presentation.tools.Tool;
 import sim.logic.SimWorld;
 import utils.Tag;
 
 import javax.swing.*;
+import java.awt.event.MouseMotionListener;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -117,6 +119,11 @@ public class WorldController {
         layerManager.addLayer(editor);
         entityManager.addEditor(editor);
 
+        Tool tool = getMainController().getTool();
+        editor.addMouseListener(tool);
+        if (tool.hasMouseMotionListener())
+            editor.addMouseMotionListener((MouseMotionListener) tool);
+
         editors.add(editor);
 	}
 	
@@ -133,7 +140,8 @@ public class WorldController {
 	public void close() {
 
         // I'm so sorry :(
-        for (Editor editor : editors) ((JInternalFrame) editor.getParent().getParent().getParent()).dispose();
+        for (Editor editor : editors)
+            ((JInternalFrame) editor.getParent().getParent().getParent().getParent().getParent().getParent()).dispose();
 
 		timeController.stopThread();
 		

@@ -298,7 +298,7 @@ public class MainController {
      * @param tool The tool to become active
      */
 	public void setTool(Tool tool) {
-		this.tool = tool;
+        this.tool = tool;
 	}
 
     /**
