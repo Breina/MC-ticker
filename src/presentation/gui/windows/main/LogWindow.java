@@ -14,7 +14,7 @@ public class LogWindow extends MainWindow implements ILogger {
 
 	private final JTextArea textBox;
 
-	public LogWindow(JComponent parent, MainController controller) {
+	public LogWindow(JDesktopPane parent, MainController controller) {
 		super(parent, controller, "Log", true);
 
 		textBox = new JTextArea();

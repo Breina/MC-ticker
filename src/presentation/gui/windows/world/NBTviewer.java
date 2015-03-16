@@ -20,7 +20,7 @@ public class NBTviewer extends WorldWindow {
 	private JTree tree;
 	private JScrollPane scrollPane;
 	
-	public NBTviewer(JComponent parent, WorldController controller) {
+	public NBTviewer(JDesktopPane parent, WorldController controller) {
 		super(parent, controller, "NBTviewer", false);
 		
 		buildGUI();

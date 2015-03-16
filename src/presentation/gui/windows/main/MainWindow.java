@@ -2,19 +2,20 @@ package presentation.gui.windows.main;
 
 import presentation.controllers.MainController;
 import presentation.gui.menu.LinkedCheckbox;
+import presentation.gui.windows.InternalWindow;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class MainWindow extends JInternalFrame {
+public abstract class MainWindow extends InternalWindow {
 	private static final long serialVersionUID = -7291404124042489301L;
 	
 	private final MainController controller;
 	private final LinkedCheckbox checkbox;
 
-	MainWindow(JComponent parent, MainController controller, String title, boolean visibleByDefault) {
-		super(title);
+	MainWindow(JDesktopPane parent, MainController controller, String title, boolean visibleByDefault) {
+		super(parent, title, visibleByDefault);
 		
 		this.controller = controller;
 		
@@ -25,9 +26,6 @@ public class MainWindow extends JInternalFrame {
 
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		addComponentListener(new CloseHandler());
-
-        parent.add(this);
-        setVisible(visibleByDefault);
 	}
 	
 	private class CloseHandler extends ComponentAdapter {

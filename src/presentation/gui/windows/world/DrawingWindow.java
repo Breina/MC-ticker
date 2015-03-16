@@ -2,6 +2,7 @@ package presentation.gui.windows.world;
 
 import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
+import presentation.gui.windows.InternalWindow;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 
@@ -11,7 +12,7 @@ import javax.swing.event.InternalFrameEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DrawingWindow extends JInternalFrame {
+public class DrawingWindow extends InternalWindow {
 	private static final long serialVersionUID = 3840583251430475315L;
 	
 	private String title;
@@ -23,8 +24,8 @@ public class DrawingWindow extends JInternalFrame {
 	
 	private JButton up, down;
 
-	public DrawingWindow(JComponent parent, WorldController controller, Orientation orientation) {
-		super("Loading window...");
+	public DrawingWindow(JDesktopPane parent, WorldController controller, Orientation orientation) {
+		super(parent, "Loading window...", true);
 		
 		this.worldController = controller;
 		
@@ -96,9 +97,6 @@ public class DrawingWindow extends JInternalFrame {
 		pack();
 		
 		setLocation(164, 109);
-
-        parent.add(this);
-        setVisible(true);
 	}
 
     /**
@@ -109,11 +107,11 @@ public class DrawingWindow extends JInternalFrame {
 		public void actionPerformed(ActionEvent ae) {			
 			JButton btn = (JButton) ae.getSource();
 			boolean b = btn.getText().equals("+");
-			
-			editor.setScale(editor.getScale() * (b ? 1.25f : 0.8f));
-			
-			pack();
-		}
+
+            editor.setScale(editor.getScale() * (b ? 1.25f : 0.8f));
+
+            pack();
+        }
 	}
 
 	/**
