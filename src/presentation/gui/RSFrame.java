@@ -3,6 +3,7 @@ package presentation.gui;
 import logging.Log;
 import presentation.StatusPanel;
 import presentation.controllers.MainController;
+import presentation.gui.desktop.DesktopPane;
 import presentation.gui.menu.FileMenu;
 import presentation.gui.menu.WindowMenu;
 import presentation.gui.toolbar.Timebar;

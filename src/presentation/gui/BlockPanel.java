@@ -67,11 +67,15 @@ public class BlockPanel extends JPanel {
 				btn.setToolTipText(bl.getName());
 				pnlCategory.add(btn);
 				group.add(btn);
+
+                if (group.getSelection() == null) {
+                    btn.setSelected(true);
+                    mainController.setBlock(new Block(bl.getId(), (byte) 0));
+                }
 				
 				btn.addItemListener(e -> {
                     mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
                 });
-				
 			}
 			
 			main.add(pnlCategory);

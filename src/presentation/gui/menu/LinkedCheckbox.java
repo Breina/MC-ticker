@@ -1,7 +1,5 @@
 package presentation.gui.menu;
 
-import presentation.gui.InternalWindow;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +7,9 @@ import java.awt.event.ActionListener;
 public class LinkedCheckbox extends JCheckBox {
 	private static final long serialVersionUID = 8837610138802553238L;
 	
-	private final InternalWindow window;
+	private final JInternalFrame window;
 	
-	public LinkedCheckbox(InternalWindow window, boolean defaultState) {
+	public LinkedCheckbox(JInternalFrame window, boolean defaultState) {
 		super(window.getTitle(), defaultState);
 		
 		this.window = window;
