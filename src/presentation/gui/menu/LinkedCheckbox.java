@@ -21,7 +21,7 @@ public class LinkedCheckbox extends JCheckBox {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			window.setVisible(isSelected());
 		}
 	}

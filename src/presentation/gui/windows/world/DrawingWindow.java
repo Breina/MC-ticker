@@ -88,7 +88,7 @@ public class DrawingWindow extends InternalWindow {
 		
 		setJMenuBar(menuBar);
 		
-		Editor editor = new Editor(controller, orientation);
+		Editor editor = new Editor(controller, this, orientation);
         this.editor = editor;
 		add(new JScrollPane(editor));
 		
@@ -161,5 +161,9 @@ public class DrawingWindow extends InternalWindow {
 		public void internalFrameClosing(InternalFrameEvent e) {
 			worldController.drawingWindowClosed((DrawingWindow) e.getSource());
 		}    	
+    }
+
+    public int getMax() {
+        return max;
     }
 }

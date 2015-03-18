@@ -9,6 +9,7 @@ public class Constants {
 	public final static boolean DEBUG_MC_SCHEMATICS = false;
 	public final static boolean DEBUG_SCHEMATIC_DATA = false;
 	public final static boolean DEBUG_TAG_COMPOUND = false;
+    public final static boolean DEBUG_SKIP_LOADING = false;
 
 	public final static boolean LOG_IGNORE_WARNINGS = true;
 	

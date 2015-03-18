@@ -19,7 +19,6 @@ import presentation.tools.Tool;
 import sim.logic.SimWorld;
 import utils.Tag;
 
-import javax.swing.*;
 import java.awt.event.MouseMotionListener;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
@@ -139,9 +138,8 @@ public class WorldController {
 	
 	public void close() {
 
-        // I'm so sorry :(
         for (Editor editor : editors)
-            ((JInternalFrame) editor.getParent().getParent().getParent().getParent().getParent().getParent()).dispose();
+            editor.getDaddy().dispose();
 
 		timeController.stopThread();
 		

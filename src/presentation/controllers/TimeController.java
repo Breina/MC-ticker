@@ -235,4 +235,12 @@ public class TimeController implements Runnable {
 	public int getTickCounter() {
 		return tickCounter;
 	}
+
+    public int getTickStartRange() {
+        return tickCounter - timeLine.countPastTicks();
+    }
+
+    public int getTickEndRange() {
+        return tickCounter + timeLine.countFutureTicks();
+    }
 }

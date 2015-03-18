@@ -24,7 +24,7 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
     private JToggleButton btnRushBack, btnPlayBack, btnPause, btnPlayForward, btnRushForward;
     private JLabel lblStep;
 
-    private boolean isPaused, isBack;
+    private boolean isPaused, isBack, locked;
 
     public Timebar(MainController mainController) {
         super("Timebar");
@@ -154,6 +154,10 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
     }
 
     public void setEnabled(boolean active) {
+
+        if (locked)
+            return;
+
         btnStart.setEnabled(active);
         btnRushBack.setEnabled(active);
         btnPlayBack.setEnabled(active);
@@ -165,7 +169,15 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
         btnEnd.setEnabled(active);
     }
 
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
     public void setBackEnabled(boolean b) {
+
+        if (locked)
+            return;
+
         btnStart.setEnabled(b);
         btnRushBack.setEnabled(b);
         btnPlayBack.setEnabled(b);
@@ -178,6 +190,10 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
 
     @Override
     public void setPaused(boolean b) {
+
+        if (locked)
+            return;
+
         if (isBack)
             btnStepBack.setEnabled(b);
 

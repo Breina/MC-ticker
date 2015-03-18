@@ -64,23 +64,26 @@ public class Editor extends JLayeredPane {
     /**
      * The panel containing the mouse cursor block
      */
-    private final CursorPanel cursorPanel;
+    private CursorPanel cursorPanel;
 
     /**
      * The panel containing the selected blocks
      */
-    private final SelectionPanel selectionPanel;
+    private SelectionPanel selectionPanel;
 
-    public Editor(WorldController worldController, Orientation orientation) {
-        this(worldController, (short) 0, 2.0f, orientation);
+    private final JInternalFrame parent;
+
+    public Editor(WorldController worldController, JInternalFrame parent, Orientation orientation) {
+        this(worldController, parent, (short) 0, 2.0f, orientation);
     }
 
-    public Editor(WorldController worldController, short layer, float scale, Orientation orientation) {
+    public Editor(WorldController worldController, JInternalFrame parent, short layer, float scale, Orientation orientation) {
         super();
 
         this.worldController = worldController;
         this.orientation = orientation;
         this.layer = layer;
+        this.parent = parent;
 
         setScale(scale);
         extractWorldDimensions();
@@ -92,16 +95,18 @@ public class Editor extends JLayeredPane {
         setLayer(blockPanel, BLOCK_INDEX);
         add(blockPanel);
 
-        cursorPanel = new CursorPanel(this);
-        setLayer(cursorPanel, CURSOR_INDEX);
-        add(cursorPanel);
+        if (parent != null) {
+            cursorPanel = new CursorPanel(this);
+            setLayer(cursorPanel, CURSOR_INDEX);
+            add(cursorPanel);
 
-        selectionPanel = new SelectionPanel(this);
-        setLayer(selectionPanel, SELECTION_INDEX);
-        add(selectionPanel);
+            selectionPanel = new SelectionPanel(this);
+            setLayer(selectionPanel, SELECTION_INDEX);
+            add(selectionPanel);
 
-        addMouseMotionListener(new MouseMoveHandler());
-        addMouseListener(new MouseHandler());
+            addMouseMotionListener(new MouseMoveHandler());
+            addMouseListener(new MouseHandler());
+        }
 
         onSchematicUpdated();
 
@@ -244,6 +249,14 @@ public class Editor extends JLayeredPane {
 
     public void onSchematicUpdated() {
         repaint();
+    }
+
+    public JInternalFrame getDaddy() {
+        return parent;
+    }
+
+    public boolean isPreview() {
+        return (parent == null);
     }
 
     /**

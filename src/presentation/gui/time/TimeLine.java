@@ -79,4 +79,17 @@ public class TimeLine<T> {
 				start = 0;
 	}
 
+    public int countPastTicks() {
+        int count = index - start;
+        if (count < 0)
+            count += items.length;
+        return count;
+    }
+
+    public int countFutureTicks() {
+        int count = end - index;
+        if (count < 0)
+            count += items.length;
+        return count;
+    }
 }

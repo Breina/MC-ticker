@@ -65,8 +65,9 @@ public class MainController {
 
         LogWindow logWindow = new LogWindow(mainframe.getDesktop(), this);
         Log.setLogger(logWindow);
-		
-		setupSim();
+
+        if (!sim.constants.Constants.DEBUG_SKIP_LOADING)
+		    setupSim();
 	}
 	
 	private void setLF() {
@@ -233,7 +234,7 @@ public class MainController {
 	}
 	
 	public void export() {
-        new ExportWindow(mainframe, this);
+        new ExportWindow(mainframe.getDesktop(), this);
 	}
 	
 	public void exit() {

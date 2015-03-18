@@ -33,6 +33,9 @@ public class LayerManager {
      */
     public void addLayer(Editor newLayer) {
 
+        if (newLayer.isPreview())
+            return;
+
         HashMap<Editor, LayerPanel> editorLayers = new HashMap<>(layers.size());
         layers.put(newLayer, editorLayers);
 
@@ -66,6 +69,9 @@ public class LayerManager {
      * @param layerEditor The editor of the layer perspective that is updated in our editor
      */
     public void updateLayer(Editor layerEditor) {
+
+        if (layerEditor.isPreview())
+            return;
 
         Iterator<Editor> editorIterator = layers.keySet().iterator();
         Iterator<HashMap<Editor, LayerPanel>> layerPanelIterator = layers.values().iterator();
