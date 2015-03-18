@@ -61,7 +61,6 @@ public class TimeController implements Runnable {
 	
 	public synchronized void setPlaystate(PlayState playState) {
 
-
 		switch (playState) {
 
 			case START:

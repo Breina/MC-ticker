@@ -1,5 +1,6 @@
 package presentation.gui.windows.main;
 
+import logging.Log;
 import presentation.controllers.MainController;
 import presentation.controllers.TimeController;
 import presentation.controllers.WorldController;
@@ -19,21 +20,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class ExportWindow extends InternalWindow implements WorldListener {
+public class ExportWindow extends InternalWindow implements WorldListener, Runnable {
 
     private final JComboBox<WorldController> worldChooser;
     private final JTextField filePath;
     private final JButton btnOK;
-//    private final JSpinner gifSpeed, scale;
-    private final ButtonGroup orientationGroup;
     private final JRadioButton rbTop, rbFront, rbRight;
-    private final JSpinner spSingleTime, spSingleLayer, spScale;
-    private final SpinnerNumberModel timeModel, layerModel;
-    private final JPanel contentPanel, pnlPreview;
+    private final JSpinner spSingleTime, spSingleLayer, spScale, spMinLayer, spMaxLayer, spConstantLayer, spMinTime,
+        spMaxTime, spConstantTime, spGifDelay;
+    private final SpinnerNumberModel singleTimeModel, singleLayerModel,
+            minTimeModel, maxTimeModel, minLayerModel, maxLayerModel;
+    private final JPanel pnlPreview;
+    private final JTabbedPane pnlType;
 
     private Editor editor;
 
     private Orientation orientation;
+    private int gifDelay, min, max, animationIndex;
+    private boolean seriesTypeIsGif, seriesIsSlices, isPaused;
 
     private MainController mainController;
 
@@ -43,10 +47,19 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         this.mainController = mainController;
         mainController.addWorldListener(this);
 
+        isPaused = true;
+        gifDelay = 500;
+
         lockTime();
 
-        timeModel = new SpinnerNumberModel();
-        layerModel = new SpinnerNumberModel(0, 0, 0, 1);
+        // These will be set properly later
+        singleTimeModel = new SpinnerNumberModel();
+        minTimeModel = new SpinnerNumberModel();
+        maxTimeModel = new SpinnerNumberModel();
+
+        singleLayerModel = new SpinnerNumberModel(0, 0, 0, 1);
+        minLayerModel = new SpinnerNumberModel(0, 0, 0, 1);
+        maxLayerModel = new SpinnerNumberModel(1, 1, 1, 1);
 
         setLayout(new BorderLayout());
 
@@ -81,7 +94,7 @@ public class ExportWindow extends InternalWindow implements WorldListener {
                 pnlOrientationOptions.add(rbTop = new JRadioButton("Top-down", true));
                 pnlOrientationOptions.add(rbFront = new JRadioButton("Front"));
                 pnlOrientationOptions.add(rbRight = new JRadioButton("Right"));
-                orientationGroup = new ButtonGroup();
+                ButtonGroup orientationGroup = new ButtonGroup();
                 orientationGroup.add(rbTop);
                 orientationGroup.add(rbFront);
                 orientationGroup.add(rbRight);
@@ -94,20 +107,7 @@ public class ExportWindow extends InternalWindow implements WorldListener {
             pnlScale.add(lblScale, BorderLayout.WEST);
             pnlScale.add(spScale = new JSpinner(new SpinnerNumberModel(2.0d, 0.1d, 10d, 0.1d)), BorderLayout.CENTER);
 
-//        JPanel pnlType = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//            pnlType.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
-//            JLabel lblType = new JLabel("Type");
-//            lblType.setPreferredSize(new Dimension(100, 25));
-//            pnlType.add(lblType);
-//            pnlType.add(rbSingle = new JRadioButton("Single image", true));
-//            pnlType.add(rbSeries = new JRadioButton("Image series"));
-//            pnlType.add(rbGif = new JRadioButton("GIF"));
-//            typeGroup = new ButtonGroup();
-//            typeGroup.add(rbSingle);
-//            typeGroup.add(rbSeries);
-//            typeGroup.add(rbGif);
-
-        JTabbedPane pnlType = new JTabbedPane();
+        pnlType = new JTabbedPane();
 
             JPanel pnlSingle = new JPanel();
                 pnlSingle.setLayout(new BoxLayout(pnlSingle, BoxLayout.Y_AXIS));
@@ -116,16 +116,91 @@ public class ExportWindow extends InternalWindow implements WorldListener {
                 JPanel pnlSpaceTime = new JPanel(new GridLayout(1, 4, 10, 10));
                     pnlSpaceTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
                     pnlSpaceTime.add(new JLabel("Layer"));
-                    pnlSpaceTime.add(spSingleLayer = new JSpinner(layerModel));
+                    pnlSpaceTime.add(spSingleLayer = new JSpinner(singleLayerModel));
                     pnlSpaceTime.add(new JLabel("Time"));
-                    pnlSpaceTime.add(spSingleTime = new JSpinner(timeModel));
+                    pnlSpaceTime.add(spSingleTime = new JSpinner(singleTimeModel));
 
-            pnlSingle.add(pnlSpaceTime);
+                pnlSingle.add(pnlSpaceTime);
 
             JPanel pnlSeries = new JPanel();
-                pnlSeries.add(new JLabel("series OMGOMGOMG"));
+                pnlSeries.setLayout(new BoxLayout(pnlSeries, BoxLayout.Y_AXIS));
+                pnlSeries.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-            pnlType.add("Single", pnlSingle);
+                JPanel pnlSeriesType = new JPanel(new BorderLayout(10, 10));
+                    pnlSeriesType.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+                    JLabel lblType = new JLabel("Type");
+                    lblType.setPreferredSize(new Dimension(100, 25));
+                    pnlSeriesType.add(lblType, BorderLayout.WEST);
+
+                    JPanel pnlSeriesTypeRadioButtons = new JPanel(new GridLayout(1, 2));
+                        JRadioButton rbGif = new JRadioButton("Gif animation", true);
+                        JRadioButton rbImages = new JRadioButton("Separate images");
+                        pnlSeriesTypeRadioButtons.add(rbGif);
+                        pnlSeriesTypeRadioButtons.add(rbImages);
+                        ButtonGroup seriesType = new ButtonGroup();
+                        seriesType.add(rbGif);
+                        seriesType.add(rbImages);
+                        pnlSeriesType.add(pnlSeriesTypeRadioButtons, BorderLayout.CENTER);
+
+                JPanel pnlGifDelay = new JPanel(new BorderLayout(10, 10));
+                    pnlGifDelay.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+                    JLabel lblGifDelay = new JLabel("Gif delay (ms)");
+                    lblGifDelay.setPreferredSize(new Dimension(100, 25));
+                    pnlGifDelay.add(lblGifDelay, BorderLayout.WEST);
+                    spGifDelay = new JSpinner(new SpinnerNumberModel(gifDelay, 10, 10000 ,10));
+                    pnlGifDelay.add(spGifDelay, BorderLayout.CENTER);
+
+                JPanel pnlSlicesOrTime = new JPanel(new BorderLayout(10, 10));
+                    pnlSlicesOrTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+                    JLabel lblAnimateOver = new JLabel("Animate");
+                    lblAnimateOver.setPreferredSize(new Dimension(100, 25));
+                    pnlSlicesOrTime.add(lblAnimateOver, BorderLayout.WEST);
+
+                    JPanel pnlSlicesOrTimeRadioButtons = new JPanel(new GridLayout(1, 2));
+                        JRadioButton rbSlices = new JRadioButton("Slices");
+                        JRadioButton rbTime = new JRadioButton("Time", true);
+                        pnlSlicesOrTimeRadioButtons.add(rbSlices);
+                        pnlSlicesOrTimeRadioButtons.add(rbTime);
+                        ButtonGroup animateOver = new ButtonGroup();
+                        animateOver.add(rbSlices);
+                        animateOver.add(rbTime);
+                        pnlSlicesOrTime.add(pnlSlicesOrTimeRadioButtons, BorderLayout.CENTER);
+
+                JPanel pnlSlices = new JPanel(new GridLayout(0, 4, 10, 10));
+                    pnlSlices.setBorder(BorderFactory.createTitledBorder("Slices"));
+                    pnlSlices.add(new JLabel("Min layer"));
+                    spMinLayer = new JSpinner(minLayerModel);
+                    pnlSlices.add(spMinLayer);
+                    pnlSlices.add(new JLabel("Max layer"));
+                    spMaxLayer = new JSpinner(maxLayerModel);
+                    pnlSlices.add(spMaxLayer);
+                    pnlSlices.add(new JLabel("Constant time"));
+                    spConstantTime = new JSpinner(singleTimeModel);
+                    pnlSlices.add(spConstantTime);
+
+                JPanel pnlTime = new JPanel(new GridLayout(0, 4, 10, 10));
+                    pnlTime.setBorder(BorderFactory.createTitledBorder("Time"));
+                    pnlTime.add(new JLabel("Min time"));
+                    spMinTime = new JSpinner(minTimeModel);
+                    pnlTime.add(spMinTime);
+                    pnlTime.add(new JLabel("Max time"));
+                    spMaxTime = new JSpinner(maxTimeModel);
+                    pnlTime.add(spMaxTime);
+                    pnlTime.add(new JLabel("Constant layer"));
+                    spConstantLayer = new JSpinner(singleLayerModel);
+                    pnlTime.add(spConstantLayer);
+
+                pnlSeries.add(pnlSeriesType);
+                pnlSeries.add(Box.createVerticalStrut(5));
+                pnlSeries.add(pnlGifDelay);
+                pnlSeries.add(Box.createVerticalStrut(5));
+                pnlSeries.add(pnlSlicesOrTime);
+                pnlSeries.add(Box.createVerticalStrut(5));
+                pnlSeries.add(pnlSlices);
+                pnlSeries.add(Box.createVerticalStrut(5));
+                pnlSeries.add(pnlTime);
+
+        pnlType.add("Single", pnlSingle);
             pnlType.add("Series", pnlSeries);
 
         btnOK = new JButton("Export");
@@ -133,34 +208,93 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         pnlPreview = new JPanel();
         // Will also create editor
         setOrientation(Orientation.TOP);
+        setSeriesIsSlices(false);
 
         // Once all components are there, add listeners, which require editor
+
+        // Update the orientation accordingly
         rbTop.addActionListener(e -> setOrientation(Orientation.TOP));
         rbFront.addActionListener(e -> setOrientation(Orientation.FRONT));
         rbRight.addActionListener(e -> setOrientation(Orientation.RIGHT));
 
+        // Change the layer
         spSingleLayer.addChangeListener(e -> {
-            int value = (Integer) spSingleLayer.getValue();
+            int value = (Integer) singleLayerModel.getValue();
             editor.setLayerHeight((short) value);
             editor.repaint();
         });
 
+        // Change the time
         spSingleTime.addChangeListener(e -> {
-            getWorld().getTimeController().gotoTickCount((Integer) spSingleTime.getValue());
+            getWorld().getTimeController().gotoTickCount((Integer) singleTimeModel.getValue());
             getWorld().getEntityManager().updateEntities();
             editor.onSchematicUpdated();
         });
 
+        // Change the scale
         spScale.addChangeListener(e -> {
             double value = (double) spScale.getValue();
             editor.setScale((float) value);
             editor.repaint();
-            revalidate();
             pack();
         });
 
+        // Change the gif's speed
+        spGifDelay.addChangeListener(e -> gifDelay = (Integer) spGifDelay.getValue());
 
-        contentPanel = new JPanel();
+        // Gif vs images
+        rbGif.addActionListener(e -> {
+            spGifDelay.setEnabled(true);
+            seriesTypeIsGif = true;
+        });
+
+        rbImages.addActionListener(e -> {
+            spGifDelay.setEnabled(false);
+            seriesTypeIsGif = false;
+        });
+
+        // Slices vs time
+        rbSlices.addActionListener(e -> setSeriesIsSlices(true));
+        rbTime.addActionListener(e -> setSeriesIsSlices(false));
+
+        // Spinner ranges
+        spMinLayer.addChangeListener(e -> {
+            maxLayerModel.setMinimum((Integer) minLayerModel.getValue() + 1);
+            min = (int) minLayerModel.getValue();
+            if (animationIndex < min)
+                animationIndex = min;
+        });
+        spMaxLayer.addChangeListener(e -> {
+            minLayerModel.setMaximum((Integer) maxLayerModel.getValue() - 1);
+            max = (int) maxLayerModel.getValue();
+            if (animationIndex > max)
+                animationIndex = max;
+        });
+        spMinTime.addChangeListener(e -> {
+            maxTimeModel.setMinimum((Integer) minTimeModel.getValue() + 1);
+            min = (int) minTimeModel.getValue();
+            if (animationIndex < min)
+                animationIndex = min;
+        });
+        spMaxTime.addChangeListener(e -> {
+            minTimeModel.setMaximum((Integer) maxTimeModel.getValue() - 1);
+            max = (int) maxTimeModel.getValue();
+            if (animationIndex > max)
+                animationIndex = max;
+        });
+
+        pnlType.addChangeListener(e -> {
+            if (pnlType.getSelectedIndex() == 0)
+                isPaused = true;
+            else {
+                isPaused = false;
+                synchronized (ExportWindow.this) {
+                    notify();
+                }
+            }
+        });
+
+        JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPanel.setMinimumSize(new Dimension(300, 0));
@@ -180,9 +314,12 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         add(contentPanel, BorderLayout.WEST);
         add(/*new JScrollPane(*/pnlPreview/*)*/, BorderLayout.CENTER);
 
+        updateTimeModel();
         worldSelectionUpdated();
 
         pack();
+
+        new Thread(this).start();
     }
 
     @Override
@@ -205,18 +342,8 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         rbFront.setEnabled(isValid);
         rbRight.setEnabled(isValid);
 
-        if (isValid) {
-            updateTimeModel();
-        }
         updatePreview();
     }
-
-//    private class GifSpinnerHandler implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            gifSpeed.setEnabled(topGif.isSelected() || rightGif.isSelected() || frontGif.isSelected());
-//        }
-//    }
 
     private class WorldSelectedHandler implements ActionListener {
         @Override
@@ -248,9 +375,20 @@ public class ExportWindow extends InternalWindow implements WorldListener {
 
         TimeController timeController = worldController.getTimeController();
 
-        timeModel.setMinimum(timeController.getTickStartRange());
-        timeModel.setValue(timeController.getTickCount());
-        timeModel.setMaximum(timeController.getTickEndRange());
+        int min = timeController.getTickStartRange();
+        int max = timeController.getTickEndRange();
+
+        singleTimeModel.setMinimum(min);
+        singleTimeModel.setValue(timeController.getTickCount());
+        singleTimeModel.setMaximum(max);
+
+        minTimeModel.setMinimum(min);
+        minTimeModel.setValue(min);
+        minTimeModel.setMaximum(max - 1);
+
+        maxTimeModel.setMinimum(min + 1);
+        maxTimeModel.setValue(max);
+        maxTimeModel.setMaximum(max);
     }
 
     private void updatePreview() {
@@ -264,7 +402,7 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         if (getWorld() == null)
             return;
 
-        int layer = (int) layerModel.getValue();
+        int layer = (int) singleLayerModel.getValue();
         double scale = (double) spScale.getValue();
 
         editor = new Editor(getWorld(), null, (short) layer, (float) scale, orientation);
@@ -272,6 +410,28 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         /*pnlPreview.*/add(editor, BorderLayout.CENTER);
 
         pack();
+    }
+
+    private void setSeriesIsSlices(boolean seriesIsSlices) {
+        this.seriesIsSlices = seriesIsSlices;
+
+        spMinTime.setEnabled(!seriesIsSlices);
+        spMaxTime.setEnabled(!seriesIsSlices);
+        spConstantLayer.setEnabled(!seriesIsSlices);
+
+        spMinLayer.setEnabled(seriesIsSlices);
+        spMaxLayer.setEnabled(seriesIsSlices);
+        spConstantTime.setEnabled(seriesIsSlices);
+
+        Log.d("seriesIsSlices: " + seriesIsSlices);
+
+        if (seriesIsSlices) {
+            min = (int) minLayerModel.getValue();
+            max = (int) maxLayerModel.getValue();
+        } else {
+            min = (int) minTimeModel.getValue();
+            max = (int) maxTimeModel.getValue();
+        }
     }
 
     private void setOrientation(Orientation orientation) {
@@ -292,12 +452,25 @@ public class ExportWindow extends InternalWindow implements WorldListener {
                 max = worldData.getXSize() - 1;
         }
 
-        layerModel.setMaximum(max);
-        if (((int) layerModel.getValue()) > max)
-            layerModel.setValue(max);
+        singleLayerModel.setMaximum(max);
+        if (((int) singleLayerModel.getValue()) > max)
+            singleLayerModel.setValue(max);
+
+        minLayerModel.setMaximum(max - 1);
+        if (((int) minLayerModel.getValue()) > max - 1)
+            minLayerModel.setValue(max - 1);
+
+        maxLayerModel.setMaximum(max);
+        if (((int) maxLayerModel.getValue()) > max)
+            maxLayerModel.setMaximum(max);
 
         this.orientation = orientation;
         updatePreview();
+
+        if (seriesIsSlices) {
+            this.min = (int) minLayerModel.getValue();
+            this.max = (int) maxLayerModel.getValue();
+        }
     }
 
     private void lockTime() {
@@ -313,8 +486,6 @@ public class ExportWindow extends InternalWindow implements WorldListener {
             world.getTimeController().setPlaystate(PlayState.PAUSED);
     }
 
-
-
     @Override
     public void dispose() {
 
@@ -327,5 +498,37 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         timeBar.setEnabled(true);
 
         super.dispose();
+    }
+
+    @Override
+    public synchronized void run() {
+
+        try {
+
+            for (;;) {
+
+                if (isPaused)
+                    wait();
+
+                if (seriesIsSlices) {
+                    editor.setLayerHeight((short) animationIndex);
+                    singleLayerModel.setValue(animationIndex);
+                } else {
+                    getWorld().getTimeController().gotoTickCount(animationIndex);
+                    singleTimeModel.setValue(animationIndex);
+                }
+
+                animationIndex++;
+
+                if (animationIndex > max)
+                    animationIndex = min;
+
+                repaint();
+
+                wait(gifDelay);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
