@@ -12,13 +12,16 @@ import presentation.gui.windows.InternalWindow;
 import presentation.main.Constants;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
+import presentation.threads.ExportSeriesRunnable;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 public class ExportWindow extends InternalWindow implements WorldListener, Runnable {
 
@@ -37,7 +40,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
     private Orientation orientation;
     private int gifDelay, min, max, animationIndex;
-    private boolean seriesTypeIsGif, seriesIsSlices, isPaused;
+    private boolean seriesTypeIsGif, seriesIsSlices, isPaused, threadIsGo;
 
     private MainController mainController;
 
@@ -48,6 +51,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         mainController.addWorldListener(this);
 
         isPaused = true;
+        seriesTypeIsGif = true;
         gifDelay = 500;
 
         lockTime();
@@ -204,6 +208,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
             pnlType.add("Series", pnlSeries);
 
         btnOK = new JButton("Export");
+        btnOK.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
         pnlPreview = new JPanel();
         // Will also create editor
@@ -293,6 +298,9 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
                 }
             }
         });
+
+        // EXPORT! :D
+        btnOK.addActionListener(new ExportHandler());
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
@@ -423,8 +431,6 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         spMaxLayer.setEnabled(seriesIsSlices);
         spConstantTime.setEnabled(seriesIsSlices);
 
-        Log.d("seriesIsSlices: " + seriesIsSlices);
-
         if (seriesIsSlices) {
             min = (int) minLayerModel.getValue();
             max = (int) maxLayerModel.getValue();
@@ -497,6 +503,11 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         timeBar.setLocked(false);
         timeBar.setEnabled(true);
 
+        threadIsGo = false;
+        synchronized (ExportWindow.this) {
+            notify();
+        }
+
         super.dispose();
     }
 
@@ -505,7 +516,9 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
         try {
 
-            for (;;) {
+            threadIsGo = true;
+
+            while (threadIsGo) {
 
                 if (isPaused)
                     wait();
@@ -529,6 +542,42 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class ExportHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                if (isPaused)
+                    ImageIO.write(editor.getImage(), "png", new File(filePath.getText() + File.separator +
+                            getWorld().getWorldData().getName() + ".png"));
+
+                else {
+                    ExportSeriesRunnable exportRunnable;
+
+                    File outputFolder = new File(filePath.getText());
+                    int constant;
+
+                    if (seriesIsSlices)
+                        constant = (int) singleTimeModel.getValue();
+                    else
+                        constant = (int) singleLayerModel.getValue();
+
+                    if (seriesTypeIsGif)
+                        exportRunnable = new ExportSeriesRunnable(outputFolder, getWorld(), editor, orientation,
+                                seriesIsSlices, constant, min, max, gifDelay);
+                    else
+                        exportRunnable = new ExportSeriesRunnable(outputFolder, getWorld(), editor, orientation,
+                                seriesIsSlices, constant, min, max);
+
+                    new Thread(exportRunnable).start();
+                }
+
+            } catch (IOException e1) {
+                Log.e("File error: " + e1.getMessage());
+                e1.printStackTrace();
+            }
         }
     }
 }
