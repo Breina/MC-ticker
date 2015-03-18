@@ -25,12 +25,12 @@ class CursorPanel extends EditorSubComponent {
 
     @Override
     protected void paintComponent(Graphics gr) {
-        super.paintComponent(gr);
-
         Graphics2D g = (Graphics2D) gr;
 
         g.setColor(Constants.COLORCURSOR);
         g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE, Editor.SIZE));
+
+        super.paintComponent(gr);
     }
 
     public void onSelectionUpdated(short curX, short curY) {

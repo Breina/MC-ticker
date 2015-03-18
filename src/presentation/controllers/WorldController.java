@@ -129,7 +129,8 @@ public class WorldController {
 	public void drawingWindowClosed(DrawingWindow source) {
 
 		layerManager.removeLayer(source.getEditor());
-		
+		entityManager.removeEditor(source.getEditor());
+
 		editors.remove(source.getEditor());
 		
 		if (editors.isEmpty())

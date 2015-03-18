@@ -92,4 +92,13 @@ public class TimeLine<T> {
             count += items.length;
         return count;
     }
+
+    public T getRelative(int relativeIndex) {
+        int index = this.index + relativeIndex;
+        if (index < 0)
+            index += items.length;
+        else if (index >= items.length)
+            index -= items.length;
+        return (T) items[index];
+    }
 }

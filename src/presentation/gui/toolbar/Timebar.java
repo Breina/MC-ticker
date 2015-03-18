@@ -105,7 +105,7 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
             } else {
                 setEnabled(true);
                 timeController = worldController.getTimeController();
-                setStep(timeController.getTickCounter());
+                setStep(timeController.getTickCount());
             }
         });
         btnStart.addActionListener(ae -> {

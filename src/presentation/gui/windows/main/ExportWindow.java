@@ -145,6 +145,12 @@ public class ExportWindow extends InternalWindow implements WorldListener {
             editor.repaint();
         });
 
+        spSingleTime.addChangeListener(e -> {
+            getWorld().getTimeController().gotoTickCount((Integer) spSingleTime.getValue());
+            getWorld().getEntityManager().updateEntities();
+            editor.onSchematicUpdated();
+        });
+
         spScale.addChangeListener(e -> {
             double value = (double) spScale.getValue();
             editor.setScale((float) value);
@@ -243,18 +249,26 @@ public class ExportWindow extends InternalWindow implements WorldListener {
         TimeController timeController = worldController.getTimeController();
 
         timeModel.setMinimum(timeController.getTickStartRange());
-        timeModel.setValue(timeController.getTickCounter());
+        timeModel.setValue(timeController.getTickCount());
         timeModel.setMaximum(timeController.getTickEndRange());
     }
 
     private void updatePreview() {
-        if (editor != null)
+        if (editor != null) {
             /*pnlPreview.*/remove(editor);
+
+            if (getWorld() != null)
+                getWorld().getEntityManager().removeEditor(editor);
+        }
+
+        if (getWorld() == null)
+            return;
 
         int layer = (int) layerModel.getValue();
         double scale = (double) spScale.getValue();
 
         editor = new Editor(getWorld(), null, (short) layer, (float) scale, orientation);
+        getWorld().getEntityManager().addEditor(editor);
         /*pnlPreview.*/add(editor, BorderLayout.CENTER);
 
         pack();
@@ -303,6 +317,9 @@ public class ExportWindow extends InternalWindow implements WorldListener {
 
     @Override
     public void dispose() {
+
+        TimeController timeController = getWorld().getTimeController();
+        timeController.gotoTickCount(timeController.getTickCount());
 
         Timebar timeBar = mainController.getFrame().getTimebar();
 

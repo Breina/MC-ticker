@@ -6,6 +6,7 @@ import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * A JPanel that provides some utilities for subcomponents
@@ -102,5 +103,13 @@ public abstract class EditorSubComponent extends JPanel {
         }
 
         return null;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+
+        editor.repaint();
+
+        super.paintComponents(g);
     }
 }

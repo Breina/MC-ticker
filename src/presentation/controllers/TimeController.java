@@ -232,7 +232,7 @@ public class TimeController implements Runnable {
 		go = false;
 	}
 
-	public int getTickCounter() {
+	public int getTickCount() {
 		return tickCounter;
 	}
 
@@ -242,5 +242,16 @@ public class TimeController implements Runnable {
 
     public int getTickEndRange() {
         return tickCounter + timeLine.countFutureTicks();
+    }
+
+    public void gotoTickCount(int count) {
+
+        if (count < getTickStartRange() || count > getTickEndRange()) {
+            Log.e("Tickcount out of buffer: " + count);
+            return;
+        }
+
+        simController.setSchematic(timeLine.getRelative(count - tickCounter));
+        viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
     }
 }
