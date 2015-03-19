@@ -153,7 +153,7 @@ public class Editor extends JLayeredPane {
     public BufferedImage getImage() {
 
         BufferedImage img = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
-        paint(img.getGraphics());
+        paint(img.createGraphics());
 
         return img;
     }

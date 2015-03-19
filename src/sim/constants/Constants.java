@@ -100,4 +100,5 @@ public class Constants {
     public final static boolean MAPFEATURESENABLED = false;
     public final static boolean HARDCOREENABLED = false;
     public final static int WORLDPROVIDER = 0;
+    public static final int TIMELINE_LENGTH = 1000;
 }

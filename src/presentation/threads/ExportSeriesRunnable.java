@@ -4,6 +4,7 @@ import logging.Log;
 import presentation.controllers.TimeController;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
+import presentation.gui.windows.main.ExportWindow;
 import presentation.main.GifSequenceWriter;
 import presentation.objects.Orientation;
 
@@ -22,17 +23,20 @@ public class ExportSeriesRunnable implements Runnable {
     private final boolean isSlices;
     private boolean isGif;
     private final Editor editor;
+    private final ExportWindow exportWindow;
 
     private String basePath;
 
-    public ExportSeriesRunnable(File outputFolder, WorldController worldController, Editor editor, Orientation orientation, boolean isSlices, int constant, int min, int max) {
-        this(outputFolder, worldController, editor, orientation, isSlices, constant, min, max, 0);
+    public ExportSeriesRunnable(ExportWindow exportWindow, File outputFolder, WorldController worldController, Editor editor, Orientation orientation, boolean isSlices, int constant, int min, int max) {
+        this(exportWindow, outputFolder, worldController, editor, orientation, isSlices, constant, min, max, 0);
 
         isGif = false;
         basePath += "_";
     }
 
-    public ExportSeriesRunnable(File outputFolder, WorldController worldController, Editor editor, Orientation orientation, boolean isSlices, int constant, int min, int max, int gifDelay) {
+    public ExportSeriesRunnable(ExportWindow exportWindow, File outputFolder, WorldController worldController, Editor editor, Orientation orientation, boolean isSlices, int constant, int min, int max, int gifDelay) {
+        this.exportWindow = exportWindow;
+
         this.timeController = worldController.getTimeController();
 
         this.editor = editor;
@@ -90,12 +94,15 @@ public class ExportSeriesRunnable implements Runnable {
                 else
                     timeController.gotoTickCount(index);
 
-                editor.repaint();
+                BufferedImage buffer = editor.getImage();
+//                Graphics2D g = (Graphics2D) buffer.getGraphics();
+//                g.setColor(Color.BLACK);
+//                g.drawString(String.valueOf(index), 0, 10);
 
                 if (isGif)
-                    writer.writeToSequence(editor.getImage());
+                    writer.writeToSequence(buffer);
                 else
-                    ImageIO.write(editor.getImage(), "png", new File(basePath + seriesIndex++ + ".png"));
+                    ImageIO.write(buffer, "png", new File(basePath + seriesIndex++ + ".png"));
             }
 
             if (isGif) {
@@ -107,5 +114,7 @@ public class ExportSeriesRunnable implements Runnable {
             Log.e("File error: " + e.getMessage());
             e.printStackTrace();
         }
+
+        exportWindow.exportDone();
     }
 }

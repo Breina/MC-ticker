@@ -32,7 +32,7 @@ public class TimeController implements Runnable {
 		timeInfo = worldController.getMainController().getFrame().getTimebar();
 		viewData = worldController.getWorldData();
 		
-		timeLine = new TimeLine<>(100);
+		timeLine = new TimeLine<>(sim.constants.Constants.TIMELINE_LENGTH);
 		
 		setPlaystate(PlayState.PAUSED);
 	}

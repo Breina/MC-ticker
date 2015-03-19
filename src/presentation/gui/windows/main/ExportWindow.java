@@ -41,6 +41,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
     private Orientation orientation;
     private int gifDelay, min, max, animationIndex;
     private boolean seriesTypeIsGif, seriesIsSlices, isPaused, threadIsGo;
+    private Thread previewThread;
 
     private MainController mainController;
 
@@ -52,7 +53,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
         isPaused = true;
         seriesTypeIsGif = true;
-        gifDelay = 500;
+        gifDelay = 200;
 
         lockTime();
 
@@ -327,7 +328,8 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
         pack();
 
-        new Thread(this).start();
+        previewThread = new Thread(this);
+        previewThread.start();
     }
 
     @Override
@@ -541,7 +543,6 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
                 wait(gifDelay);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -549,11 +550,14 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                if (isPaused)
+                btnOK.setEnabled(false);
+
+                if (isPaused) {
                     ImageIO.write(editor.getImage(), "png", new File(filePath.getText() + File.separator +
                             getWorld().getWorldData().getName() + ".png"));
+                    btnOK.setEnabled(true);
 
-                else {
+                } else {
                     ExportSeriesRunnable exportRunnable;
 
                     File outputFolder = new File(filePath.getText());
@@ -565,12 +569,15 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
                         constant = (int) singleLayerModel.getValue();
 
                     if (seriesTypeIsGif)
-                        exportRunnable = new ExportSeriesRunnable(outputFolder, getWorld(), editor, orientation,
-                                seriesIsSlices, constant, min, max, gifDelay);
+                        exportRunnable = new ExportSeriesRunnable(ExportWindow.this, outputFolder, getWorld(), editor,
+                                orientation, seriesIsSlices, constant, min, max, gifDelay);
                     else
-                        exportRunnable = new ExportSeriesRunnable(outputFolder, getWorld(), editor, orientation,
-                                seriesIsSlices, constant, min, max);
+                        exportRunnable = new ExportSeriesRunnable(ExportWindow.this, outputFolder, getWorld(), editor,
+                                orientation, seriesIsSlices, constant, min, max);
 
+                    synchronized (ExportWindow.this) {
+                        previewThread.interrupt();
+                    }
                     new Thread(exportRunnable).start();
                 }
 
@@ -579,5 +586,12 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
                 e1.printStackTrace();
             }
         }
+    }
+
+    public void exportDone() {
+        btnOK.setEnabled(true);
+
+        previewThread = new Thread(ExportWindow.this);
+        previewThread.start();
     }
 }
