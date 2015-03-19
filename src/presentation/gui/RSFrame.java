@@ -50,15 +50,15 @@ public class RSFrame extends JFrame {
 
         setLayout(new BorderLayout());
 		desktop = new DesktopPane();
-		add(desktop, BorderLayout.CENTER);
+//		add(desktop, BorderLayout.CENTER);
 
         statusPanel = new StatusPanel();
 		add(statusPanel, BorderLayout.SOUTH);
 
-        BlockPanel blockPanel = new BlockPanel(controller);
-		add(blockPanel, BorderLayout.WEST);
+//		add(blockPanel, BorderLayout.WEST);
 
-		JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
+//		JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
+        JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEADING));
 
         Toolbar toolbar = new Toolbar(controller);
             toolbarContainer.add(toolbar);
@@ -77,6 +77,13 @@ public class RSFrame extends JFrame {
             menuBar.add(windowMenu);
 
         setJMenuBar(menuBar);
+
+        LogPane logSplit = new LogPane(desktop);
+        Log.setLogger(logSplit);
+//        add(logSplit, BorderLayout.CENTER);
+
+        BlockPanel blockPanel = new BlockPanel(controller, logSplit);
+        add(blockPanel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);

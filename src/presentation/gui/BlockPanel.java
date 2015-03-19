@@ -12,21 +12,24 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class BlockPanel extends JPanel {
+public class BlockPanel extends JSplitPane {
 	private static final long serialVersionUID = -6830958137411873462L;
-	
+
 	private final static int BTNSIZE = 25;
-	
+
 	private final MainController mainController;
 	private final BlockController blockController;
 	private final TileController tileController;
 
-	public BlockPanel(MainController mainController) {
-		super();
+	public BlockPanel(MainController mainController, JComponent rightComponent) {
+		super(JSplitPane.HORIZONTAL_SPLIT, true);
 		
 		this.mainController = mainController;
 		this.blockController = mainController.getBlockController();
 		this.tileController = mainController.getTileController();
+
+        setRightComponent(rightComponent);
+        setOneTouchExpandable(true);
 		
 		buildGUI();
 	}
@@ -37,9 +40,9 @@ public class BlockPanel extends JPanel {
 		ButtonGroup group = new ButtonGroup();
 		
 		JPanel main = new JPanel();
-		add(main);
+		setLeftComponent(main);
 		main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
-		
+
 		for (BlockCategory cat : categories) {
 			
 			List<BlockLogic> blocks = cat.getBlocks();
@@ -76,9 +79,13 @@ public class BlockPanel extends JPanel {
 				btn.addItemListener(e -> {
                     mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
                 });
-			}
+
+                pnlCategory.setMinimumSize(new Dimension(150, pnlCategory.getMinimumSize().height));
+            }
 			
 			main.add(pnlCategory);
 		}
+
+        main.add(Box.createVerticalStrut(1337));
 	}
 }

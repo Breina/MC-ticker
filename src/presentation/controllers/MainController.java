@@ -5,7 +5,6 @@ import presentation.debug.TracingEventQueue;
 import presentation.gui.RSFrame;
 import presentation.gui.WorldListener;
 import presentation.gui.windows.main.ExportWindow;
-import presentation.gui.windows.main.LogWindow;
 import presentation.gui.windows.main.NewWorldWindow;
 import presentation.main.Constants;
 import presentation.main.Cord2S;
@@ -62,9 +61,6 @@ public class MainController {
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
 
         mainframe = new RSFrame(this);
-
-        LogWindow logWindow = new LogWindow(mainframe.getDesktop(), this);
-        Log.setLogger(logWindow);
 
         if (!sim.constants.Constants.DEBUG_SKIP_LOADING)
 		    setupSim();

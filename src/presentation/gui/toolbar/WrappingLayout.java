@@ -8,10 +8,10 @@ import java.awt.*;
  */
 public class WrappingLayout implements LayoutManager {
     public static final int LEFT     = 0;
-    private static final int CENTER   = 1;
-    private static final int RIGHT    = 2;
-    private static final int LEADING  = 3;
-    private static final int TRAILING = 4;
+    public static final int CENTER   = 1;
+    public static final int RIGHT    = 2;
+    public static final int LEADING  = 3;
+    public static final int TRAILING = 4;
 
     private int align;
     private int hgap;
