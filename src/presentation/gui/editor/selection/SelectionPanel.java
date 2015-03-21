@@ -53,8 +53,8 @@ public class SelectionPanel extends EditorSubComponent {
 
         // Interior
         g.setColor(Constants.COLORSELECTIONINTERIOR);
-        for (short x = 0; x < width; x++)
-            for (short y = 0; y < height;y++) {
+        for (short x = 0; x < editorWidth; x++)
+            for (short y = 0; y < editorHeight;y++) {
                 Cord3S c = getCord3D(x, y);
                 if (selectionManager.isSelected(c.x, c.y, c.z))
                     g.fill(new Rectangle2D.Float(x * Editor.SIZE + 1f, y * Editor.SIZE + 1f,
@@ -107,8 +107,8 @@ public class SelectionPanel extends EditorSubComponent {
                     return;
                 }
 
-                this.start = new Cord2S(start.x, (short) (height - end.y - 1));
-                this.end = new Cord2S(end.x, (short) (height - start.y - 1));
+                this.start = new Cord2S(start.x, (short) (editorHeight - end.y - 1));
+                this.end = new Cord2S(end.x, (short) (editorHeight - start.y - 1));
                 break;
 
             case RIGHT:
@@ -118,8 +118,8 @@ public class SelectionPanel extends EditorSubComponent {
                     return;
                 }
 
-                this.end = new Cord2S((short) (width - start.z - 1), (short) (height - start.y - 1));
-                this.start = new Cord2S((short) (width - end.z - 1), (short) (height - end.y - 1));
+                this.end = new Cord2S((short) (editorWidth - start.z - 1), (short) (editorHeight - start.y - 1));
+                this.start = new Cord2S((short) (editorWidth - end.z - 1), (short) (editorHeight - end.y - 1));
                 break;
 
             case UNDEFINED:

@@ -34,10 +34,10 @@ public class BlockPanel extends EditorSubComponent {
 
         Graphics2D g = (Graphics2D) gr;
         g.setBackground(Color.GRAY);
-        g.clearRect(0, 0, width * Editor.SIZE + 1, height * Editor.SIZE + 1);
+        g.clearRect(0, 0, editorWidth * Editor.SIZE + 1, editorHeight * Editor.SIZE + 1);
 
-        for (short y = 0; y < this.height; y++)
-            for (short x = 0; x < this.width; x++) {
+        for (short y = 0; y < this.editorHeight; y++)
+            for (short x = 0; x < this.editorWidth; x++) {
                 Cord3S cords = getCord3D(x, y);
 
                 BufferedImage image = getTile(cords.x, cords.y, cords.z);

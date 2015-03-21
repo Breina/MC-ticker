@@ -1,5 +1,6 @@
 package presentation.gui.editor;
 
+import logging.Log;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.block.BlockPanel;
 import presentation.gui.editor.selection.SelectionPanel;
@@ -53,7 +54,7 @@ public class Editor extends JLayeredPane {
     /**
      * The width and height of the editor panel in tiles, depends on the orientation
      */
-    private short width, height;
+    private short worldWidth, worldHeight;
 
     /**
      * The width and height of the editor panel in pixels
@@ -88,8 +89,8 @@ public class Editor extends JLayeredPane {
         setScale(scale);
         extractWorldDimensions();
 
-        pixelWidth = (int) (width * SIZE * scale);
-        pixelHeight = (int) (height * SIZE * scale);
+        pixelWidth = (int) (worldWidth * SIZE * scale);
+        pixelHeight = (int) (worldHeight * SIZE * scale);
 
         BlockPanel blockPanel = new BlockPanel(this);
         setLayer(blockPanel, BLOCK_INDEX);
@@ -123,23 +124,26 @@ public class Editor extends JLayeredPane {
         switch (orientation) {
 
             case TOP:
-                width = viewData.getXSize();
-                height = viewData.getZSize();
+                worldWidth = viewData.getXSize();
+                worldHeight = viewData.getZSize();
                 break;
 
             case FRONT:
-                width = viewData.getXSize();
-                height = viewData.getYSize();
+                worldWidth = viewData.getXSize();
+                worldHeight = viewData.getYSize();
                 break;
 
             case RIGHT:
-                width = viewData.getZSize();
-                height = viewData.getYSize();
+                worldWidth = viewData.getZSize();
+                worldHeight = viewData.getYSize();
         }
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
+
+        Log.d("Painting for " + worldController.getWorldData().getName());
+
         super.paintComponent(graphics);
 
         Graphics2D g = (Graphics2D) graphics;
@@ -165,8 +169,8 @@ public class Editor extends JLayeredPane {
     public void setScale(float scale) {
         this.scale = scale;
 
-        setPreferredSize(new Dimension((int) ((width * SIZE) * scale),
-                (int) ((height * SIZE) * scale)));
+        setPreferredSize(new Dimension((int) ((worldWidth * SIZE) * scale),
+                (int) ((worldHeight * SIZE) * scale)));
     }
 
     /**
@@ -216,7 +220,7 @@ public class Editor extends JLayeredPane {
      * @return The width
      */
     public short getEditorWidth() {
-        return width;
+        return worldWidth;
     }
 
     /**
@@ -224,7 +228,7 @@ public class Editor extends JLayeredPane {
      * @return The height
      */
     public short getEditorHeight() {
-        return height;
+        return worldHeight;
     }
 
     /**
@@ -248,6 +252,8 @@ public class Editor extends JLayeredPane {
     }
 
     public void onSchematicUpdated() {
+
+        Log.d("SChematic updated for " + worldController.getWorldData().getName());
         repaint();
     }
 

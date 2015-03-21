@@ -6,7 +6,6 @@ import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * A JPanel that provides some utilities for subcomponents
@@ -23,7 +22,7 @@ public abstract class EditorSubComponent extends JPanel {
     /**
      * The width and height of the editor panel, depends on the orientation
      */
-    protected final short width, height;
+    protected final short editorWidth, editorHeight;
 
     /**
      * A reference to the Editor that includes this panel
@@ -35,14 +34,14 @@ public abstract class EditorSubComponent extends JPanel {
 
         this.editor = editor;
         this.worldController = editor.getWorldController();
-        this.width = editor.getEditorWidth();
-        this.height = editor.getEditorHeight();
+        this.editorWidth = editor.getEditorWidth();
+        this.editorHeight = editor.getEditorHeight();
         this.orientation = editor.getOrientation();
 
         setOpaque(false);
 
-        int pixelWidth = width * Editor.SIZE;
-        int pixelHeight = height * Editor.SIZE;
+        int pixelWidth = editorWidth * Editor.SIZE;
+        int pixelHeight = editorHeight * Editor.SIZE;
 
         setBounds(0, 0, pixelWidth, pixelHeight);
     }
@@ -62,10 +61,10 @@ public abstract class EditorSubComponent extends JPanel {
                 return new Cord3S(x, layer, y);
 
             case FRONT:
-                return new Cord3S(x, (short) (height - y - 1), layer);
+                return new Cord3S(x, (short) (editorHeight - y - 1), layer);
 
             case RIGHT:
-                return new Cord3S(layer, (short) (height - y - 1), (short) (width - x - 1));
+                return new Cord3S(layer, (short) (editorHeight - y - 1), (short) (editorWidth - x - 1));
         }
 
         return null;
@@ -93,23 +92,15 @@ public abstract class EditorSubComponent extends JPanel {
                 if (z != layer)
                     return null;
 
-                return new Cord2S(x, (short) (height - y - 1));
+                return new Cord2S(x, (short) (editorHeight - y - 1));
 
             case RIGHT:
                 if (x != layer)
                     return null;
 
-                return new Cord2S((short) (width - z - 1), (short) (height - y - 1));
+                return new Cord2S((short) (editorWidth - z - 1), (short) (editorHeight - y - 1));
         }
 
         return null;
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-
-        editor.repaint();
-
-        super.paintComponents(g);
     }
 }

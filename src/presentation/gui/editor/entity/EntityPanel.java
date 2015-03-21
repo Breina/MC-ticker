@@ -57,13 +57,13 @@ class EntityPanel extends EditorSubComponent {
 
             case FRONT:
                 setBounds((int) (scaledX - scaledWidth / 2 + 2),
-                        (int) (height * Editor.SIZE - scaledY - scaledHeight + 1),
+                        (int) (editorHeight * Editor.SIZE - scaledY - scaledHeight + 1),
                         (int) (scaledWidth), (int) (scaledHeight));
                 break;
 
             case RIGHT:
-                setBounds((int) (width * Editor.SIZE - scaledZ - scaledWidth / 2 + 1),
-                        (int) (height * Editor.SIZE - scaledY - scaledHeight + 1),
+                setBounds((int) (editorWidth * Editor.SIZE - scaledZ - scaledWidth / 2 + 1),
+                        (int) (editorHeight * Editor.SIZE - scaledY - scaledHeight + 1),
                         (int) (scaledWidth), (int) (scaledHeight));
         }
     }

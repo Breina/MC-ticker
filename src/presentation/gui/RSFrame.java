@@ -50,6 +50,9 @@ public class RSFrame extends JFrame {
 
         setLayout(new BorderLayout());
 		desktop = new DesktopPane();
+
+
+
 //		add(desktop, BorderLayout.CENTER);
 
         statusPanel = new StatusPanel();

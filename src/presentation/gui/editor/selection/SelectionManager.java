@@ -1,7 +1,6 @@
 package presentation.gui.editor.selection;
 
 import presentation.controllers.WorldController;
-import presentation.gui.editor.Editor;
 import presentation.main.Cord3S;
 import presentation.objects.ViewData;
 
@@ -185,18 +184,21 @@ public class SelectionManager {
             prevStartCord = cord;
             selectPoint(cord);
         }
+
+        worldController.repaintAllEditors();
     }
 
     public void dragSelection(Cord3S cord) {
 
         selectBoundedRectangle(prevStartCord, cord);
+        worldController.repaintAllEditors();
     }
 
     public void endSelection() {
 
         selectRegion(start, end);
 
-        for (Editor editor : worldController.getEditors()) editor.repaint();
+        worldController.repaintAllEditors();
     }
 
     public Cord3S getStart() {

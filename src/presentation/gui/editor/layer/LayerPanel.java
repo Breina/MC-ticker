@@ -82,7 +82,7 @@ class LayerPanel extends EditorSubComponent {
 
         Graphics2D g = (Graphics2D) gr;
 
-        int length = (horizontal ? width : height);
+        int length = (horizontal ? editorWidth : editorHeight);
 
         g.setColor(Constants.COLORACTIVELAYER);
 
@@ -105,9 +105,9 @@ class LayerPanel extends EditorSubComponent {
     public void setLayerHeight(short layerHeight) {
 
         if (horizontal)
-            setBounds(0, Editor.SIZE * layerHeight, width * Editor.SIZE, (Editor.SIZE + 1));
+            setBounds(0, Editor.SIZE * layerHeight, editorWidth * Editor.SIZE, (Editor.SIZE + 1));
 
         else
-            setBounds(Editor.SIZE * layerHeight, 0, (Editor.SIZE + 1), height * Editor.SIZE);
+            setBounds(Editor.SIZE * layerHeight, 0, (Editor.SIZE + 1), editorHeight * Editor.SIZE);
     }
 }

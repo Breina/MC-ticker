@@ -200,6 +200,11 @@ public class WorldController {
 		return editors;
 	}
 
+    public void repaintAllEditors() {
+        for (Editor editor : editors)
+            editor.repaint();
+    }
+
 	private int updateSavedFile() {
 
 		SchematicChooser chooser = new SchematicChooser(new File("schems"));

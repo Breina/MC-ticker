@@ -27,7 +27,7 @@ public class DesktopPane extends JDesktopPane {
 		backgroundImage = icon.getImage();
 
         setDesktopManager(new BoundedDesktopManager());
-	}
+    }
 
     @Override
     protected void paintComponent(Graphics g) {

@@ -41,8 +41,8 @@ class CursorPanel extends EditorSubComponent {
         curY = (short) (curY / scale / Editor.SIZE);
 
         if ((curX == mouseX && curY == mouseY) ||
-                curX < 0 || curX >= width ||
-                curY < 0 || curY >= height)
+                curX < 0 || curX >= editorWidth ||
+                curY < 0 || curY >= editorHeight)
             return;
 
         mouseX = curX;
@@ -53,6 +53,8 @@ class CursorPanel extends EditorSubComponent {
         Cord3S cord3D = getCord3D(mouseX, mouseY);
         Cord2S cord2D = new Cord2S(curX, curY);
         worldController.onSelectionUpdated(cord2D, cord3D, editor);
+
+        worldController.repaintAllEditors();
     }
 
     private void selectCord(short x, short y) {
