@@ -1,6 +1,5 @@
 package presentation.gui.editor;
 
-import logging.Log;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.block.BlockPanel;
 import presentation.gui.editor.selection.SelectionPanel;
@@ -141,9 +140,6 @@ public class Editor extends JLayeredPane {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-
-        Log.d("Painting for " + worldController.getWorldData().getName());
-
         super.paintComponent(graphics);
 
         Graphics2D g = (Graphics2D) graphics;
@@ -252,8 +248,6 @@ public class Editor extends JLayeredPane {
     }
 
     public void onSchematicUpdated() {
-
-        Log.d("SChematic updated for " + worldController.getWorldData().getName());
         repaint();
     }
 

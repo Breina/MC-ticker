@@ -40,7 +40,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
     private Orientation orientation;
     private int gifDelay, min, max, animationIndex;
-    private boolean seriesTypeIsGif, seriesIsSlices, isPaused, threadIsGo;
+    private boolean seriesTypeIsGif, seriesIsSlices, isPaused;
     private Thread previewThread;
 
     private MainController mainController;
@@ -49,7 +49,6 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         super(parent, "Export", true);
 
         this.mainController = mainController;
-        mainController.addWorldListener(this);
 
         isPaused = true;
         seriesTypeIsGif = true;
@@ -266,24 +265,32 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         // Spinner ranges
         spMinLayer.addChangeListener(e -> {
             maxLayerModel.setMinimum((Integer) minLayerModel.getValue() + 1);
+            if (!seriesIsSlices)
+                return;
             min = (int) minLayerModel.getValue();
             if (animationIndex < min)
                 animationIndex = min;
         });
         spMaxLayer.addChangeListener(e -> {
             minLayerModel.setMaximum((Integer) maxLayerModel.getValue() - 1);
+            if (!seriesIsSlices)
+                return;
             max = (int) maxLayerModel.getValue();
             if (animationIndex > max)
                 animationIndex = max;
         });
         spMinTime.addChangeListener(e -> {
             maxTimeModel.setMinimum((Integer) minTimeModel.getValue() + 1);
+            if (seriesIsSlices)
+                return;
             min = (int) minTimeModel.getValue();
             if (animationIndex < min)
                 animationIndex = min;
         });
         spMaxTime.addChangeListener(e -> {
             minTimeModel.setMaximum((Integer) maxTimeModel.getValue() - 1);
+            if (seriesIsSlices)
+                return;
             max = (int) maxTimeModel.getValue();
             if (animationIndex > max)
                 animationIndex = max;
@@ -323,7 +330,6 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         add(contentPanel, BorderLayout.WEST);
         add(/*new JScrollPane(*/pnlPreview/*)*/, BorderLayout.CENTER);
 
-        updateTimeModel();
         worldSelectionUpdated();
 
         pack();
@@ -339,20 +345,16 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
     @Override
     public void onWorldRemoved(WorldController worldController) {
-        worldChooser.removeItem(worldController);
+
+        if (worldChooser.getItemCount() == 1)
+            SwingUtilities.invokeLater(() -> dispose());
+        else
+            worldChooser.removeItem(worldController);
     }
 
     private void worldSelectionUpdated() {
-        boolean isValid = getWorld() != null;
-
-        btnOK.setEnabled(isValid);
-        spSingleTime.setEnabled(isValid);
-        spSingleLayer.setEnabled(isValid);
-        rbTop.setEnabled(isValid);
-        rbFront.setEnabled(isValid);
-        rbRight.setEnabled(isValid);
-
-        updatePreview();
+        updateTimeModel();
+        setOrientation(orientation);
     }
 
     private class WorldSelectedHandler implements ActionListener {
@@ -377,7 +379,13 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
     }
 
     private WorldController getWorld() {
-        return (WorldController) worldChooser.getSelectedItem();
+
+        Object selectedValue = worldChooser.getSelectedItem();
+
+        if (selectedValue == null)
+            dispose();
+
+        return (WorldController) selectedValue;
     }
 
     private void updateTimeModel() {
@@ -405,12 +413,8 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
         if (editor != null) {
             /*pnlPreview.*/remove(editor);
 
-            if (getWorld() != null)
-                getWorld().getEntityManager().removeEditor(editor);
+            getWorld().getEntityManager().removeEditor(editor);
         }
-
-        if (getWorld() == null)
-            return;
 
         int layer = (int) singleLayerModel.getValue();
         double scale = (double) spScale.getValue();
@@ -465,14 +469,13 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
             singleLayerModel.setValue(max);
 
         minLayerModel.setMaximum(max - 1);
-        if (((int) minLayerModel.getValue()) > max - 1)
-            minLayerModel.setValue(max - 1);
+        minLayerModel.setValue(0);
 
         maxLayerModel.setMaximum(max);
-        if (((int) maxLayerModel.getValue()) > max)
-            maxLayerModel.setMaximum(max);
+            maxLayerModel.setValue(max);
 
         this.orientation = orientation;
+
         updatePreview();
 
         if (seriesIsSlices) {
@@ -497,17 +500,20 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
     @Override
     public void dispose() {
 
-        TimeController timeController = getWorld().getTimeController();
-        timeController.gotoTickCount(timeController.getTickCount());
+        mainController.removeWorldListener(this);
+
+        if (worldChooser.getSelectedItem() != null) {
+            TimeController timeController = getWorld().getTimeController();
+            timeController.gotoTickCount(timeController.getTickCount());
+        }
 
         Timebar timeBar = mainController.getFrame().getTimebar();
 
         timeBar.setLocked(false);
         timeBar.setEnabled(true);
 
-        threadIsGo = false;
         synchronized (ExportWindow.this) {
-            notify();
+            previewThread.interrupt();
         }
 
         super.dispose();
@@ -518,9 +524,7 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
         try {
 
-            threadIsGo = true;
-
-            while (threadIsGo) {
+            for (;;) {
 
                 if (isPaused)
                     wait();

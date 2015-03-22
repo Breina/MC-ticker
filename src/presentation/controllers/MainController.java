@@ -203,13 +203,20 @@ public class MainController {
 	}
 	
 	public void onWorldRemoved(WorldController worldController) {
+
 		for (WorldListener listener : worldListeners)
 			listener.onWorldRemoved(worldController);
+
+        worldControllers.remove(worldController);
 	}
 
 	public void addWorldListener(WorldListener worldListener) {
 		worldListeners.add(worldListener);
 	}
+
+    public void removeWorldListener(WorldListener worldListener) {
+        worldListeners.remove(worldListener);
+    }
 	
 	public void onSelectionUpdated(WorldController source, Cord2S cord2D, Cord3S cord3D, boolean dragTools) {
 		activeWorldController = source;
@@ -230,7 +237,11 @@ public class MainController {
 	}
 	
 	public void export() {
-        new ExportWindow(mainframe.getDesktop(), this);
+
+        if (worldControllers.size() == 0)
+            return;
+
+        addWorldListener(new ExportWindow(mainframe.getDesktop(), this));
 	}
 	
 	public void exit() {

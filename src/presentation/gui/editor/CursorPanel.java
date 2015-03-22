@@ -79,5 +79,7 @@ class CursorPanel extends EditorSubComponent {
 
         else
             selectCord(c.x, c.y, c.z);
+
+        worldController.repaintAllEditors();
     }
 }
