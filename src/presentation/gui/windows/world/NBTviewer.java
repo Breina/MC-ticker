@@ -12,7 +12,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class NBTviewer extends WorldWindow {
 	private static final long serialVersionUID = -6830958137411873462L;
@@ -21,8 +20,6 @@ public class NBTviewer extends WorldWindow {
 	private DefaultTreeModel model;
 	private JTree tree;
 	private JScrollPane scrollPane;
-
-    private java.util.List<Icon> icons;
 
     private Icon iconBoolean, iconByte, iconByteArray, iconCompound, iconDouble, iconFloat, iconInt, iconIntArray,
         iconList, iconLong, iconShort, iconString;
@@ -42,8 +39,6 @@ public class NBTviewer extends WorldWindow {
         iconLong        = new ImageIcon("img/nbt/TAG_Long.png");
         iconShort       = new ImageIcon("img/nbt/TAG_Short.png");
         iconString      = new ImageIcon("img/nbt/TAG_String.png");
-
-        icons = new ArrayList<>();
 
 		buildGUI();
 	}
@@ -88,42 +83,36 @@ public class NBTviewer extends WorldWindow {
 			
 			case TAG_Byte:
 		        	node = new DefaultMutableTreeNode("byte " + tag.getName() + ": " + tag.getValue());
-					icons.add(iconByte);
                     node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 					
 			case TAG_Short:
 		        	node = new DefaultMutableTreeNode("short " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconShort);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Int:
 		        	node = new DefaultMutableTreeNode("int " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconInt);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Long:
 		        	node = new DefaultMutableTreeNode("long " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconLong);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Float:
 		        	node = new DefaultMutableTreeNode("float " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconFloat);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_Double:
 		        	node = new DefaultMutableTreeNode("double " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconDouble);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
@@ -132,7 +121,7 @@ public class NBTviewer extends WorldWindow {
 					byte[] byteArray = (byte[]) tag.getValue();
 					
 					StringBuilder sbByte = new StringBuilder();
-					sbByte.append("byte array ");
+					sbByte.append("byte-array ");
 					sbByte.append(tag.getName());
 					sbByte.append('[');
 					sbByte.append(byteArray.length);
@@ -157,14 +146,12 @@ public class NBTviewer extends WorldWindow {
 					sbByte.append('}');
 					
 		        	node = new DefaultMutableTreeNode(sbByte.toString());
-                    icons.add(iconByteArray);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 		        	
 			case TAG_String:
 		        	node = new DefaultMutableTreeNode("string " + tag.getName() + ": " + tag.getValue());
-                    icons.add(iconString);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
@@ -173,7 +160,6 @@ public class NBTviewer extends WorldWindow {
 					Tag[] listValues = (Tag[]) tag.getValue();
 					
 					node = new DefaultMutableTreeNode("list " + tag.getName() + "[" + listValues.length + "]");
-                    icons.add(iconList);
 					parent.add(node);
 					
 					for (Tag subTag : listValues)
@@ -184,8 +170,7 @@ public class NBTviewer extends WorldWindow {
 			case TAG_Compound:
 					Tag[] compoundValues = (Tag[]) tag.getValue();
 				
-		        	node = new DefaultMutableTreeNode("compound[" + compoundValues.length + "]");
-                    icons.add(iconCompound);
+		        	node = new DefaultMutableTreeNode("compound [" + compoundValues.length + "]");
 					parent.add(node);
 					
 					for (Tag subTag : compoundValues)
@@ -197,7 +182,7 @@ public class NBTviewer extends WorldWindow {
 					byte[] intArray = (byte[]) tag.getValue();
 					
 					StringBuilder sbInt = new StringBuilder();
-					sbInt.append("int array ");
+					sbInt.append("int-array ");
 					sbInt.append(tag.getName());
 					sbInt.append('[');
 					sbInt.append(intArray.length);
@@ -221,14 +206,12 @@ public class NBTviewer extends WorldWindow {
 					sbInt.append('}');
 					
 		        	node = new DefaultMutableTreeNode(sbInt.toString());
-                    icons.add(iconIntArray);
 					node.setAllowsChildren(false);
 					parent.add(node);
 					break;
 				
 			default:
 				node = new DefaultMutableTreeNode("unknown " + tag.getName());
-                icons.add(null);
                 parent.add(node);
 				break;
 		}
@@ -258,9 +241,7 @@ public class NBTviewer extends WorldWindow {
 
 		String prevState = TreeUtil.getExpansionState(tree, 0);
 		top.removeAllChildren();
-        icons.clear();
 
-        icons.add(iconCompound);
         createNodes(top, schematic);
 
 		model.reload(top);
@@ -294,8 +275,64 @@ public class NBTviewer extends WorldWindow {
 
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-            if (row < icons.size())
-                setIcon(icons.get(row));
+            String valueStr = value.toString();
+
+            int spaceIndex = valueStr.indexOf(' ');
+            if (spaceIndex == -1)
+                return this;
+
+            String part = valueStr.substring(0, spaceIndex);
+
+            switch (part) {
+                case "boolean":
+                    setIcon(iconBoolean);
+                    break;
+
+                case "byte":
+                    setIcon(iconByte);
+                    break;
+
+                case "short":
+                    setIcon(iconShort);
+
+                case "int":
+                    setIcon(iconInt);
+                    break;
+
+                case "long":
+                    setIcon(iconLong);
+                    break;
+
+                case "float":
+                    setIcon(iconFloat);
+                    break;
+
+                case "double":
+                    setIcon(iconDouble);
+                    break;
+
+                case "compound":
+                    setIcon(iconCompound);
+                    break;
+
+                case "list":
+                    setIcon(iconList);
+                    break;
+
+                case "string":
+                    setIcon(iconString);
+                    break;
+
+                case "byte-array":
+                    setIcon(iconByteArray);
+                    break;
+
+                case "int-array":
+                    setIcon(iconIntArray);
+            }
+
+//            if (row < icons.size())
+//                setIcon(icons.get(row));
 
             return this;
         }
