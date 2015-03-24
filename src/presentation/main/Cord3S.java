@@ -17,7 +17,7 @@ public class Cord3S {
 	}
 	
 	public Cord3S add(Cord3S c) {
-		return new Cord3S(x + c.x, y + c.y, z + c.y);
+		return new Cord3S(x + c.x, y + c.y, z + c.z);
 	}
 
 	@Override

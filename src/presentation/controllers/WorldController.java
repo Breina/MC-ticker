@@ -181,7 +181,7 @@ public class WorldController {
 	}
 	
 	public ViewData getWorldData() {
-		return viewData;
+        return viewData;
 	}
 	
 	public MainController getMainController() {

@@ -23,6 +23,8 @@ public class BlockPanel extends EditorSubComponent {
         super(editor);
 
         tileController = worldController.getMainController().getTileController();
+
+        setOpaque(true);
     }
 
     /**

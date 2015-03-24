@@ -65,7 +65,6 @@ public class SimWorld {
 	}
 	
 	/**
-     * @param difficulty 0=peaceful 1=easy 2=normal 3=hard
      * @param worldTypeId Between 0 and 15. Mc uses it like 0=default, 1=flat, 2=largeBiomes, 3=amplified, 8=default_1_1
      * @param worldType The name of the type of world this is.
      * @param gameType Should be either "NOT_SET", "SURVIVAL", "CREATIVE" or "ADVENTURE".
@@ -463,6 +462,7 @@ public class SimWorld {
 		return rWorld.getBlockState(world, x, y, z);
 	}
 
+    // TODO sometime in the future, I'd like the things that don't have to do with world to move to their own block class.
 	public Object getBlockFromState(Object state) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		return rBlock.getBlockFromState(state);
@@ -482,6 +482,16 @@ public class SimWorld {
 
 		return rBlock.getReadableBlockName(block);
 	}
+
+    public boolean isOpaque(Object block) throws InvocationTargetException, IllegalAccessException {
+
+        return rBlock.isOpaque(block);
+    }
+
+    public boolean isFullCube(Object block) throws InvocationTargetException, IllegalAccessException {
+
+        return rBlock.isFullCube(block);
+    }
 
 	public void debug(int x, int y, int z) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 

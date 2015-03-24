@@ -133,6 +133,30 @@ public class SimController {
 		return null;
 	}
 
+    public Object getBlockState(int x, int y, int z) {
+
+        try {
+            return simWorld.getBlockState(x, y, z);
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+
+            Log.e("Could not get block state" + analyseException(e));
+        }
+
+        return null;
+    }
+
+    public Object getBlockFromState(Object blockState) {
+
+        try {
+            return simWorld.getBlockFromState(blockState);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+
+            Log.e("Could not get block from state" + analyseException(e));
+        }
+
+        return null;
+    }
+
 	public Entity[] getEntityObjects() {
 
 		try {
@@ -151,7 +175,34 @@ public class SimController {
 		return simWorld.getWorldTime();
 	}
 
-	public static String analyseException(Exception e) {
+    public boolean isFullCube(Object block) {
+
+        try {
+            return simWorld.isFullCube(block);
+
+        } catch (InvocationTargetException | IllegalAccessException e) {
+
+            Log.e("Could determine if block was a full cube" + analyseException(e));
+        }
+
+        return false;
+    }
+
+    public boolean isOpaque(Object block) {
+
+        try {
+            return simWorld.isOpaque(block);
+
+        } catch (InvocationTargetException | IllegalAccessException e) {
+
+            Log.e("Could determine if block was opaque" + analyseException(e));
+        }
+
+        return false;
+    }
+
+
+    public static String analyseException(Exception e) {
 
 		String msg;
 

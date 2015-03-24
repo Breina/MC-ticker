@@ -49,7 +49,7 @@ public class Constants {
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
 		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
 		{"getEntityString", "Returns the string that identifies"}, {"getEventID"}, {"getEventParameter"},
-		{"onBlockEventReceived"}};
+		{"onBlockEventReceived"}, {"isOpaque"}, {"isFullCube"}};
 
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -61,14 +61,14 @@ public class Constants {
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
 		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"}, {"isDead"},
 		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}, {"entityUniqueID"},
-        {"blockEventCacheIndex"}};
+        {"blockEventCacheIndex"}, {"blockMaterial"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
-		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData"};
+		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData", "Material"};
 
 	// Untranslated methods
 	public final static String WORLD_GETBLOCKSTATE = "p";

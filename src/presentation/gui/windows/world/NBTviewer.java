@@ -294,6 +294,7 @@ public class NBTviewer extends WorldWindow {
 
                 case "short":
                     setIcon(iconShort);
+                    break;
 
                 case "int":
                     setIcon(iconInt);

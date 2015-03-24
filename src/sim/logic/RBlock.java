@@ -19,8 +19,8 @@ class RBlock {
 
     private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
 		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties,
-		m_getNameForObject, m_onBlockEventReceived;
-	private Field f_unlocalizedName, f_blockRegistry;
+		m_getNameForObject, m_onBlockEventReceived, m_isOpaque ,m_isFullCube;
+	private Field f_unlocalizedName, f_blockRegistry, f_blockMaterial;
 
 	private final RBlockPos rBlockPos;
 
@@ -47,38 +47,42 @@ class RBlock {
 	 */
 	private void prepareBlock(Linker linker) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 
-        Class<?> block = linker.getClass("Block");
-        Class<?> entityPlayer = linker.getClass("EntityPlayer");
+        Class<?> Block                  = linker.getClass("Block");
+        Class<?> EntityPlayer           = linker.getClass("EntityPlayer");
 		
-		Class<?> IBlockState = linker.getClass("IBlockState");
-		Class<?> PropertyDirection = linker.getClass("PropertyDirection");
-		Class<?> IProperty = linker.getClass("IProperty");
-		Class<?> RegistryNamespaced = linker.getClass("RegistryNamespaced");
-		Class<?> World = linker.getClass("World");
-		Class<?> BlockPos = linker.getClass("BlockPos");
+		Class<?> IBlockState            = linker.getClass("IBlockState");
+		Class<?> PropertyDirection      = linker.getClass("PropertyDirection");
+		Class<?> IProperty              = linker.getClass("IProperty");
+		Class<?> RegistryNamespaced     = linker.getClass("RegistryNamespaced");
+		Class<?> World                  = linker.getClass("World");
+		Class<?> BlockPos               = linker.getClass("BlockPos");
+        Class<?> Material               = linker.getClass("Material");
 
-		m_getBlockById = linker.method("getBlockById", block, int.class);
-		m_getStateFromMeta = linker.method("getStateFromMeta", block, int.class);
-		m_getIdFromBlock = linker.method("getIdFromBlock", block, block);
-		m_getMetaFromState = linker.method("getMetaFromState", block, IBlockState);
-		m_getBlockFromName = linker.method("getBlockFromName", block, String.class);
-		m_getValue = linker.method("getValue", IBlockState, IProperty);
-		m_hasTileEntity = linker.method("hasTileEntity", block);
-		m_getProperties = linker.method("getProperties", IBlockState);
-		m_onBlockEventReceived = linker.method("onBlockEventReceived", block, World, BlockPos, IBlockState, int.class, int.class);
-
-		m_onBlockActivated = linker.method("onBlockActivated", block, linker.getClass("World"), linker.getClass("BlockPos"),
-				IBlockState, entityPlayer, linker.getClass("EnumFacing"), float.class, float.class, float.class);
+		m_getBlockById                  = linker.method("getBlockById", Block, int.class);
+		m_getStateFromMeta              = linker.method("getStateFromMeta", Block, int.class);
+		m_getIdFromBlock                = linker.method("getIdFromBlock", Block, Block);
+		m_getMetaFromState              = linker.method("getMetaFromState", Block, IBlockState);
+		m_getBlockFromName              = linker.method("getBlockFromName", Block, String.class);
+		m_getValue                      = linker.method("getValue", IBlockState, IProperty);
+		m_hasTileEntity                 = linker.method("hasTileEntity", Block);
+		m_getProperties                 = linker.method("getProperties", IBlockState);
+		m_onBlockEventReceived          = linker.method("onBlockEventReceived", Block, World, BlockPos, IBlockState, int.class, int.class);
+        m_isOpaque                      = linker.method("isOpaque", Material);
+        m_isFullCube                    = linker.method("isFullCube", Block);
+		m_onBlockActivated              = linker.method("onBlockActivated", Block, linker.getClass("World"),
+                linker.getClass("BlockPos"), IBlockState, EntityPlayer, linker.getClass("EnumFacing"), float.class,
+                float.class, float.class);
 
 		propertyFacing = linker.method("create", PropertyDirection, String.class).invoke(null, "facing");
 		m_getNameForObject = linker.method("getNameForObject", RegistryNamespaced, Object.class);
 
-		f_blockRegistry = linker.field("blockRegistry", block);
+		f_blockRegistry = linker.field("blockRegistry", Block);
+        f_blockMaterial = linker.field("blockMaterial", Block);
 
 		// TODO can't use linker yet
 		m_getBlock = IBlockState.getDeclaredMethod(Constants.IBLOCKSTATE_GETBLOCK);
 
-		f_unlocalizedName = block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
+		f_unlocalizedName = Block.getDeclaredField(Constants.BLOCK_UNLOCALIZEDNAME);
 		f_unlocalizedName.setAccessible(true);
 
 	}
@@ -185,6 +189,14 @@ class RBlock {
 		return (boolean) m_onBlockEventReceived.invoke(block, world, blockPos, blockState, eventId,  eventParameter);
 	}
 
+    public boolean isOpaque(Object block) throws InvocationTargetException, IllegalAccessException {
+        return (boolean) m_isOpaque.invoke(f_blockMaterial.get(block));
+    }
+
+    public boolean isFullCube(Object block) throws InvocationTargetException, IllegalAccessException {
+        return (boolean) m_isFullCube.invoke(block);
+    }
+
 	public Object getPropertyFacing(Object blockState) throws InvocationTargetException, IllegalAccessException {
 
 		System.out.println("RBlock DEBUG");
@@ -203,6 +215,7 @@ class RBlock {
 		}
 		return m_getValue.invoke(blockState, propertyFacing);
 	}
+
 	Map getProperties(Object blockState) throws InvocationTargetException, IllegalAccessException {
 
 		return (Map) m_getProperties.invoke(blockState);

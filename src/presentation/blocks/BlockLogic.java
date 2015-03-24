@@ -15,7 +15,6 @@ public class BlockLogic {
 	private byte rotationMask, rotationMin, rotationMax, rotationIncrease;
 	
 	private Cord3S[] sides;
-	private int sideIndex;
 	
 	private boolean hidden;
 	
@@ -107,8 +106,6 @@ public class BlockLogic {
 			sides[i] = cord;
 		}
 		
-		sideIndex = 0;
-		
 	}
 
 //	public void setClickMask(byte clickMask) {
@@ -145,11 +142,18 @@ public class BlockLogic {
 		return hidden;
 	}
 	
-	public Cord3S getSide() {
+	public Cord3S getSide(byte data) {
 		if (sides == null)
 			return null;
+
+        int index = (data - rotationMin) / rotationIncrease;
+
+        if (index < 0 || index >= sides.length) {
+            Log.e("Internal error: could not rotate block: " + index);
+            return null;
+        }
 		
-		return sides[sideIndex];
+		return sides[index];
 	}
 	
 	byte getIncreaseFromMask(byte mask) {
@@ -185,26 +189,11 @@ public class BlockLogic {
 	
 	public byte rotate(byte data, boolean forward) {
 		
-		if (forward) {
-			
-			if (sides != null) {
-				sideIndex++;
-				if (sideIndex >= sides.length)
-					sideIndex = 0;
-			}
+		if (forward)
 			return increaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
 			
-		} else {
-			
-			if (sides != null) {
-				sideIndex--;
-				if (sideIndex < 0)
-					sideIndex = sides.length - 1;
-			}
-			
+		else
 			return decreaseData(data, rotationMask, rotationIncrease, rotationMin, rotationMax);
-			
-		}
 	}
 	
 //	public byte click(byte data, boolean forward) {
