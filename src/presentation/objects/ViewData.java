@@ -52,6 +52,11 @@ public class ViewData {
 		
 		return blocks[x][y][z];
 	}
+
+    public void setBlock(int x, int y, int z, Block block) {
+
+        blocks[x][y][z] = block;
+    }
 	
 	boolean isOutbounds(int x, int y, int z) {
 		

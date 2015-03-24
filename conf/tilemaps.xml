@@ -3,6 +3,12 @@
 	xsi:noNamespaceSchemaLocation="./tilemaps.xsd" 
 	name="default" extension="png">
 
+    <entry>
+        <condition id="55">
+            <name>wire</name>
+        </condition>
+    </entry>
+
 	<entry>
 		<condition id="20">
 			<name>glass</name>

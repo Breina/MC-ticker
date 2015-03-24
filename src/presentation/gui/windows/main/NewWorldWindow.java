@@ -33,7 +33,7 @@ public class NewWorldWindow extends JDialog {
         setLayout(new GridLayout(8, 2));
 
         add(new Label("Schematic name"));
-        add(txtName = new JTextField());
+        add(txtName = new JTextField("Untitled"));
 
         add(new Label("Size (x, y, z)"));
 
@@ -79,8 +79,6 @@ public class NewWorldWindow extends JDialog {
 
         JButton btnCreate = new JButton("Create");
         add(btnCreate);
-
-        btnCreate.setEnabled(false);
 
         txtName.addCaretListener(e -> btnCreate.setEnabled(!txtName.getText().isEmpty()));
 

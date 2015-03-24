@@ -1,7 +1,9 @@
 package presentation.tools;
 
 import logging.Log;
+import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
+import presentation.controllers.WorldController;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
 
@@ -43,9 +45,21 @@ public class ToolPlace extends Tool {
             Log.e("Selected cord is null!");
             return;
         }
-		
-		getWorldController().setBlock(c.x, c.y, c.z, dragBlock);
-	}
+
+        WorldController worldController = getWorldController();
+
+        // Temp set it in worldData so we can rotate it properly first
+        worldController.getWorldData().setBlock(c.x, c.y, c.z, dragBlock);
+
+        BlockController blockController = mainController.getBlockController();
+
+        // TODO fix this lol
+        if (dragBlock.getId() != 0 && blockController.getBlock(dragBlock.getId()).isSideDependent())
+        // Find best rotation
+            ToolRotate.rotateUntilValid(worldController, mainController.getBlockController(), c, true);
+        else
+            worldController.setBlock(c.x, c.y, c.z, dragBlock);
+    }
 
 	@Override
 	public void mouseReleased(MouseEvent e) {

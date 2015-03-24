@@ -5,108 +5,108 @@ import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 
 public class BlockLogic {
-	
-	private byte id;
-	private String name;
-	
-	private byte iconData;
-	private Orientation iconOrientation;
-	
-	private byte rotationMask, rotationMin, rotationMax, rotationIncrease;
-	
-	private Cord3S[] sides;
-	
-	private boolean hidden;
-	
+
+    private byte id;
+    private String name;
+
+    private byte iconData;
+    private Orientation iconOrientation;
+
+    private byte rotationMask, rotationMin, rotationMax, rotationIncrease;
+
+    private Cord3S[] sides;
+
+    private boolean hidden;
+
 //	private byte clickMask, clickMin, clickMax, clickIncrease;
 
-	public BlockLogic(byte id) {
-		this(id, false);
-	}
-	
-	public BlockLogic(byte id, boolean hidden) {
-		this.id = id;
-		
-		iconOrientation = Orientation.TOP;
-		this.hidden = hidden;
-	}
+    public BlockLogic(byte id) {
+        this(id, false);
+    }
 
-	public void setId(byte id) {
-		this.id = id;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
+    public BlockLogic(byte id, boolean hidden) {
+        this.id = id;
 
-	public void setIconData(byte iconData) {
-		this.iconData = iconData;
-	}
+        iconOrientation = Orientation.TOP;
+        this.hidden = hidden;
+    }
 
-	public void setIconOrientation(Orientation iconOrientation) {
-		this.iconOrientation = iconOrientation;
-	}
+    public void setId(byte id) {
+        this.id = id;
+    }
 
-	public void setRotationMask(byte rotationMask) {
-		this.rotationMask = rotationMask;
-		this.rotationMax = rotationMask;
-		this.rotationIncrease = getIncreaseFromMask(rotationMask);
-	}
-	
-	public void setRotationMin(byte rotationMin) {
-		this.rotationMin = rotationMin;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setRotationMax(byte rotationMax) {
-		this.rotationMax = rotationMax;
-	}
-	
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-	
-	public void setSides(String sidesString) {
-		
-		char[] chars = sidesString.toCharArray();
-		sides = new Cord3S[chars.length];
-		Cord3S cord;
-		
-		for (int i = 0; i < chars.length; i++) {
-			switch (chars[i]) {
-				case 'd':
-					cord = new Cord3S(0, -1, 0);
-					break;
-					
-				case 'u':
-					cord = new Cord3S(0, 1, 0);
-					break;
-					
-				case 'n':
-					cord = new Cord3S(0, 0, -1);
-					break;
-					
-				case 's':
-					cord = new Cord3S(0, 0, 1);
-					break;
-					
-				case 'e':
-					cord = new Cord3S(1, 0, 0);
-					break;
-					
-				case 'w':
-					cord = new Cord3S(-1, 0, 0);
-					break;
-					
-				default:
-					Log.i("Unrecognized 'sides' character: " + chars[i]);
-					cord = null;
-					
-			}
-			
-			sides[i] = cord;
-		}
-		
-	}
+    public void setIconData(byte iconData) {
+        this.iconData = iconData;
+    }
+
+    public void setIconOrientation(Orientation iconOrientation) {
+        this.iconOrientation = iconOrientation;
+    }
+
+    public void setRotationMask(byte rotationMask) {
+        this.rotationMask = rotationMask;
+        this.rotationMax = rotationMask;
+        this.rotationIncrease = getIncreaseFromMask(rotationMask);
+    }
+
+    public void setRotationMin(byte rotationMin) {
+        this.rotationMin = rotationMin;
+    }
+
+    public void setRotationMax(byte rotationMax) {
+        this.rotationMax = rotationMax;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public void setSides(String sidesString) {
+
+        char[] chars = sidesString.toCharArray();
+        sides = new Cord3S[chars.length];
+        Cord3S cord;
+
+        for (int i = 0; i < chars.length; i++) {
+            switch (chars[i]) {
+                case 'd':
+                    cord = new Cord3S(0, -1, 0);
+                    break;
+
+                case 'u':
+                    cord = new Cord3S(0, 1, 0);
+                    break;
+
+                case 'n':
+                    cord = new Cord3S(0, 0, -1);
+                    break;
+
+                case 's':
+                    cord = new Cord3S(0, 0, 1);
+                    break;
+
+                case 'e':
+                    cord = new Cord3S(1, 0, 0);
+                    break;
+
+                case 'w':
+                    cord = new Cord3S(-1, 0, 0);
+                    break;
+
+                default:
+                    Log.i("Unrecognized 'sides' character: " + chars[i]);
+                    cord = null;
+
+            }
+
+            sides[i] = cord;
+        }
+
+    }
 
 //	public void setClickMask(byte clickMask) {
 //		this.clickMask = clickMask;
@@ -121,29 +121,33 @@ public class BlockLogic {
 //	public void setClickMax(byte clickMax) {
 //		this.clickMax = clickMax;
 //	}
-	
-	public byte getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public byte getIconData() {
-		return iconData;
-	}
-	
-	public Orientation getIconOrientation() {
-		return iconOrientation;
-	}
-	
-	public boolean isHidden() {
-		return hidden;
-	}
+
+    public byte getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public byte getIconData() {
+        return iconData;
+    }
+
+    public Orientation getIconOrientation() {
+        return iconOrientation;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public boolean isSideDependent() {
+        return sides != null;
+    }
 	
 	public Cord3S getSide(byte data) {
-		if (sides == null)
+		if (!isSideDependent())
 			return null;
 
         int index = (data - rotationMin) / rotationIncrease;
