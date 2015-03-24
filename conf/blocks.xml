@@ -28,14 +28,14 @@
 		</block>
 		
 		<block id="75" hidden="true">
-			<rotation mask="5" min="1" sides="wensd" />
+            <rotation mask="7" min="1" max="5" sides="wensd" />
 		</block>
 		
 		<block id="76">
 			<name>Torch</name>
 			
 			<icon data="5" orientation="front" />
-			<rotation mask="5" min="1" sides="wensd" />
+			<rotation mask="7" min="1" max="5" sides="wensd" />
 		</block>
 		
 		<block id="93">
