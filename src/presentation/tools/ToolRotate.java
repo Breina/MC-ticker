@@ -1,6 +1,5 @@
 package presentation.tools;
 
-import logging.Log;
 import presentation.blocks.BlockLogic;
 import presentation.controllers.BlockController;
 import presentation.controllers.MainController;
@@ -36,8 +35,6 @@ public class ToolRotate extends Tool {
 
     static void rotateUntilValid(WorldController worldController, BlockController blockController, Cord3S c, boolean forward) {
 
-        Log.d("Rotating...");
-
         SimController simController = worldController.getSimController();
 
         Block block = worldController.getWorldData().getBlock(c.x, c.y, c.z);
@@ -57,7 +54,7 @@ public class ToolRotate extends Tool {
                 break;
 
             if (data == startData)
-                return;
+                break;
 
             Cord3S sideCord = blockLogic.getSide(data).add(c);
 

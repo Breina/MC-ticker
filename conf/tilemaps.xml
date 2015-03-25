@@ -708,6 +708,12 @@
 			</condition>
 		</right>
 	</entry>
+
+    <entry>
+        <name>36</name>
+
+        <condition id="36" />
+    </entry>
 	
 	<entry>
 		<name>torch</name>

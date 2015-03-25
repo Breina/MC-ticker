@@ -19,11 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TileController {
 
 	private List<TileSet> tileSets;
-	private HashMap<Integer, BufferedImage> quickMap;
+	private Map<Integer, BufferedImage> quickMap;
 	
 	public TileController(File xmlPath) {
 		

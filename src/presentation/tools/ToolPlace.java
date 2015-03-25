@@ -53,7 +53,6 @@ public class ToolPlace extends Tool {
 
         BlockController blockController = mainController.getBlockController();
 
-        // TODO fix this lol
         if (dragBlock.getId() != 0 && blockController.getBlock(dragBlock.getId()).isSideDependent())
         // Find best rotation
             ToolRotate.rotateUntilValid(worldController, mainController.getBlockController(), c, true);
