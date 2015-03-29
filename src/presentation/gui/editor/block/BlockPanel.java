@@ -59,10 +59,26 @@ public class BlockPanel extends EditorSubComponent {
     private BufferedImage getTile(short x, short y, short z) {
 
         BufferedImage tileImage;
-        Block b = worldController.getWorldData().getBlock(x, y, z);
+        ViewData worldData = worldController.getWorldData();
+        Block b = worldData.getBlock(x, y, z);
 
-        if (b == null)
-            return null;
+        Block behindBlock = null;
+
+        switch (orientation) {
+            case TOP:
+                behindBlock = worldData.getBlock(x, y - 1, z);
+                break;
+
+            case FRONT:
+                behindBlock = worldData.getBlock(x, y, z + 1);
+                break;
+
+            case RIGHT:
+                behindBlock = worldData.getBlock(x + 1, y, z);
+        }
+
+        if (b.getId() == 0 && !behindBlock.isTransparentBlock())
+            return tileController.getTile("solid-below");
 
         switch (b.getId()) {
             case Block.BLOCK_WIRE:

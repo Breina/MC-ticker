@@ -57,7 +57,6 @@ public class DrawingWindow extends InternalWindow {
 				break;
 				
 			default:
-			case UNDEFINED:
 				throw new InternalError("Undefined DrawingWindow type");
 		}
 		

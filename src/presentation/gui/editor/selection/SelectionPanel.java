@@ -122,7 +122,6 @@ public class SelectionPanel extends EditorSubComponent {
                 this.start = new Cord2S((short) (editorWidth - end.z - 1), (short) (editorHeight - end.y - 1));
                 break;
 
-            case UNDEFINED:
             default:
                 throw new IllegalStateException("Badly defined layer :(");
         }

@@ -29,7 +29,6 @@ class LayerPanel extends EditorSubComponent {
                         horizontal = false;
                         break;
 
-                    case UNDEFINED:
                     case TOP:
                     default:
                         throw new InternalError("Badly filtered layer addition");
@@ -47,7 +46,6 @@ class LayerPanel extends EditorSubComponent {
                         break;
 
                     case FRONT:
-                    case UNDEFINED:
                     default:
                         throw new InternalError("Badly filtered layer addition");
                 }
@@ -64,13 +62,11 @@ class LayerPanel extends EditorSubComponent {
                         break;
 
                     case RIGHT:
-                    case UNDEFINED:
                     default:
                         throw new InternalError("Badly filtered layer addition");
                 }
                 break;
 
-            case UNDEFINED:
             default:
                 throw new InternalError("Badly filtered layer addition");
         }

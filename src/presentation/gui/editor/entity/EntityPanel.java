@@ -70,7 +70,6 @@ class EntityPanel extends EditorSubComponent {
 
     /**
      * Checks whether the entity is within the visible layer
-     * @return True if it is visible
      */
     public void checkVisibility() {
 

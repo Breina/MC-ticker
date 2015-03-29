@@ -60,9 +60,9 @@ public class TileController {
 		return g;
 	}
 	
-	private File getFile(Graphic g) {
+	private File getFile(String name) {
 
-        return new File(Constants.TILEIMAGES + g.getName() + Constants.IMAGEEXTENSION);
+        return new File(Constants.TILEIMAGES + name + Constants.IMAGEEXTENSION);
 	}
 	
 	private BufferedImage getImage(File imageFile) throws IOException {
@@ -145,7 +145,6 @@ public class TileController {
 				break;
 				
 			default:
-			case UNDEFINED:
 				or = 0;
 		}
 		
@@ -155,6 +154,26 @@ public class TileController {
 	public BufferedImage getTile(byte id, byte data, Orientation orientation) {
 		return getTile(id, data, orientation, (byte) 0);
 	}
+
+    public BufferedImage getTile(String name) {
+
+        File file = getFile(name);
+
+        BufferedImage image;
+
+        try {
+            image = getImage(file);
+
+        } catch (IOException e) {
+            if (sim.constants.Constants.DEBUG_TILE_IMAGES)
+                Log.w("Could not read tile image: " + name);
+            return null;
+        }
+
+        if (image == null) return null;
+
+        return image;
+    }
 	
 	BufferedImage getTile(byte id, byte data, Orientation orientation, byte custom) {
 		
@@ -167,20 +186,7 @@ public class TileController {
 		
 		if (g == null) return null;
 		
-		File file = getFile(g);
-
-        BufferedImage image = null;
-		
-		try {
-			image = getImage(file);
-			
-		} catch (IOException e) {
-			if (sim.constants.Constants.DEBUG_TILE_IMAGES)
-				Log.w("Could not read tile image: " + file.getPath() + ", id=" + id + ", data=" + data + ", orientation" + orientation);
-			return null;
-		}
-		
-		if (image == null) return null;
+		BufferedImage image = getTile(g.getName());
 		
 		if (g.getRotation() != 0) {
 			image = rotate(image, g.getRotation());
