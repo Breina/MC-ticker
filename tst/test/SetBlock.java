@@ -74,7 +74,7 @@ public class SetBlock {
 				
 				try {
 					// Set block
-					world.setBlock(1, 1, 1, (byte) id, (byte) data);
+					world.setBlock(1, 1, 1, (byte) id, (byte) data, true);
 					
 					// Get block
 					Object blockState = world.getBlockState(1, 1, 1);

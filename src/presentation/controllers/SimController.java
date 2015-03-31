@@ -86,11 +86,11 @@ public class SimController {
 		return false;
 	}
 	
-	public void setBlock(int x, int y, int z, byte blockId, byte blockData) {
+	public void setBlock(int x, int y, int z, byte blockId, byte blockData, boolean update) {
 		
 		try {
 			
-			simWorld.setBlock(x, y, z, blockId, blockData);
+			simWorld.setBlock(x, y, z, blockId, blockData, update);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {
 			

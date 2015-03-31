@@ -64,7 +64,7 @@ public class ToolRotate extends Tool {
         } while (!simController.isFullCube(sideBlock) || !simController.isOpaque(sideBlock));
 
         block.setData(data);
-        worldController.setBlock(c.x, c.y, c.z, block);
+        worldController.setBlock(c.x, c.y, c.z, block, true);
     }
 	
 	private void rotate() {

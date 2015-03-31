@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 public class ToolPlace extends Tool {
 	
 	private Block dragBlock;
+    private boolean doUpdate;
 
 	public ToolPlace(MainController mainController) {
 		super(mainController, "Place", "block.png", false);
@@ -35,6 +36,9 @@ public class ToolPlace extends Tool {
 				dragBlock = Block.B_AIR;
 		}
 
+        int modifiers = e.getModifiersEx();
+        doUpdate = !((MouseEvent.SHIFT_DOWN_MASK & modifiers) == MouseEvent.SHIFT_DOWN_MASK);
+
 		setBlock();
 	}
 	
@@ -57,7 +61,7 @@ public class ToolPlace extends Tool {
         // Find best rotation
             ToolRotate.rotateUntilValid(worldController, mainController.getBlockController(), c, true);
         else
-            worldController.setBlock(c.x, c.y, c.z, dragBlock);
+            worldController.setBlock(c.x, c.y, c.z, dragBlock, doUpdate);
     }
 
 	@Override

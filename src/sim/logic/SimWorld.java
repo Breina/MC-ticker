@@ -446,14 +446,14 @@ public class SimWorld {
 		rBlock.onBlockActivated(blockState, world, x, y, z, 0, 0, 0);
 	}
 
-	public void setBlock(int x, int y, int z, byte blockId, byte blockData) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void setBlock(int x, int y, int z, byte blockId, byte blockData, boolean update) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		isSchematicUpToDate = false;
 
 		Object block = rBlock.getBlockById(blockId);
 		Object blockState = rBlock.getStateFromMeta(block, blockData);
 
-		rWorld.setBlockState(world, x, y, z, blockState, true, true);
+		rWorld.setBlockState(world, x, y, z, blockState, update, true);
 	}
 
 	public Object getBlockState(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

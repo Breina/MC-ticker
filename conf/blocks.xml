@@ -71,6 +71,10 @@
 			<icon data="2" />
 			<rotation mask="7" max="5" />
 		</block>
+
+        <block id="165">
+            <name>Slime block</name>
+        </block>
 		
 		<block id="23">
 			<name>Dispenser</name>

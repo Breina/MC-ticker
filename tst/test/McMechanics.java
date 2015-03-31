@@ -70,7 +70,7 @@ public class McMechanics {
 		loadWorld("cobble-gen.schematic");
 		
 		try {
-			world.setBlock(10, 1, 1, (byte) 0, (byte) 0);
+			world.setBlock(10, 1, 1, (byte) 0, (byte) 0, true);
 			
 			byte blockId = 0;
 			
@@ -121,7 +121,7 @@ public class McMechanics {
 		loadWorld("cobble-gen.schematic");
 		
 		try {
-			world.setBlock(4, 1, 1, (byte) 30, (byte) 0);
+			world.setBlock(4, 1, 1, (byte) 30, (byte) 0, true);
 			
 			for (int i = 0; i < WATERSPREADSPEED; i++)
 				world.tickWorld();
