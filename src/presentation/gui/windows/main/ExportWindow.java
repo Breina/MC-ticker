@@ -56,6 +56,8 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
 
         lockTime();
 
+        setFrameIcon(new ImageIcon("img/export/export.png"));
+
         // These will be set properly later
         singleTimeModel = new SpinnerNumberModel();
         minTimeModel = new SpinnerNumberModel();
@@ -205,7 +207,10 @@ public class ExportWindow extends InternalWindow implements WorldListener, Runna
                 pnlSeries.add(pnlTime);
 
         pnlType.add("Single", pnlSingle);
-            pnlType.add("Series", pnlSeries);
+        pnlType.add("Series", pnlSeries);
+
+        pnlType.setIconAt(0, new ImageIcon("img/export/image.png"));
+        pnlType.setIconAt(1, new ImageIcon("img/export/animated.png"));
 
         btnOK = new JButton("Export");
         btnOK.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));

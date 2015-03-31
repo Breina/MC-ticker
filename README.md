@@ -31,6 +31,7 @@ has currently no use, though. >.<
 * The time bar allows manipulating the time of each schematic separately. When ticking, the previous schematic is
 internally buffered, this enables going back in time. Be careful though, there is no branching of timelines. If you go
 back in time and modify anything, the future is discarded and this is the new end of the timeline.
+* In the editor, scrolling changes the layer. If control or command is pressed, scrolling will zoom.
 
 ## Extensibility
 MC ticker is able to handle modded clients, but currently has no graphics for any. Graphics are configured by XML files
@@ -53,4 +54,3 @@ bottleneck.
 * The background: http://iwithered.deviantart.com/
 * His Circular Byte Buffer proved very useful: http://ostermiller.org/utils/src/CircularByteBuffer.java.html
 * Their Tag class to parse and write schematics: http://minecraft.gamepedia.com/Development_resources/Example_NBT_Class
-* The MC wiki for information and their NBT icons: http://minecraft.gamepedia.com/Minecraft_Wiki

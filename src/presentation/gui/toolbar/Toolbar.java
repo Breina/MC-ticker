@@ -1,6 +1,5 @@
 package presentation.gui.toolbar;
 
-import presentation.Util;
 import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
@@ -36,7 +35,7 @@ public class Toolbar extends JToolBar {
         if (tool.getFileName() == null)
             btn = new JToggleButton(tool.getName());
         else {
-            btn = new JToggleButton(Util.getIcon("tools/" + tool.getFileName()));
+            btn = new JToggleButton(new ImageIcon("img/tools/" + tool.getFileName()));
             btn.setToolTipText(tool.getName());
         }
 

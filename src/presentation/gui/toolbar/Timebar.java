@@ -1,6 +1,5 @@
 package presentation.gui.toolbar;
 
-import presentation.Util;
 import presentation.controllers.MainController;
 import presentation.controllers.TimeController;
 import presentation.controllers.WorldController;
@@ -51,15 +50,15 @@ public class Timebar extends JToolBar implements WorldListener, TimeInfo {
 
         ButtonGroup group = new ButtonGroup();
 
-        btnStart = new JButton(Util.getIcon("time/start.png"));
-        btnRushBack = new JToggleButton(Util.getIcon("time/rush-back.png"));
-        btnPlayBack = new JToggleButton(Util.getIcon("time/play-back.png"));
-        btnStepBack = new JButton(Util.getIcon("time/step-back.png"));
-        btnPause = new JToggleButton(Util.getIcon("time/pause.png"));
-        btnStepForward = new JButton(Util.getIcon("time/step-forward.png"));
-        btnPlayForward = new JToggleButton(Util.getIcon("time/play-forward.png"));
-        btnRushForward = new JToggleButton(Util.getIcon("time/rush-forward.png"));
-        btnEnd = new JButton(Util.getIcon("time/end.png"));
+        btnStart = new JButton(new ImageIcon("img/time/start.png"));
+        btnRushBack = new JToggleButton(new ImageIcon("img/time/rush-back.png"));
+        btnPlayBack = new JToggleButton(new ImageIcon("img/time/play-back.png"));
+        btnStepBack = new JButton(new ImageIcon("img/time/step-back.png"));
+        btnPause = new JToggleButton(new ImageIcon("img/time/pause.png"));
+        btnStepForward = new JButton(new ImageIcon("img/time/step-forward.png"));
+        btnPlayForward = new JToggleButton(new ImageIcon("img/time/play-forward.png"));
+        btnRushForward = new JToggleButton(new ImageIcon("img/time/rush-forward.png"));
+        btnEnd = new JButton(new ImageIcon("img/time/end.png"));
 
         lblStep = new JLabel("0", SwingConstants.CENTER);
         lblStep.setFont(new Font(null, Font.PLAIN, 18));

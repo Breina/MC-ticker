@@ -27,6 +27,8 @@ public class NBTviewer extends WorldWindow {
 	public NBTviewer(JDesktopPane parent, WorldController controller) {
 		super(parent, controller, "NBTviewer", false);
 
+        setFrameIcon(new ImageIcon("img/nbt/nbt_frame.png"));
+
         iconBoolean     = new ImageIcon("img/nbt/TAG_Boolean.png");
         iconByte        = new ImageIcon("img/nbt/TAG_Byte.png");
         iconByteArray   = new ImageIcon("img/nbt/TAG_Byte_Array.png");

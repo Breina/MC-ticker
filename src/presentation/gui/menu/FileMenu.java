@@ -25,9 +25,9 @@ public class FileMenu extends JMenu {
 		
 		setMnemonic('F');
 		
-		JMenuItem newItem		= new JMenuItem("New");
-		JMenuItem openItem		= new JMenuItem("Open...");
-		JMenuItem saveItem		= new JMenuItem("Save All");
+		JMenuItem newItem		= new JMenuItem("New", new ImageIcon("img/menu/new.png"));
+		JMenuItem openItem		= new JMenuItem("Open...", new ImageIcon("img/menu/open.png"));
+		JMenuItem saveItem		= new JMenuItem("Save All", new ImageIcon("img/menu/saveAll.png"));
 		newItem					.setMnemonic('N');
 		openItem				.setMnemonic('O');
 		saveItem				.setMnemonic('S');
@@ -37,13 +37,13 @@ public class FileMenu extends JMenu {
 		
 		add(new JSeparator());
 		
-		JMenuItem exportItem	= new JMenuItem("Export...");
+		JMenuItem exportItem	= new JMenuItem("Export...", new ImageIcon("img/export/export.png"));
 		exportItem				.setMnemonic('E');
 		add(exportItem);
 		
 		add(new JSeparator());
 
-		JMenuItem exitItem		= new JMenuItem("Exit");
+		JMenuItem exitItem		= new JMenuItem("Exit", new ImageIcon("img/menu/exit.png"));
 		exitItem				.setMnemonic('x');
 		add(exitItem);
 		

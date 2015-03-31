@@ -36,9 +36,9 @@ public class WorldMenu extends JMenu {
 		
 		add(new JSeparator());
 		
-		JMenuItem save		= new JMenuItem("Save");
-		JMenuItem saveAs	= new JMenuItem("Save As...");
-		JMenuItem revert	= new JMenuItem("Revert");
+		JMenuItem save		= new JMenuItem("Save", new ImageIcon("img/menu/save.png"));
+		JMenuItem saveAs	= new JMenuItem("Save As...", new ImageIcon("img/menu/saveAs.png"));
+		JMenuItem revert	= new JMenuItem("Revert" ,new ImageIcon("img/menu/revert.png"));
 		save				.setMnemonic('S');
 		saveAs				.setMnemonic('A');
 		revert				.setMnemonic('e');
@@ -48,7 +48,7 @@ public class WorldMenu extends JMenu {
 		
 		add(new JSeparator());
 		
-		JMenuItem closeAll	= new JMenuItem("Close all");
+		JMenuItem closeAll	= new JMenuItem("Close all", new ImageIcon("img/menu/close.png"));
 		closeAll			.setMnemonic('C');
 		add(closeAll);
 		

@@ -9,8 +9,7 @@ import presentation.objects.ViewData;
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class DrawingWindow extends InternalWindow {
 	private static final long serialVersionUID = 3840583251430475315L;
@@ -22,7 +21,7 @@ public class DrawingWindow extends InternalWindow {
 
     private Editor editor;
 	
-	private JButton up, down;
+	private JButton btnUp, btnDown, btnZoomIn, btnZoomOut;
 
 	public DrawingWindow(JDesktopPane parent, WorldController controller, Orientation orientation) {
 		super(parent, "Loading window...", true);
@@ -30,60 +29,60 @@ public class DrawingWindow extends InternalWindow {
 		this.worldController = controller;
 		
 		ViewData viewData = controller.getWorldData();
-		
+
+        setFrameIcon(new ImageIcon("img/editor/frameIcon.png"));
 		JMenuBar menuBar = new JMenuBar();
 		
 		switch (orientation) {
 			case TOP:
 				title = viewData.getName() + ": y=";
 				max = viewData.getYSize();
-				up = new JButton("↑");		// \u2191
-				down = new JButton("↓");	// \u2193
+				btnUp = new JButton("↑");		// \u2191
+				btnDown = new JButton("↓");	// \u2193
 				
 				break;
 				
 			case FRONT:
 				title = viewData.getName() + ": z=";
 				max = viewData.getZSize();
-				up = new JButton("↙");		// \u2199
-				down = new JButton("↗");	// \u2197
+				btnUp = new JButton("↙");		// \u2199
+				btnDown = new JButton("↗");	// \u2197
 				break;
 				
 			case RIGHT:
 				title = viewData.getName() + ": x=";
 				max = viewData.getXSize();
-				up = new JButton("→");		// \u2192
-				down = new JButton("←");	// \u2190
+				btnUp = new JButton("→");		// \u2192
+				btnDown = new JButton("←");	// \u2190
 				break;
 				
 			default:
 				throw new InternalError("Undefined DrawingWindow type");
 		}
 		
-		menuBar.add(down);
-		menuBar.add(up);
+		menuBar.add(btnDown);
+		menuBar.add(btnUp);
 
 		updateTitle((short) 0);
 		
 		// TODO: This assumes layer starts at 0, if it's ever different, fix this.
-		down.setEnabled(false);
-		if (max == 1) {
-			up.setEnabled(false);
-		}
+		btnDown.setEnabled(false);
+		if (max == 1)
+			btnUp.setEnabled(false);
 			
 		LayerHandler layerHandler = new LayerHandler();
-		up.addActionListener(layerHandler);
-		down.addActionListener(layerHandler);
+		btnUp.addActionListener(layerHandler);
+		btnDown.addActionListener(layerHandler);
+
+        btnZoomIn = new JButton(new ImageIcon("img/editor/zoomIn.png"));
+        btnZoomOut = new JButton(new ImageIcon("img/editor/zoomOut.png"));
+
+        ZoomHandler zoomHandler = new ZoomHandler();
+		btnZoomIn.addActionListener(zoomHandler);
+		btnZoomOut.addActionListener(zoomHandler);
 		
-		JButton zoomIn = new JButton("+");
-		JButton zoomOut = new JButton("-");
-		
-		ZoomHandler zoomHandler = new ZoomHandler();
-		zoomIn.addActionListener(zoomHandler);
-		zoomOut.addActionListener(zoomHandler);
-		
-		menuBar.add(zoomIn);
-		menuBar.add(zoomOut);
+		menuBar.add(btnZoomIn);
+		menuBar.add(btnZoomOut);
 		
 		setJMenuBar(menuBar);
 		
@@ -92,6 +91,7 @@ public class DrawingWindow extends InternalWindow {
 		add(new JScrollPane(editor));
 		
 		addInternalFrameListener(new InternalFrameHandler());
+        editor.addMouseWheelListener(new ScrollHandler());
 
 		pack();
 		
@@ -104,12 +104,16 @@ public class DrawingWindow extends InternalWindow {
     private class ZoomHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {			
-			JButton btn = (JButton) ae.getSource();
-			boolean b = btn.getText().equals("+");
+			boolean zoomIn;
 
-            editor.setScale(editor.getScale() * (b ? 1.25f : 0.8f));
+            if (ae.getSource() == btnZoomIn)
+                zoomIn = true;
+            else if (ae.getSource() == btnZoomOut)
+                zoomIn = false;
+            else
+                return;
 
-            pack();
+            zoom(zoomIn);
         }
 	}
 
@@ -119,30 +123,43 @@ public class DrawingWindow extends InternalWindow {
     private class LayerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
-			
-			short layer = editor.getLayerHeight();
-			
-			if (ae.getSource().equals(up)) {
-				
-				layer++;
-				if (layer == max - 1)
-					up.setEnabled(false);
-				if (!down.isEnabled())
-					down.setEnabled(true);
-				
-			} else {
-				
-				layer--;
-				if (layer == 0)
-					down.setEnabled(false);
-				if (!up.isEnabled())
-					up.setEnabled(true);
-			}
-			
-			editor.setLayerHeight(layer);
-			updateTitle(layer);
+            moveLayer(ae.getSource().equals(btnUp));
 		}
 	}
+
+    private void zoom(boolean in) {
+        editor.setScale(editor.getScale() * (in ? 1.25f : 0.8f));
+        pack();
+    }
+
+    private void moveLayer(boolean up) {
+
+        short layer = editor.getLayerHeight();
+
+        if (up) {
+            if (layer == max - 1)
+                return;
+
+            layer++;
+            if (layer == max - 1)
+                btnUp.setEnabled(false);
+            if (!btnDown.isEnabled())
+                btnDown.setEnabled(true);
+
+        } else {
+            if (layer == 0)
+                return;
+
+            layer--;
+            if (layer == 0)
+                btnDown.setEnabled(false);
+            if (!btnUp.isEnabled())
+                btnUp.setEnabled(true);
+        }
+
+        editor.setLayerHeight(layer);
+        updateTitle(layer);
+    }
 
 	/**
 	 * Updates the title to display a new layer number.
@@ -160,6 +177,21 @@ public class DrawingWindow extends InternalWindow {
 		public void internalFrameClosing(InternalFrameEvent e) {
 			worldController.drawingWindowClosed((DrawingWindow) e.getSource());
 		}    	
+    }
+
+    private class ScrollHandler implements MouseWheelListener {
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+
+            int modifiers = e.getModifiersEx();
+            boolean ctrl = (MouseEvent.CTRL_DOWN_MASK & modifiers) == MouseEvent.CTRL_DOWN_MASK;
+            boolean up = e.getWheelRotation() == -1;
+
+            if (!ctrl)
+                moveLayer(up);
+            else
+                zoom(up);
+        }
     }
 
     public int getMax() {
