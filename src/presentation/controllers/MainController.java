@@ -18,6 +18,7 @@ import sim.logic.Simulator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -63,6 +64,8 @@ public class MainController {
 
         mainframe = new RSFrame(this);
 
+        setKeyboardShortcuts();
+
         if (!sim.constants.Constants.DEBUG_SKIP_LOADING)
 		    setupSim();
 	}
@@ -83,6 +86,13 @@ public class MainController {
 			Log.e("ERROR: Could not set look and feel to system default, continuing in swing default.");
 		}
 	}
+
+    private void setKeyboardShortcuts() {
+        //Hijack the keyboard manager
+        KeyboardFocusManager manager =
+                KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher( new KeyDispatcher() );
+    }
 	
 	/**
 	 * Obtains the files.
@@ -250,34 +260,10 @@ public class MainController {
 		System.exit(0);		
 	}
 
-//	public DesktopPane getDesktop() {
-//		return desktopPane;
-//	}
-//
-//	public FileMenu getFileMenu() {
-//		return fileMenu;
-//	}
-//
 	public RSFrame getFrame() {
 		return mainframe;
 	}
-//
-//	public BlockPanel getBlockPanel() {
-//		return blockPanel;
-//	}
-//
-//	public Toolbar getToolbar() { return toolbar; }
-//
-//	public Timebar getTimebar() { return timebar; }
-//
-//	public RSFrame getRSframe() {
-//		return mainframe;
-//	}
-//
-//	public StatusPanel getStatusPanel() {
-//		return statusPanel;
-//	}
-	
+
 	public List<WorldController> getWorldControllers() {
 		return worldControllers;
 	}
@@ -329,6 +315,24 @@ public class MainController {
 	public Block getBlock() {
 		return block;
 	}
+
+    //Custom dispatcher
+    class KeyDispatcher implements KeyEventDispatcher {
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+
+                int keyCode = e.getKeyCode();
+
+                if (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F5)
+                    getFrame().getToolbar().selectButton(keyCode - KeyEvent.VK_F1);
+            }
+
+            //Allow the event to be redispatched
+            return false;
+        }
+    }
 
     public void debug() {
         for (WorldController wc : worldControllers) {

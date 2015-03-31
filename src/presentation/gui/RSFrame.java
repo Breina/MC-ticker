@@ -24,6 +24,7 @@ public class RSFrame extends JFrame {
     private StatusPanel statusPanel;
     private DesktopPane desktop;
     private Timebar timebar;
+    private Toolbar toolbar;
     private WindowMenu windowMenu;
 
     public RSFrame(MainController controller) {
@@ -63,8 +64,8 @@ public class RSFrame extends JFrame {
 //		JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEFT));
         JPanel toolbarContainer = new JPanel(new WrappingLayout(WrappingLayout.LEADING));
 
-        Toolbar toolbar = new Toolbar(controller);
-            toolbarContainer.add(toolbar);
+        toolbar = new Toolbar(controller);
+        toolbarContainer.add(toolbar);
 
             timebar = new Timebar(controller);
             toolbarContainer.add(timebar);
@@ -106,5 +107,9 @@ public class RSFrame extends JFrame {
 
     public Timebar getTimebar() {
         return timebar;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
     }
 }

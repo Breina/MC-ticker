@@ -18,6 +18,14 @@ technical builds, as well as providing methods to help share schematics.
 - Compatible with modded clients.
 
 ## Usage
+* The time bar allows manipulating the time of each schematic separately. When ticking, the previous schematic is
+internally buffered, this enables going back in time. Be careful though, there is no branching of timelines. If you go
+back in time and modify anything, the future is discarded and this is the new end of the timeline.
+* In the editor, scrolling changes the layer. If control or command is pressed, scrolling will zoom.
+
+### Tools
+Besides mouse clicking, these tools can also be activated by function keys 1 to 4.
+
 * ![Activate](/img/tools/cursor.png) Send a right click to toggle levers, push buttons, switch comparator modes,
 change repeater delay, ...
 * ![Place](/img/tools/block.png) Right click places the selected block on the left side at the selected coordinates. Left
@@ -28,10 +36,6 @@ is updated.
 dimensions. Shift will take the previous origin, if possible. Control or command will add to the previous selection, and
 when done on an already selected region, will make a negative selection inside the previous selection. Selecting blocks
 has currently no use, though. >.<
-* The time bar allows manipulating the time of each schematic separately. When ticking, the previous schematic is
-internally buffered, this enables going back in time. Be careful though, there is no branching of timelines. If you go
-back in time and modify anything, the future is discarded and this is the new end of the timeline.
-* In the editor, scrolling changes the layer. If control or command is pressed, scrolling will zoom.
 
 ## Extensibility
 MC ticker is able to handle modded clients, but currently has no graphics for any. Graphics are configured by XML files
