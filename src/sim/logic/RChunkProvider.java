@@ -25,14 +25,10 @@ class RChunkProvider implements InvocationHandler {
 		chunks = new HashMap<>();
 		this.rBlockPos = rBlockPos;
 	}
-	
-	/** Possible TODO
-	 * I don't know if it's a smart idea to direct a stacktrace through the reflection part.
-	 * The alternative to this would be to call onChunkLoad anywhere outside of chunkProvider.
-	 */
+
 	public void addChunk(Object chunk, int x, int z) throws IllegalArgumentException {
-		
-		ChunkCord cord = new ChunkCord(x, z);
+
+        ChunkCord cord = new ChunkCord(x, z);
 		
 		if (Constants.DEBUG_CHUNKPROVIDER)
 			System.out.println("Adding chunk " + cord);

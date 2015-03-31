@@ -37,14 +37,13 @@ public class SimWorld {
 	private Tag cachedSchematic;
 	private boolean isSchematicUpToDate;
 	
-	public SimWorld(RBlock rBlock, RChunk rChunk, RChunkProvider rChunkProvider, REntity rEntity,
+	public SimWorld(RBlock rBlock, RChunk rChunk, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
-			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer, RBlockPos rBlockPos,
-			RIntHashMap rIntHashMap) throws IllegalArgumentException {
+			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer, RBlockPos rBlockPos) throws IllegalArgumentException {
 		
 		this.rBlock = rBlock;
 		this.rChunk = rChunk;
-		this.rChunkProvider = rChunkProvider;
+		this.rChunkProvider = new RChunkProvider(rBlockPos);
 		this.rEntity = rEntity;
 		this.rNBTTags = rNBTTags;
 		this.rNextTickListEntry = rNextTickListEntry;

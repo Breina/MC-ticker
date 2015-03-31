@@ -10,6 +10,7 @@ import presentation.main.Constants;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
 import presentation.objects.Block;
+import presentation.objects.ViewData;
 import presentation.tools.Tool;
 import sim.constants.Globals;
 import sim.logic.SimWorld;
@@ -328,4 +329,11 @@ public class MainController {
 	public Block getBlock() {
 		return block;
 	}
+
+    public void debug() {
+        for (WorldController wc : worldControllers) {
+            ViewData vd = wc.getWorldData();
+            Log.d("WC: " + vd.getName() + ", " + vd.getBlock(0, 0, 0));
+        }
+    }
 }

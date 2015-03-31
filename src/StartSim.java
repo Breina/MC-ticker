@@ -14,7 +14,8 @@ public class StartSim {
 
 		if (args.length > 0) {
 
-			app.openSchematic(new File(args[0]));
+            for (String arg : args)
+			    app.openSchematic(new File(arg));
 
 		} else {
 

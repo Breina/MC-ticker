@@ -46,8 +46,7 @@ public class ViewData {
 	}
 	
 	public Block getBlock(int x, int y, int z) {
-		
-		if (isOutbounds(x, y, z))
+        if (isOutbounds(x, y, z))
 			return AIRBLOCK;
 		
 		return blocks[x][y][z];

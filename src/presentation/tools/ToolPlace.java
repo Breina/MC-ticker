@@ -34,7 +34,7 @@ public class ToolPlace extends Tool {
 			case MouseEvent.BUTTON1:
 				dragBlock = Block.B_AIR;
 		}
-		
+
 		setBlock();
 	}
 	

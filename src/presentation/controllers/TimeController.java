@@ -50,12 +50,11 @@ public class TimeController implements Runnable {
 	}
 
 	private Tag tick() {
-
 		simController.tick();
 
 		Tag schematic = simController.getSchematic();
 		timeLine.add(schematic);
-		
+
 		return schematic;
 	}
 	
@@ -218,7 +217,6 @@ public class TimeController implements Runnable {
 	}
 
 	public void updateCurrentSchematic() {
-
 		Tag schem = simController.getSchematic();
 
 		timeLine.set(schem);

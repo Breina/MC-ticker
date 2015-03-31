@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Largely responsible for catching errors and giving meaningful messages back
- * to the GUI.
+ * to the GUI. Fuck I hate this class.
  */
 public class SimController {
 	
@@ -75,7 +75,7 @@ public class SimController {
 	public boolean tick() {
 		
 		try {
-			
+
 			return simWorld.tickWorld();
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e) {

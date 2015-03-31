@@ -13,7 +13,6 @@ public class Simulator {
 	private RBlock rBlock;
 	private RChunk rChunk;
 	private RProfiler rProfiler;
-	private RChunkProvider rChunkProvider;
 	private RTileEntity rTileEntity;
 	private RNBTTags rNBTTags;
 	private REntity rEntity;
@@ -45,9 +44,6 @@ public class Simulator {
 
 		rChunk = new RChunk(linker, rChunkPrimer);
 
-		// Our implementation of chunkProvider, which will basically be our block input
-		rChunkProvider = new RChunkProvider(rBlockPos);
-
 		rEntity = new REntity(linker, rNBTTags);
 
 		// Making all objects ready, and linking chunkProvider to world already, so chunkProvider will be called from there
@@ -62,6 +58,6 @@ public class Simulator {
 	
 	public SimWorld createWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		return new SimWorld(rBlock, rChunk, rChunkProvider, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld, rChunkPrimer, rBlockPos, rIntHashMap);
+		return new SimWorld(rBlock, rChunk, rEntity, rNBTTags, rNextTickListEntry, rProfiler, rTileEntity, rWorld, rChunkPrimer, rBlockPos);
 	}
 }

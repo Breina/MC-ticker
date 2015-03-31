@@ -164,7 +164,6 @@ public class WorldController {
 	}
 	
 	public void onSchematicUpdated() {
-
         if (!shouldUpdate())
             return;
 
