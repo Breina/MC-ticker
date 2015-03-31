@@ -5,6 +5,7 @@ from within another interface. The main aim of this project is to speed up the d
 technical builds, as well as providing methods to help share schematics.
 
 ![This image was generated using MC ticker's export function](/doc/MC_ticker_logo.gif)
+
 ![The interface of the editor](/doc/Interface.png)
 
 ## Features
@@ -17,16 +18,19 @@ technical builds, as well as providing methods to help share schematics.
 - Compatible with modded clients.
 
 ## Usage
-![Activate](/img/tools/cursor.png) Send a right click to toggle levers, push buttons, switch comparator modes,
+* ![Activate](/img/tools/cursor.png) Send a right click to toggle levers, push buttons, switch comparator modes,
 change repeater delay, ...
-![Place](/img/tools/block.png) Right click places the selected block on the left side at the selected coordinates. Left
+* ![Place](/img/tools/block.png) Right click places the selected block on the left side at the selected coordinates. Left
 click replaces it with an air block. By default, surrounding blocks are updated. If the shift key is being held, nothing
 is updated.
-![Rotate](/img/tools/rotate.png) Rotates the selected block, left and right click will rotate in different directions.
-![Select](/img/tools/select.png) Creates a selection of multiple blocks, similar to spreadsheet software, but in 3
+* ![Rotate](/img/tools/rotate.png) Rotates the selected block, left and right click will rotate in different directions.
+* ![Select](/img/tools/select.png) Creates a selection of multiple blocks, similar to spreadsheet software, but in 3
 dimensions. Shift will take the previous origin, if possible. Control or command will add to the previous selection, and
 when done on an already selected region, will make a negative selection inside the previous selection. Selecting blocks
 has currently no use, though. >.<
+* The time bar allows manipulating the time of each schematic separately. When ticking, the previous schematic is
+internally buffered, this enables going back in time. Be careful though, there is no branching of timelines. If you go
+back in time and modify anything, the future is discarded and this is the new end of the timeline.
 
 ## Extensibility
 MC ticker is able to handle modded clients, but currently has no graphics for any. Graphics are configured by XML files
