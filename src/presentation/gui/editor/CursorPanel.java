@@ -74,10 +74,12 @@ class CursorPanel extends EditorSubComponent {
     }
 
     public void selectCord(Cord3S c) {
-        if (c == null)
+        if (c == null) {
             setVisible(false);
+            mouseX = -1;
+            mouseY = -1;
 
-        else
+        } else
             selectCord(c.x, c.y, c.z);
 
         worldController.repaintAllEditors();
