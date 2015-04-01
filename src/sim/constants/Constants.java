@@ -49,7 +49,7 @@ public class Constants {
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
 		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
 		{"getEntityString", "Returns the string that identifies"}, {"getEventID"}, {"getEventParameter"},
-		{"onBlockEventReceived"}, {"isOpaque"}, {"isFullCube"}};
+		{"onBlockEventReceived"}, {"isOpaque"}, {"isFullCube"}, {"updateBlockTick"}};
 
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -70,16 +70,15 @@ public class Constants {
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
 		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData", "Material"};
 
-	// Untranslated methods
+	// Untranslated methods because there are multiple versions of its name
 	public final static String WORLD_GETBLOCKSTATE = "p";
 	public final static String WORLD_SETBLOCKSTATE = "a";
-	public final static String IBLOCKSTATE_GETBLOCK = "c";
-	public final static String WORLD_ADDTICKENTRY = "b";
+    public final static String IBLOCKSTATE_GETBLOCK = "c";
     public final static String TILEENTITY_READFROMNBT = "b";
     public final static String NBTTAGCOMPOUND_LOAD = "a";
 	public final static String BLOCKEVENTDATA_GETBLOCKPOS = "a";
 
-    // Untranslated fields
+    // Untranslated fields because there are multiple version of its name
 	public final static String CHUNKPRIMER_DATA = "a";
     public final static String WORLD_THEPROFILER = "B";
     public final static String NEXTTICKLISTENTRY_BLOCK = "e";

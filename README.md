@@ -16,6 +16,7 @@ technical builds, as well as providing methods to help share schematics.
 - Export images.
 - Go tick by tick and backwards in time.
 - Compatible with modded clients.
+- Nether and end compatible.
 
 ## Usage
 * The time bar allows manipulating the time of each schematic separately. When ticking, the previous schematic is
