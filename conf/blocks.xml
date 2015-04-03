@@ -102,6 +102,10 @@
 			
 			<icon data="2" orientation="front" />
 		</block>
+
+        <block id="46">
+            <name>TNT</name>
+        </block>
 	
 	</category>
 	
