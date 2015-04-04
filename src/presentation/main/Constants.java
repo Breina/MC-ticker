@@ -10,7 +10,7 @@ public class Constants {
 	public final static String APPLICATIONTITLE = "MC ticker 0.2 (pre-alpha)";
 	public final static String MOTD = "Thanks for trying out the sim! Lots of things are not done though.";
 
-    public final static int MIN_FRAME_DELAY = 33; // ms (~60 fps)
+    public final static int MIN_FRAME_DELAY = 250; // ms (~60 fps)
 
 	public final static String SCHEMATICSDIR = "schems";
 	public final static String EXPORTDIR = "export";

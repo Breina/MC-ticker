@@ -29,6 +29,9 @@ public abstract class EditorSubComponent extends JPanel {
      */
     protected final Editor editor;
 
+    protected int pixelWidth;
+    protected int pixelHeight;
+
     protected EditorSubComponent(Editor editor) {
         super();
 
@@ -40,8 +43,8 @@ public abstract class EditorSubComponent extends JPanel {
 
         setOpaque(false);
 
-        int pixelWidth = editorWidth * Editor.SIZE;
-        int pixelHeight = editorHeight * Editor.SIZE;
+        pixelWidth = editorWidth * Editor.SIZE + 1;
+        pixelHeight = editorHeight * Editor.SIZE + 1;
 
         setBounds(0, 0, pixelWidth, pixelHeight);
     }

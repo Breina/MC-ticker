@@ -255,10 +255,10 @@ class RWorld {
 	 * This invokes the relevant function once
 	 */
 	public boolean tick(WorldInstance world, long advanceTicks) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		
+
 		if (Constants.DEBUG_WORLD)
 			System.out.println("Ticking " + world.getPendingTickListEntries().size() + " pending updates...");
-		
+
 		advanceTicks(world, advanceTicks);
 
 		// The order of these is cast in stone

@@ -82,6 +82,7 @@ class CursorPanel extends EditorSubComponent {
         } else
             selectCord(c.x, c.y, c.z);
 
+        // TODO maybe not repaint everything, ever, but repaint the region around it orso
         worldController.repaintAllEditors();
     }
 }

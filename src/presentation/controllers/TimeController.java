@@ -195,9 +195,7 @@ public class TimeController implements Runnable {
 				timeInfo.setStep(tickCounter);
 				
 				if (hasDelay)
-					wait(90l);
-				
-				wait(10l);
+					wait(100l);
 			}
 		} catch (InterruptedException e) {
 			Log.e("The time controller's thread was rudely abrupted! :o");			

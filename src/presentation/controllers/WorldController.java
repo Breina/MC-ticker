@@ -176,6 +176,8 @@ public class WorldController {
         for (Editor editor : editors)
             editor.onSchematicUpdated();
 
+        lastUpdateTime = System.currentTimeMillis();
+
         doUpdate = true;
 	}
 	
@@ -318,17 +320,14 @@ public class WorldController {
     }
 
     synchronized boolean shouldUpdate() {
-
         if (!doUpdate)
             return false;
 
         long newTime = System.currentTimeMillis();
         boolean result = newTime - lastUpdateTime >= Constants.MIN_FRAME_DELAY;
 
-        if (result)
-            lastUpdateTime = newTime;
-
-        timerUpdater.setTimeTarget(newTime + Constants.MIN_FRAME_DELAY);
+        if (!result)
+            timerUpdater.setTimeTarget(newTime + Constants.MIN_FRAME_DELAY);
 
         return result;
     }
@@ -342,7 +341,6 @@ public class WorldController {
 
             for (;;) {
                 try {
-
                     while (System.currentTimeMillis() < timeTarget)
                             Thread.sleep(Constants.MIN_FRAME_DELAY);
 

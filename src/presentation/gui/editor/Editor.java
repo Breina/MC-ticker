@@ -71,6 +71,8 @@ public class Editor extends JLayeredPane {
      */
     private SelectionPanel selectionPanel;
 
+    private BlockPanel blockPanel;
+
     private final JInternalFrame parent;
 
     public Editor(WorldController worldController, JInternalFrame parent, Orientation orientation) {
@@ -91,7 +93,7 @@ public class Editor extends JLayeredPane {
         pixelWidth = (int) (worldWidth * SIZE * scale);
         pixelHeight = (int) (worldHeight * SIZE * scale);
 
-        BlockPanel blockPanel = new BlockPanel(this);
+        blockPanel = new BlockPanel(this);
         setLayer(blockPanel, BLOCK_INDEX);
         add(blockPanel);
 
@@ -184,15 +186,13 @@ public class Editor extends JLayeredPane {
      */
     public void setLayerHeight(short layer) {
 
-        worldController.setDoUpdate(false);
-
         this.layer = layer;
 
         worldController.getLayerManager().updateLayer(this);
 
         getWorldController().getEntityManager().checkVisibility(this);
 
-        worldController.setDoUpdate(true);
+        repaint();
     }
 
     /**
@@ -248,6 +248,7 @@ public class Editor extends JLayeredPane {
     }
 
     public void onSchematicUpdated() {
+        blockPanel.clearBuffer();
         repaint();
     }
 

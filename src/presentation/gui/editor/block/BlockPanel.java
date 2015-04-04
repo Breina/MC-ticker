@@ -11,12 +11,14 @@ import presentation.objects.ViewData;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
  * A panel that will draw the blocks of a world, used by Editor
  */
 public class BlockPanel extends EditorSubComponent {
 
+    private BufferedImage[] layerBuffer;
     private final TileController tileController;
 
     public BlockPanel(Editor editor) {
@@ -24,7 +26,42 @@ public class BlockPanel extends EditorSubComponent {
 
         tileController = worldController.getMainController().getTileController();
 
+        int maxLayer = 0;
+        ViewData worldData = editor.getWorldController().getWorldData();
+        switch (orientation) {
+            case TOP:
+                maxLayer = worldData.getYSize();
+                break;
+
+            case FRONT:
+                maxLayer = worldData.getZSize();
+                break;
+
+            case RIGHT:
+                maxLayer = worldData.getXSize();
+        }
+
+        layerBuffer = new BufferedImage[maxLayer];
         setOpaque(true);
+    }
+
+    private BufferedImage paintLayer(int layerHeight) {
+        BufferedImage bi = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_3BYTE_BGR);
+
+        Graphics2D g = bi.createGraphics();
+        g.setBackground(Color.GRAY);
+
+        for (short y = 0; y < this.editorHeight; y++)
+            for (short x = 0; x < this.editorWidth; x++) {
+                Cord3S cords = getCord3D(x, y);
+
+                BufferedImage image = getTile(cords.x, cords.y, cords.z);
+                g.drawImage(image, x * Editor.SIZE + 1, y * Editor.SIZE + 1, null);
+            }
+
+        layerBuffer[layerHeight] = bi;
+
+        return bi;
     }
 
     /**
@@ -34,17 +71,20 @@ public class BlockPanel extends EditorSubComponent {
     protected void paintComponent(Graphics gr) {
         super.paintComponent(gr);
 
+        int layerHeight = editor.getLayerHeight();
+
+        BufferedImage bi = layerBuffer[layerHeight];
+
+        if (bi == null)
+            bi = paintLayer(layerHeight);
+
         Graphics2D g = (Graphics2D) gr;
-        g.setBackground(Color.GRAY);
-        g.clearRect(0, 0, editorWidth * Editor.SIZE + 1, editorHeight * Editor.SIZE + 1);
 
-        for (short y = 0; y < this.editorHeight; y++)
-            for (short x = 0; x < this.editorWidth; x++) {
-                Cord3S cords = getCord3D(x, y);
+        g.drawImage(bi, 0, 0, null);
+    }
 
-                BufferedImage image = getTile(cords.x, cords.y, cords.z);
-                g.drawImage(image, x * Editor.SIZE + 1, y * Editor.SIZE + 1, null);
-            }
+    public void clearBuffer() {
+        Arrays.fill(layerBuffer, null);
     }
 
     /**
