@@ -100,9 +100,8 @@ public class BlockPanel extends EditorSubComponent {
 
         BufferedImage tileImage;
         ViewData worldData = worldController.getWorldData();
-        Block b = worldData.getBlock(x, y, z);
-
-        Block behindBlock = null;
+        char b = worldData.getBlock(x, y, z);
+        char behindBlock = Block.BLOCK_AIR;
 
         switch (orientation) {
             case TOP:
@@ -117,10 +116,12 @@ public class BlockPanel extends EditorSubComponent {
                 behindBlock = worldData.getBlock(x + 1, y, z);
         }
 
-        if (b.getId() == 0 && !behindBlock.isTransparentBlock())
+        byte blockId = Block.getId(b);
+
+        if (blockId == 0 && !Block.isTransparentBlock(Block.getId(behindBlock)))
             return tileController.getTile("solid-below");
 
-        switch (b.getId()) {
+        switch (blockId) {
             case Block.BLOCK_WIRE:
                 tileImage = getRedstoneWire(b, x, y, z);
                 return tileImage;
@@ -130,7 +131,7 @@ public class BlockPanel extends EditorSubComponent {
                 return tileImage;
         }
 
-        tileImage = tileController.getTile(b.getId(), b.getData(), orientation);
+        tileImage = tileController.getTile(blockId, Block.getData(b), orientation);
 
         return tileImage;
     }
@@ -143,8 +144,8 @@ public class BlockPanel extends EditorSubComponent {
      * @param z
      * @return The BufferedImage of size Editor.SIZE x Editor.SIZE
      */
-    private BufferedImage getRedstoneWire(Block b, short x, short y, short z) {
-        byte powerLevel = b.getData();
+    private BufferedImage getRedstoneWire(char b, short x, short y, short z) {
+        byte powerLevel = Block.getData(b);
 
         ViewData viewData = worldController.getWorldData();
         BufferedImage bi = null;
@@ -153,17 +154,17 @@ public class BlockPanel extends EditorSubComponent {
         final short[] XCORDS = {x, (short) (x - 1), x, (short) (x + 1)};
         final short[] ZCORDS = {(short) (z - 1), z, (short) (z + 1), z};
 
-        final boolean up = viewData.getBlock(x, (short) (y + 1), z).isTransparentBlock();
+        final boolean up = Block.isTransparentBlock(Block.getId(viewData.getBlock(x, (short) (y + 1), z)));
 
-        Block testBlock;
+        char testBlock;
         for (byte i = 0; i < 4; i++) {
             testBlock = viewData.getBlock(XCORDS[i], y, ZCORDS[i]);
             // anything on same level
-            cons[i] = (testBlock.isConnectable(i % 2 == 0))
+            cons[i] = (Block.isConnectable(testBlock, i % 2 == 0))
                     // wire 1 block lower
-                    || (testBlock.isTransparentBlock() && viewData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE)
+                    || (Block.isTransparentBlock(Block.getId(testBlock)) && Block.getId(viewData.getBlock(XCORDS[i], (short) (y - 1), ZCORDS[i])) == Block.BLOCK_WIRE)
                     // wire 1 block higher
-                    || (up && viewData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i]).getId() == Block.BLOCK_WIRE);
+                    || (up && Block.getId(viewData.getBlock(XCORDS[i], (short) (y + 1), ZCORDS[i])) == Block.BLOCK_WIRE);
         }
 
         bi = RedstoneWire.draw(powerLevel, this.orientation, cons);
@@ -172,7 +173,7 @@ public class BlockPanel extends EditorSubComponent {
     }
 
     // TODO
-    private BufferedImage getChest(Block b, short x, short y, short z) {
+    private BufferedImage getChest(char b, short x, short y, short z) {
         return null;
     }
 }

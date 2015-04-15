@@ -150,13 +150,13 @@ public class WorldController {
 		mainController.onWorldRemoved(this);
 	}
 	
-	public void setBlock(final int x, final int y, final int z, final Block block, boolean update) {
+	public void setBlock(final int x, final int y, final int z, final char block, boolean update) {
 
         setDoUpdate(false);
 		
 		timeController.loadCurrentTimeIntoSchematic(true);
 		
-		simController.setBlock(x, y, z, block.getId(), block.getData(), update);
+		simController.setBlock(x, y, z, Block.getId(block), Block.getData(block), update);
 		
 		timeController.updateCurrentSchematic();
 

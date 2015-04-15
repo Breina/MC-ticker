@@ -42,7 +42,7 @@ public class MainController {
 	
 	private Tool tool;
 	
-	private Block block;
+	private char block;
 	
 	private Simulator simulator;
 	
@@ -308,11 +308,11 @@ public class MainController {
      * Sets the currently selected blocks
      * @param block The selected block
      */
-	public void setBlock(Block block) {
+	public void setBlock(char block) {
 		this.block = block;
 	}
 	
-	public Block getBlock() {
+	public char getBlock() {
 		return block;
 	}
 

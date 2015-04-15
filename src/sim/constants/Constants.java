@@ -61,14 +61,14 @@ public class Constants {
 		{"addedTileEntityList"}, {"tileEntitiesToBeRemoved"}, {"x", "X coor"}, {"y", "Y coor"}, {"z", "Z coor"},
 		{"posX", "Entity"}, {"posY", "Entity"}, {"posZ", "Entity"}, {"width", "How wide"}, {"isDead"},
 		{"motionX", "Entity"}, {"motionY", "Entity"}, {"motionZ", "Entity"}, {"height", "How high"}, {"entityUniqueID"},
-        {"blockEventCacheIndex"}, {"blockMaterial"}};
+        {"blockEventCacheIndex"}, {"blockMaterial"}, {"storageArrays"}};
 
 	public final static String[] REQUIREDCLASSES = {"World", "WorldServer", "WorldProvider", "Profiler", "WorldSettings",
 		"WorldSettings$GameType", "WorldInfo", "WorldType", "IChunkProvider", "Block", "Chunk",
 		"NBTTagCompound", "TileEntity", "IntHashMap", "Entity", "EntityList", "Bootstrap", "NBTTagList",
 		"NBTSizeTracker", "NextTickListEntry", "EntityPlayer", "EntityOtherPlayerMP", "ChunkPrimer", "BlockPos", "IBlockState", "Vec3i", "BlockPos$MutableBlockPos",
 		"EnumFacing", "PropertyDirection", "IProperty", "WorldBorder", "WorldServer$ServerBlockEventList",
-		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData", "Material"};
+		"IUpdatePlayerListBox", "RegistryNamespaced", "BlockEventData", "Material", "ExtendedBlockStorage"};
 
 	// Untranslated methods because there are multiple versions of its name
 	public final static String WORLD_GETBLOCKSTATE = "p";
@@ -86,6 +86,7 @@ public class Constants {
     public final static String NEXTTICKLISTENTRY_PRIORITY = "c";
     public final static String BLOCK_UNLOCALIZEDNAME = "N";
 	public final static String WORLDSERVER_SERVERBLOCKEVENTLIST = "S";
+    public final static String EXTENDEDBLOCKSTORAGE_DATA = "d";
 
     // Classes that need to be gotten out of a library {className, package, libPath}
     public static final String[][] LIBRARYCLASSES = {{"GameProfile", "com/mojang/authlib/", "/com/mojang/authlib/1.5.17/authlib-1.5.17.jar"}};

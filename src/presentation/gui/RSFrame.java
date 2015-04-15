@@ -86,8 +86,8 @@ public class RSFrame extends JFrame {
         Log.setLogger(logSplit);
 //        add(logSplit, BorderLayout.CENTER);
 
-        BlockPanel blockPanel = new BlockPanel(controller, logSplit);
-        add(blockPanel, BorderLayout.CENTER);
+        BlockChooser blockChooser = new BlockChooser(controller, logSplit);
+        add(blockChooser, BorderLayout.CENTER);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);

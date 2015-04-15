@@ -120,17 +120,9 @@ public class SimController {
 		}
 	}
 
-	public Block[][][] getBlockObjects() {
+	public char[][][] getBlocks() {
 
-		try {
-			return simWorld.getBlockObjects();
-
-		} catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-
-			Log.e("Could not get blocks from world" + analyseException(e));
-		}
-
-		return null;
+		return simWorld.getBlocks();
 	}
 
     public Object getBlockState(int x, int y, int z) {

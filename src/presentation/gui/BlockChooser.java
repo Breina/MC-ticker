@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class BlockPanel extends JSplitPane {
+public class BlockChooser extends JSplitPane {
 	private static final long serialVersionUID = -6830958137411873462L;
 
 	private final static int BTNSIZE = 25;
@@ -21,7 +21,7 @@ public class BlockPanel extends JSplitPane {
 	private final BlockController blockController;
 	private final TileController tileController;
 
-	public BlockPanel(MainController mainController, JComponent rightComponent) {
+	public BlockChooser(MainController mainController, JComponent rightComponent) {
 		super(JSplitPane.HORIZONTAL_SPLIT, true);
 		
 		this.mainController = mainController;
@@ -73,12 +73,10 @@ public class BlockPanel extends JSplitPane {
 
                 if (group.getSelection() == null) {
                     btn.setSelected(true);
-                    mainController.setBlock(new Block(bl.getId(), (byte) 0));
+                    mainController.setBlock((char) 0);
                 }
 				
-				btn.addItemListener(e -> {
-                    mainController.setBlock(new Block(bl.getId(), (byte) 0)); // TODO not 0 data plz
-                });
+				btn.addItemListener(e -> mainController.setBlock(Block.getChar(bl.getId(), (byte) 0)));
 
                 pnlCategory.setMinimumSize(new Dimension(150, pnlCategory.getMinimumSize().height));
             }

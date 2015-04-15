@@ -9,7 +9,7 @@ public class ViewData {
     private final short ySize;
     private final short zSize;
 	private final String name;
-	private Block[][][] blocks;
+	private char[][][] blocks;
 	private Entity[] entities;
 	
 	private final static Block AIRBLOCK = new Block((byte) 0);
@@ -31,13 +31,13 @@ public class ViewData {
 //		}
 	}
 
-	public void setState(Block[][][] blocks, Entity[] entities) {
+	public void setState(char[][][] blocks, Entity[] entities) {
 
 		setBlocks(blocks);
 		setEntities(entities);
 	}
 
-	void setBlocks(Block[][][] blocks) {
+	void setBlocks(char[][][] blocks) {
 		this.blocks = blocks;
 	}
 
@@ -45,14 +45,14 @@ public class ViewData {
 		this.entities = entities;
 	}
 	
-	public Block getBlock(int x, int y, int z) {
+	public char getBlock(int x, int y, int z) {
         if (isOutbounds(x, y, z))
-			return AIRBLOCK;
+			return 0;
 		
 		return blocks[x][y][z];
 	}
 
-    public void setBlock(int x, int y, int z, Block block) {
+    public void setBlock(int x, int y, int z, char block) {
 
         blocks[x][y][z] = block;
     }

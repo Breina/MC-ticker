@@ -1,5 +1,6 @@
 package sim.objects;
 
+import presentation.objects.Block;
 import sim.logic.RIntHashMap;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,9 @@ public class WorldInstance {
 	private Set<Object> pendingTickListEntries, pendingTickListHashSet;
 	private List<Object> loadedTileEntities, loadedEntities, tickableTileEntities;
 	private long worldTime;
+
+    // This is a 3D array of ExtendedBlockStorage's data array, directly accessing the array containing the world
+    private char[][][] worldData[];
 
 	 // TODO make this so time is only updated when time changes, doesn't need to setTime when ticking
 	private boolean doTimeUpdate;
@@ -134,27 +138,39 @@ public class WorldInstance {
 		this.doTimeUpdate = doTimeUpdate;
 	}
 
+    public void setSize(int xSize, int ySize, int zSize) {
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.zSize = zSize;
+
+        worldData = new char[(xSize >> 4) + 1][(ySize >> 4) + 1][(zSize >> 4) + 1][4096]; // 4096 = 16³
+    }
+
 	public int getxSize() {
 		return xSize;
-	}
-
-	public void setxSize(int xSize) {
-		this.xSize = xSize;
 	}
 
 	public int getySize() {
 		return ySize;
 	}
 
-	public void setySize(int ySize) {
-		this.ySize = ySize;
-	}
-
 	public int getzSize() {
 		return zSize;
 	}
 
-	public void setzSize(int zSize) {
-		this.zSize = zSize;
-	}
+    public void setWorldData(int x, int y, int z, char[] array) {
+        worldData[x][y][z] = array;
+    }
+
+    public void setBlockRaw(int x, int y, int z, char block) {
+        worldData[x >> 4][y >> 4][z >> 4][getCoordinateIndex(x & 0xf, y & 0xf, z & 0xf)] = block;
+    }
+
+    public char getBlockRaw(int x, int y, int z) {
+        return worldData[x >> 4][y >> 4][z >> 4][getCoordinateIndex(x & 0xf, y & 0xf, z & 0xf)];
+    }
+
+    private int getCoordinateIndex(int x, int y, int z) {
+        return y << 8 | z << 4 | x;
+    }
 }

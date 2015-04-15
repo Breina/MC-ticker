@@ -11,11 +11,13 @@ import java.awt.event.MouseEvent;
 
 public class ToolPlace extends Tool {
 	
-	private Block dragBlock;
+	private char dragBlock;
+    private boolean dragging;
     private boolean doUpdate;
 
 	public ToolPlace(MainController mainController) {
 		super(mainController, "Place", "block.png", false);
+        dragging = false;
 	}
 
 	@Override
@@ -33,11 +35,12 @@ public class ToolPlace extends Tool {
 				
 			default:
 			case MouseEvent.BUTTON1:
-				dragBlock = Block.B_AIR;
+				dragBlock = Block.BLOCK_AIR;
 		}
 
         int modifiers = e.getModifiersEx();
         doUpdate = !((MouseEvent.SHIFT_DOWN_MASK & modifiers) == MouseEvent.SHIFT_DOWN_MASK);
+        dragging = true;
 
 		setBlock();
 	}
@@ -57,7 +60,9 @@ public class ToolPlace extends Tool {
 
         BlockController blockController = mainController.getBlockController();
 
-        if (dragBlock.getId() != 0 && blockController.getBlock(dragBlock.getId()).isSideDependent())
+        byte blockId = Block.getId(dragBlock);
+
+        if (blockId != 0 && blockController.getBlock(blockId).isSideDependent())
         // Find best rotation
             ToolRotate.rotateUntilValid(worldController, mainController.getBlockController(), c, true);
         else
@@ -66,7 +71,7 @@ public class ToolPlace extends Tool {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		dragBlock = null;
+        dragging = false;
 	}
 
 	@Override
@@ -79,8 +84,8 @@ public class ToolPlace extends Tool {
 
 	@Override
 	public void onSelectionChanged() {
-		if (dragBlock != null)
-			setBlock();
+		if (dragging)
+            setBlock();
 	}
 
 }

@@ -43,8 +43,8 @@ public class StatusPanel extends JPanel {
 			lblWorld.setText(source.getWorldData().getName());
 			lblSelection.setText(cord.toString());
 
-			Block block = source.getWorldData().getBlock(cord.x, cord.y, cord.z);
-			lblValue.setText(block.getId() + " : " + block.getData());
+			char block = source.getWorldData().getBlock(cord.x, cord.y, cord.z);
+			lblValue.setText(Block.getId(block) + " : " + Block.getData(block));
 		}
 	}
 

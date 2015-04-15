@@ -41,7 +41,7 @@ public class TimeController implements Runnable {
 
 		isPaused = true;
 
-		viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+		viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 		timeLine.init(simController.getSchematic());
 
 		timeInfo.setStep(0);
@@ -68,7 +68,7 @@ public class TimeController implements Runnable {
 
 
 				simController.setSchematic(timeLine.first());
-				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
 				timeInfo.setStep(0);
@@ -132,7 +132,7 @@ public class TimeController implements Runnable {
 
 				// TODO setSchematic may not be necessary
 				simController.setSchematic(timeLine.last());
-				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
 				timeInfo.setStep(maxCount);
@@ -189,7 +189,7 @@ public class TimeController implements Runnable {
 					simController.setSchematic(schem);
 				}
 
-				viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 				worldController.onSchematicUpdated();
 
 				timeInfo.setStep(tickCounter);
@@ -218,7 +218,7 @@ public class TimeController implements Runnable {
 		Tag schem = simController.getSchematic();
 
 		timeLine.set(schem);
-		viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+		viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 
 		worldController.onSchematicUpdated();
 	}
@@ -247,6 +247,6 @@ public class TimeController implements Runnable {
         }
 
         simController.setSchematic(timeLine.getRelative(count - tickCounter));
-        viewData.setState(simController.getBlockObjects(), simController.getEntityObjects());
+        viewData.setState(simController.getBlocks(), simController.getEntityObjects());
     }
 }

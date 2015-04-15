@@ -37,13 +37,13 @@ public class ToolRotate extends Tool {
 
         SimController simController = worldController.getSimController();
 
-        Block block = worldController.getWorldData().getBlock(c.x, c.y, c.z);
+        char block = worldController.getWorldData().getBlock(c.x, c.y, c.z);
 
-        BlockLogic blockLogic = blockController.getBlock(block.getId());
+        BlockLogic blockLogic = blockController.getBlock(Block.getId(block));
         if (blockLogic == null)
             return;
 
-        byte startData = block.getData();
+        byte startData = Block.getData(block);
         byte data = startData;
         Object sideBlock;
 
@@ -63,7 +63,7 @@ public class ToolRotate extends Tool {
 
         } while (!simController.isFullCube(sideBlock) || !simController.isOpaque(sideBlock));
 
-        block.setData(data);
+        block = Block.getChar(Block.getId(block), data);
         worldController.setBlock(c.x, c.y, c.z, block, true);
     }
 	

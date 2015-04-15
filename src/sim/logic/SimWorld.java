@@ -57,10 +57,8 @@ public class SimWorld {
 	}
 	
 	public void createInstance() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-		Log.i("Creating new world");
-		world = rWorld.createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
-				Constants.SEED, Constants.WORLDPROVIDER, Constants.MAPFEATURESENABLED, Constants.HARDCOREENABLED, rChunk, rChunkProvider,
-				rProfiler);
+		createInstance(Constants.WORLDTYPEID, Constants.WORLDTYPE, Constants.GAMETYPE,
+				Constants.SEED, Constants.WORLDPROVIDER, Constants.HARDCOREENABLED);
 	}
 	
 	/**
@@ -72,26 +70,24 @@ public class SimWorld {
      * @param hardcoreEnabled true/false
      */
 	public void createInstance(int worldTypeId, String worldType, String gameType, long seed, int worldProvider, boolean hardcoreEnabled) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-
 		world = rWorld.createInstance(worldTypeId, worldType, gameType, seed, worldProvider, Constants.MAPFEATURESENABLED, hardcoreEnabled, rChunk, rChunkProvider, rProfiler);
 	}
 	
 	public void createEmptyWorld(int xSize, int ySize, int zSize) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		Block[][][] blocks = new Block[xSize][ySize][zSize];
+		char[][][] blocks = new char[xSize][ySize][zSize];
 
 		for (short y = 0; y < ySize; y++)
 			for (short z = 0; z < zSize; z++)
 				for (short x = 0; x < xSize; x++)
 					if (y != 0)
-						blocks[x][y][z] = Block.B_AIR;
+						blocks[x][y][z] = Block.BLOCK_AIR;
 					else
-						blocks[x][y][z] = Block.B_SOLID;
-			
-		setBlockObjects(xSize, ySize, zSize, blocks);
-		world.setxSize(xSize);
-		world.setySize(ySize);
-		world.setzSize(zSize);
+						blocks[x][y][z] = Block.BLOCK_IRON;
+
+        world.setSize(xSize, ySize, zSize);
+        setBlocks(blocks);
+		linkBlocks(xSize, ySize, zSize);
 	}
 
 	public void setSchematic(InputStream input) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, NoSuchAlgorithmException {
@@ -122,10 +118,10 @@ public class SimWorld {
 		short zSize = (short) schematicTag.findNextTagByName("Length", null).getValue();
 
 		// Size
-		world.setxSize((int) xSize);
-		world.setySize((int) ySize);
-		world.setzSize((int) zSize);
-		
+//		world.linkBlocks((int) xSize, (int) ySize, (int) zSize);
+
+        world.setSize(xSize, ySize, zSize);
+
 		// Blocks
 		byte[] idsArray = (byte[]) schematicTag.findNextTagByName("Blocks", null).getValue();
 		byte[] dataArray = (byte[]) schematicTag.findNextTagByName("Data", null).getValue();
@@ -137,10 +133,11 @@ public class SimWorld {
 			for (short z = 0; z < zSize; z++)
 				for (short x = 0; x < xSize; x++) {
 					blocks[x][y][z] = new Block(idsArray[i], dataArray[i]);
-					i++;
+                    i++;
 				}
-		
+
 		setBlockObjects(world.getxSize(), world.getySize(), world.getzSize(), blocks);
+        linkBlocks(xSize, ySize, zSize);
 
 		world.clearLists();
 		
@@ -161,6 +158,32 @@ public class SimWorld {
 			setTileTicks((Tag[]) tileTicks.getValue());
 	}
 
+    private void linkBlocks(int xSize, int ySize, int zSize) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        for (int x = 0; x << 4 < xSize; x++)
+            for (int z = 0; z << 4 < zSize; z++) {
+                Object chunk = rChunkProvider.getChunk(x, z);
+                Object[] storageArray = rChunk.getStorageArray(chunk);
+
+                for (int y = 0; y << 4 < ySize; y++)
+                    world.setWorldData(x, y, z, rChunk.getData(storageArray, y));
+            }
+    }
+
+    private void setBlocks(char[][][] blocks) {
+
+        for (int x = 0; x < blocks.length; x++) {
+            char[][] xBlocks = blocks[x];
+
+            for (int y = 0; y < xBlocks.length; y++) {
+                char[] yBlocks = xBlocks[y];
+
+                for (int z = 0; z < yBlocks.length; z++)
+                    world.setBlockRaw(x, y, z, yBlocks[z]);
+            }
+        }
+    }
+
+    @Deprecated
 	private void setBlockObjects(int xSize, int ySize, int zSize, Block[][][] blocks) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
 		
 		rChunkProvider.clear();
@@ -283,7 +306,7 @@ public class SimWorld {
 		if (isSchematicUpToDate)
 			return cachedSchematic;
 
-		Block[][][] blocks = getBlockObjects();
+        char[][][] blocks = getBlocks();
 
 		int size = world.getxSize() * world.getySize() * world.getzSize();
 
@@ -294,10 +317,9 @@ public class SimWorld {
 		for (short y = 0; y < world.getySize(); y++)
 			for (short z = 0; z < world.getzSize(); z++)
 				for (short x = 0; x < world.getxSize(); x++) {
-
-					Block block = blocks[x][y][z];
-					ids[i] = block.getId();
-					data[i] = block.getData();
+					char block = blocks[x][y][z];
+					ids[i] = Block.getId(block);
+					data[i] = Block.getData(block);
 					i++;
 				}
 		
@@ -505,7 +527,20 @@ public class SimWorld {
 		Log.i("TileEntity: " + mcTag.toString());
 	}
 
-    // TODO I do not like this getting called twice, try to avoid it or cache this shit
+    // TODO this is called twice, buffer this shit
+    public char[][][] getBlocks() {
+
+        char[][][] blocks = new char[world.getxSize()][world.getySize()][world.getzSize()];
+
+        for (int y = 0; y < world.getySize(); y++)
+            for (int z = 0; z < world.getzSize(); z++)
+                for (int x = 0; x < world.getxSize(); x++)
+                    blocks[x][y][z] = world.getBlockRaw(x, y, z);
+
+        return blocks;
+    }
+
+    @Deprecated
 	public Block[][][] getBlockObjects() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];

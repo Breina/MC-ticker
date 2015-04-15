@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
-class ClassTester {
+public class ClassTester {
 
 	/**
 	 * Just displays all methods of a class nicely
