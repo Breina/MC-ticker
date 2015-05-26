@@ -3,7 +3,6 @@ package sim.logic;
 
 import logging.Log;
 import sim.constants.Constants;
-import sim.loading.ClassTester;
 import sim.loading.Linker;
 
 import java.lang.reflect.Constructor;
@@ -63,25 +62,25 @@ class RChunk {
 		m_onChunkLoad.invoke(chunk);
 	}
 	
-	public Object generateEmptyChunk(Object world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public Object generateEmptyChunk(Object world, int xPos, int zPos) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		Object primer = rChunkPrimer.createChunkPrimer();
 		short[] data = new short[65536];
 		rChunkPrimer.setData(primer, data);
 		
-		return createChunk(world, primer, 0, 0);
+		return createChunk(world, primer, xPos, zPos);
 	}
 
 	public Object createChunk(Object world, Object chunkPrimer, int xPos, int zPos) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
+
 		Object chunk = c_chunk.newInstance(world, chunkPrimer, xPos, zPos);
-		
+
 		// TODO might be optional
 		m_genHeightMap.invoke(chunk);
-		
+
 		// If ever doing unloading, this needs to be in ChunkProvider
 		onChunkLoad(chunk);
-		
+
 		return chunk;
 	}
 

@@ -76,6 +76,16 @@ public class Block {
 		}
 		return false;
 	}
+
+    public static int compansateForJavasLackOfUnsignedBytes(byte b) {
+
+        int id = (int) b;
+
+        if (id < 0)
+            id += 256;
+
+        return id;
+    }
 	
 	@Override
 	public String toString() {

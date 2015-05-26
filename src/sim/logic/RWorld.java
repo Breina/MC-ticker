@@ -235,7 +235,7 @@ class RWorld {
                 UUID.fromString("4865726f-6272-696e-6520-3d207265616c"), Constants.PLAYERNAME);
 		Object entityPlayer = c_entityOtherPlayerMP.newInstance(worldServer, gameProfile);
 
-		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer));
+		rChunkProvider.setEmptyChunk(rChunk.generateEmptyChunk(worldServer, 0, 0));
 		
 		WorldInstance world = new WorldInstance(rIntHashMap);
 			world.setWorld(worldServer);
@@ -399,8 +399,8 @@ class RWorld {
 	public boolean setBlockState(WorldInstance world, int x, int y, int z, Object blockState, boolean update, boolean sendChange) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 		
 		int flags = 4 | (sendChange ? 2 : 0) | (update ? 1 : 0);
-		
-		boolean succes = (boolean) m_setBlockState.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z), blockState, flags);
+
+        boolean succes = (boolean) m_setBlockState.invoke(world.getWorld(), rBlockPos.createInstance(x, y, z), blockState, flags);
 		
 		if (!succes)
 			Log.w("Set block: no changes");

@@ -16,7 +16,7 @@ class RChunkProvider implements InvocationHandler {
 	
 	// Buffers all loaded chunks
 	private final HashMap<ChunkCord, Object> chunks;
-	private Object emptyChunk;
+	public Object emptyChunk;
 
 	private final RBlockPos rBlockPos;
 

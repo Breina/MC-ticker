@@ -105,7 +105,7 @@ public class NewWorldWindow extends JDialog {
         setVisible(true);
     }
 
-    class IdStringMapping {
+    static class IdStringMapping {
         public final int id;
         public final String name;
 

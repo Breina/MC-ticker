@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../MCloader/MCloader.iml" filepath="$PROJECT_DIR$/../MCloader/MCloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../MCP/Minecraft client/MCP.iml" filepath="$PROJECT_DIR$/../MCP/Minecraft client/MCP.iml" />
       <module fileurl="file://$PROJECT_DIR$/MCsim.iml" filepath="$PROJECT_DIR$/MCsim.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Test/Test.iml" filepath="$PROJECT_DIR$/../Test/Test.iml" />
     </modules>
   </component>
 </project>

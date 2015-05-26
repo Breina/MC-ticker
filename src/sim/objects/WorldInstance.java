@@ -1,6 +1,5 @@
 package sim.objects;
 
-import presentation.objects.Block;
 import sim.logic.RIntHashMap;
 
 import java.lang.reflect.InvocationTargetException;

@@ -7,6 +7,7 @@ import presentation.objects.Orientation;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Manages the layers of the Editor
@@ -111,9 +112,9 @@ public class LayerManager {
 
         layers.remove(layerEditor);
 
-        for (Editor editor : layers.keySet()) {
+        for (Map.Entry<Editor, HashMap<Editor, LayerPanel>> entry : layers.entrySet()) {
 
-            LayerPanel layer = layers.get(editor).get(layerEditor);
+            LayerPanel layer = entry.getValue().get(layerEditor);
         }
     }
 }

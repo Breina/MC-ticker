@@ -1,6 +1,7 @@
 package sim.logic;
 
 import logging.Log;
+import presentation.objects.Block;
 import sim.constants.Constants;
 import sim.loading.Linker;
 import sim.objects.WorldInstance;
@@ -115,7 +116,7 @@ class RBlock {
 
 	public Object getBlockById(byte byteId) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 		
-		int id = compansateForJavasLackOfUnsignedBytes(byteId);
+		int id = Block.compansateForJavasLackOfUnsignedBytes(byteId);
 		
 		Object block;
 		
@@ -147,16 +148,6 @@ class RBlock {
 		Object blockPos = rBlockPos.createInstance(x, y, z);
 
 		m_onBlockActivated.invoke(block, world.getWorld(), blockPos, blockState, world.getPlayer(), null, vecX, vexY, vecZ);
-	}
-	
-	private int compansateForJavasLackOfUnsignedBytes(byte b) {
-		
-		int id = (int) b;
-		
-		if (id < 0)
-			id += 256;
-		
-		return id;		
 	}
 
 	/**

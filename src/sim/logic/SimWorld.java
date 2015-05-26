@@ -126,18 +126,18 @@ public class SimWorld {
 		byte[] idsArray = (byte[]) schematicTag.findNextTagByName("Blocks", null).getValue();
 		byte[] dataArray = (byte[]) schematicTag.findNextTagByName("Data", null).getValue();
 
-		Block[][][] blocks = new Block[world.getxSize()][world.getySize()][world.getzSize()];
+		char[][][] blocks = new char[world.getxSize()][world.getySize()][world.getzSize()];
 
 		int i = 0;
 		for (short y = 0; y < ySize; y++)
 			for (short z = 0; z < zSize; z++)
 				for (short x = 0; x < xSize; x++) {
-					blocks[x][y][z] = new Block(idsArray[i], dataArray[i]);
+					blocks[x][y][z] = Block.getChar(idsArray[i], dataArray[i]);
                     i++;
 				}
 
-		setBlockObjects(world.getxSize(), world.getySize(), world.getzSize(), blocks);
         linkBlocks(xSize, ySize, zSize);
+        setBlocks(blocks);
 
 		world.clearLists();
 		
@@ -161,7 +161,8 @@ public class SimWorld {
     private void linkBlocks(int xSize, int ySize, int zSize) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         for (int x = 0; x << 4 < xSize; x++)
             for (int z = 0; z << 4 < zSize; z++) {
-                Object chunk = rChunkProvider.getChunk(x, z);
+                Object chunk = rChunk.generateEmptyChunk(world.getWorld(), xSize, zSize);
+                rChunkProvider.addChunk(chunk, x, z);
                 Object[] storageArray = rChunk.getStorageArray(chunk);
 
                 for (int y = 0; y << 4 < ySize; y++)
@@ -473,7 +474,7 @@ public class SimWorld {
 		isSchematicUpToDate = false;
 
 		Object block = rBlock.getBlockById(blockId);
-		Object blockState = rBlock.getStateFromMeta(block, blockData);
+        Object blockState = rBlock.getStateFromMeta(block, blockData);
 
 		rWorld.setBlockState(world, x, y, z, blockState, update, true);
 	}

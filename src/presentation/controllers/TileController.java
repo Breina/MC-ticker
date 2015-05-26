@@ -184,8 +184,6 @@ public class TileController {
 		
 		Graphic g = getGraphic(id, data, orientation, custom);
 		
-		if (g == null) return null;
-		
 		BufferedImage image = getTile(g.getName());
 		
 		if (g.getRotation() != 0) {
