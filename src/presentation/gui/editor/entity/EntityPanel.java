@@ -8,6 +8,7 @@ import presentation.objects.Orientation;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.util.prefs.Preferences;
 
 /**
  * The entity panel used by Editor
@@ -19,8 +20,13 @@ class EntityPanel extends EditorSubComponent {
      */
     private Entity entity;
 
+    private final Color entityColor, entityVectorColor;
+
     public EntityPanel(Editor editor, Entity entity) {
         super(editor);
+
+        entityColor = new Color(Preferences.userRoot().getInt("editor-color-entity", Constants.COLORENTITY.getRGB()), true);
+        entityVectorColor = new Color(Preferences.userRoot().getInt("editor-color-entityspeed", Constants.COLORENTITYVECTOR.getRGB()), true);
 
         setEntity(entity);
     }
@@ -107,7 +113,7 @@ class EntityPanel extends EditorSubComponent {
         else
             height = entity.getHeight() * Editor.SIZE;
 
-        g.setColor(Constants.COLORENTITY);
+        g.setColor(entityColor);
         g.drawRect(0,0,(int) width, (int) height);
 
         if (entity.isDead()) {
@@ -117,7 +123,7 @@ class EntityPanel extends EditorSubComponent {
         }
 
         // Vector
-        g.setColor(Constants.COLORENTITYVECTOR);
+        g.setColor(entityVectorColor);
 
         float x = 0.5f;
         float y = 0.5f;

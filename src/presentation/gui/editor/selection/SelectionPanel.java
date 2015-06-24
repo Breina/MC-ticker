@@ -8,6 +8,7 @@ import presentation.main.Cord3S;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.prefs.Preferences;
 
 /**
  * The excel-style selection panel
@@ -20,10 +21,15 @@ public class SelectionPanel extends EditorSubComponent {
     private Cord2S start;
     private Cord2S end;
 
+    private final Color selectionBorderColor, selectionInteriorColor;
+
     private final SelectionManager selectionManager;
 
     public SelectionPanel(Editor editor) {
         super(editor);
+
+        selectionBorderColor = new Color(Preferences.userRoot().getInt("editor-color-selectionborder", Constants.COLORSELECTIONBORDER.getRGB()), true);
+        selectionInteriorColor = new Color(Preferences.userRoot().getInt("editor-color-selectioninterior", Constants.COLORSELECTIONINTERIOR.getRGB()), true);
 
         selectionManager = editor.getWorldController().getSelectionManager();
     }
@@ -44,7 +50,7 @@ public class SelectionPanel extends EditorSubComponent {
 
         // Border
         if (start != null && end != null) {
-            g.setColor(Constants.COLORSELECTIONBORDER);
+            g.setColor(selectionBorderColor);
             g.setStroke(new BasicStroke(2));
 
             g.draw(new Rectangle2D.Float(start.x * Editor.SIZE, start.y * Editor.SIZE,
@@ -52,7 +58,7 @@ public class SelectionPanel extends EditorSubComponent {
         }
 
         // Interior
-        g.setColor(Constants.COLORSELECTIONINTERIOR);
+        g.setColor(selectionInteriorColor);
         for (short x = 0; x < editorWidth; x++)
             for (short y = 0; y < editorHeight;y++) {
                 Cord3S c = getCord3D(x, y);

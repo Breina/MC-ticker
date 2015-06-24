@@ -3,6 +3,7 @@ package presentation.gui.editor;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.block.BlockPanel;
 import presentation.gui.editor.selection.SelectionPanel;
+import presentation.main.Constants;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
@@ -13,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.util.prefs.Preferences;
 
 /**
  * Container for logic regarding the editor. Handles:
@@ -76,7 +78,8 @@ public class Editor extends JLayeredPane {
     private final JInternalFrame parent;
 
     public Editor(WorldController worldController, JInternalFrame parent, Orientation orientation) {
-        this(worldController, parent, (short) 0, 2.0f, orientation);
+        this(worldController, parent, (short) 0,
+                Preferences.userRoot().getFloat("editor-defaultzoom", Constants.DEFAULTZOOM), orientation);
     }
 
     public Editor(WorldController worldController, JInternalFrame parent, short layer, float scale, Orientation orientation) {

@@ -32,10 +32,10 @@ public class NewWorldWindow extends JDialog {
 
         setLayout(new GridLayout(8, 2));
 
-        add(new Label("Schematic name"));
+        add(new JLabel("Schematic name"));
         add(txtName = new JTextField("Untitled"));
 
-        add(new Label("Size (x, y, z)"));
+        add(new JLabel("Size (x, y, z)"));
 
             JPanel pnlCords = new JPanel(new GridLayout(1, 3));
             SpinnerNumberModel numberModelX = new SpinnerNumberModel(16, 1, Short.MAX_VALUE, 1);
@@ -48,15 +48,15 @@ public class NewWorldWindow extends JDialog {
 
         add(pnlCords);
 
-        add(new Label("World type"));
+        add(new JLabel("World type"));
         add(cmbWorldType = new JComboBox(new IdStringMapping[]{new IdStringMapping(0, "Default"),
                 new IdStringMapping(1, "Flat"), new IdStringMapping(2, "Large biomes"),
                 new IdStringMapping(3, "Amplified"), new IdStringMapping(8, "Default_1_1")}));
 
-        add(new Label("Game type"));
+        add(new JLabel("Game type"));
         add(cmbGameType = new JComboBox(new String[]{"CREATIVE", "SURVIVAL", "ADVENTURE", "NOT_SET"}));
 
-        add(new Label("Seed"));
+        add(new JLabel("Seed"));
 
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
             DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -66,11 +66,11 @@ public class NewWorldWindow extends JDialog {
 
         add(txtSeed);
 
-        add(new Label("Dimension"));
+        add(new JLabel("Dimension"));
         add(cmbWorldProvider = new JComboBox(new IdStringMapping[]{new IdStringMapping(0, "Overworld"),
             new IdStringMapping(-1, "Nether"), new IdStringMapping(1, "End")}));
 
-        add(new Label("Difficulty"));
+        add(new JLabel("Difficulty"));
         add(cmbDifficulty = new JComboBox(new IdStringMapping[]{
             new IdStringMapping(0, "Peaceful"), new IdStringMapping(1, "Easy"),
             new IdStringMapping(2, "Normal"), new IdStringMapping(3, "Hard")}));

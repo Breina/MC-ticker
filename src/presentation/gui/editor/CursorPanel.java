@@ -6,6 +6,7 @@ import presentation.main.Cord3S;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.prefs.Preferences;
 
 class CursorPanel extends EditorSubComponent {
 
@@ -14,8 +15,12 @@ class CursorPanel extends EditorSubComponent {
      */
     private short mouseX, mouseY;
 
+    private final Color cursorColor;
+
     public CursorPanel(Editor editor) {
         super(editor);
+
+        cursorColor = new Color(Preferences.userRoot().getInt("editor-color-cursor", Constants.COLORCURSOR.getRGB()), true);
 
         // When the first selected cord is (0,0), updating the selection wouldn't happen without this line
         mouseX = -1;
@@ -27,7 +32,7 @@ class CursorPanel extends EditorSubComponent {
     protected void paintComponent(Graphics gr) {
         Graphics2D g = (Graphics2D) gr;
 
-        g.setColor(Constants.COLORCURSOR);
+        g.setColor(cursorColor);
         g.draw(new Rectangle2D.Float(0.5f, 0.5f, Editor.SIZE, Editor.SIZE));
 
         super.paintComponent(gr);

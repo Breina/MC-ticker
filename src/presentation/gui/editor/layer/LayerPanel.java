@@ -8,13 +8,17 @@ import presentation.objects.Orientation;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.prefs.Preferences;
 
 class LayerPanel extends EditorSubComponent {
 
     private final boolean horizontal;
+    private final Color activeLayerColor;
 
     public LayerPanel(Editor editor, Editor layerEditor) {
         super(editor);
+
+        activeLayerColor = new Color(Preferences.userRoot().getInt("editor-color-layer", Constants.COLORACTIVELAYER.getRGB()), true);
 
         Orientation layerOrientation = layerEditor.getOrientation();
 
@@ -80,7 +84,7 @@ class LayerPanel extends EditorSubComponent {
 
         int length = (horizontal ? editorWidth : editorHeight);
 
-        g.setColor(Constants.COLORACTIVELAYER);
+        g.setColor(activeLayerColor);
 
         if (horizontal) {
 

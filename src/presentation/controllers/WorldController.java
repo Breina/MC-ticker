@@ -24,6 +24,7 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.prefs.Preferences;
 
 /**
  * Controlls everything about one world
@@ -52,7 +53,11 @@ public class WorldController {
     private boolean doUpdate;
     private TimerUpdater timerUpdater;
 
+    private final int minFrameDelay;
+
     public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
+
+        minFrameDelay = 1000 / Preferences.userRoot().getInt("editor-maxfps", Constants.MAX_FPS);
 
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
@@ -64,7 +69,9 @@ public class WorldController {
 	}
 	
 	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws IOException, NoSuchAlgorithmException {
-		
+
+        minFrameDelay = 1000 / Preferences.userRoot().getInt("editor-maxfps", Constants.MAX_FPS);
+
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
 		this.lastSavedFile = schematicFile;
@@ -324,10 +331,10 @@ public class WorldController {
             return false;
 
         long newTime = System.currentTimeMillis();
-        boolean result = newTime - lastUpdateTime >= Constants.MIN_FRAME_DELAY;
+        boolean result = newTime - lastUpdateTime >= minFrameDelay;
 
         if (!result)
-            timerUpdater.setTimeTarget(newTime + Constants.MIN_FRAME_DELAY);
+            timerUpdater.setTimeTarget(newTime + minFrameDelay);
 
         return result;
     }
@@ -342,7 +349,7 @@ public class WorldController {
             for (;;) {
                 try {
                     while (System.currentTimeMillis() < timeTarget)
-                            Thread.sleep(Constants.MIN_FRAME_DELAY);
+                            Thread.sleep(minFrameDelay);
 
                     onSchematicUpdated();
 
