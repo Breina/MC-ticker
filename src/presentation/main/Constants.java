@@ -26,7 +26,7 @@ public class Constants {
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	
 	// Default colors
-	public static final Color COLORBACKGROUND			= Color.BLACK;
+	public static final Color COLORBACKGROUND			= Color.WHITE;
 	public static final Color COLORACTIVELAYER			= Color.BLUE;
 	public static final Color COLORCURSOR               = Color.GREEN;
 	public static final Color COLORENTITY				= Color.RED;

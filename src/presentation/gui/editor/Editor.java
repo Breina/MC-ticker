@@ -60,8 +60,8 @@ public class Editor extends JLayeredPane {
     /**
      * The width and height of the editor panel in pixels
      */
-    private final int pixelWidth;
-    private final int pixelHeight;
+    private int pixelWidth;
+    private int pixelHeight;
 
     /**
      * The panel containing the mouse cursor block
@@ -90,11 +90,8 @@ public class Editor extends JLayeredPane {
         this.layer = layer;
         this.parent = parent;
 
-        setScale(scale);
         extractWorldDimensions();
-
-        pixelWidth = (int) (worldWidth * SIZE * scale);
-        pixelHeight = (int) (worldHeight * SIZE * scale);
+        setScale(scale);
 
         blockPanel = new BlockPanel(this);
         setLayer(blockPanel, BLOCK_INDEX);
@@ -158,7 +155,9 @@ public class Editor extends JLayeredPane {
     public BufferedImage getImage() {
 
         BufferedImage img = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_RGB);
-        paint(img.createGraphics());
+        Graphics2D g = img.createGraphics();
+        g.setClip(0, 0, pixelWidth, pixelHeight);
+        paint(g);
 
         return img;
     }
@@ -170,8 +169,10 @@ public class Editor extends JLayeredPane {
     public void setScale(float scale) {
         this.scale = scale;
 
-        setPreferredSize(new Dimension((int) ((worldWidth * SIZE) * scale),
-                (int) ((worldHeight * SIZE) * scale)));
+        pixelWidth = (int) (worldWidth * SIZE * scale);
+        pixelHeight = (int) (worldHeight * SIZE * scale);
+
+        setPreferredSize(new Dimension(pixelWidth, pixelHeight));
     }
 
     /**
