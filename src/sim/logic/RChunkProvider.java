@@ -132,7 +132,7 @@ class RChunkProvider implements InvocationHandler {
 		
 		if (returnType == void.class) {
 			
-			// void func_180514_a(Chunk p_180514_1_, int p_180514_2_, int p_180514_3_)
+			// void recreateStructures(Chunk p_180514_1_, int p_180514_2_, int p_180514_3_)
 			// void populate(IChunkProvider var1, int var2, int var3);
 			// void saveExtraData();
 			

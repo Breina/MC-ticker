@@ -1,5 +1,7 @@
 package logging;
 
+import co.paralleluniverse.xst.ExtendedStackTrace;
+import co.paralleluniverse.xst.ExtendedStackTraceElement;
 import sim.constants.Constants;
 
 import java.util.ArrayList;
@@ -84,11 +86,15 @@ public class Log {
     }
 
     public static void printEntireStackTraceAndBeDoneWithIt() {
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        for (ExtendedStackTraceElement este : ExtendedStackTrace.here())
+            System.out.println(este.getMethod());
+        System.exit(1);
+    }
 
-        for (StackTraceElement stackTraceElement : elements)
-            System.out.println(stackTraceElement);
-
+    public static void printEntireStackTraceAndBeDoneWithIt(Throwable t) {
+        System.out.println(t.getMessage());
+        for (ExtendedStackTraceElement este : ExtendedStackTrace.of(t).get())
+            System.out.println(este.getMethod());
         System.exit(1);
     }
 }

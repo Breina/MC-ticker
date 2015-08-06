@@ -517,15 +517,18 @@ public class SimWorld {
 
 	public void debug(int x, int y, int z) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
-		isSchematicUpToDate = false;
+        Log.d(getNameFromBlock(getBlockFromState(getBlockState(x, y, z))));
 
-		Object tileEntity = rWorld.getTileEntity(world, rBlockPos.createInstance(x, y, z));
 
-		Object mcTag = rNBTTags.newInstance();
-
-		rTileEntity.getNBTFromTileEntity(tileEntity, mcTag);
-
-		Log.i("TileEntity: " + mcTag.toString());
+//		isSchematicUpToDate = false;
+//
+//		Object tileEntity = rWorld.getTileEntity(world, rBlockPos.createInstance(x, y, z));
+//
+//		Object mcTag = rNBTTags.newInstance();
+//
+//		rTileEntity.getNBTFromTileEntity(tileEntity, mcTag);
+//
+//		Log.i("TileEntity: " + mcTag.toString());
 	}
 
     // TODO this is called twice, buffer this shit

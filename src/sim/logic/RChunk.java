@@ -92,7 +92,7 @@ class RChunk {
 
         Object blockStorage = storageArray[y];
         if (blockStorage == null) {
-            blockStorage = c_extendedBlockStorage.newInstance(y << 4, false);
+            blockStorage = c_extendedBlockStorage.newInstance(y << 4, true); // TODO only store if WorldProvider requires it
             storageArray[y] = blockStorage;
         }
 

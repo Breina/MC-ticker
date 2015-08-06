@@ -159,15 +159,20 @@ public class WorldController {
 	
 	public void setBlock(final int x, final int y, final int z, final char block, boolean update) {
 
-        setDoUpdate(false);
-		
-		timeController.loadCurrentTimeIntoSchematic(true);
-		
-		simController.setBlock(x, y, z, Block.getId(block), Block.getData(block), update);
-		
-		timeController.updateCurrentSchematic();
+        try {
+            setDoUpdate(false);
 
-        setDoUpdate(true);
+            timeController.loadCurrentTimeIntoSchematic(true);
+
+            simController.setBlock(x, y, z, Block.getId(block), Block.getData(block), update);
+
+            timeController.updateCurrentSchematic();
+
+            setDoUpdate(true);
+
+        } catch (NullPointerException e) {
+            Log.printEntireStackTraceAndBeDoneWithIt(e);
+        }
 	}
 	
 	public void onSchematicUpdated() {

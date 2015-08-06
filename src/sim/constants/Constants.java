@@ -5,7 +5,7 @@ public class Constants {
 	public final static boolean DEBUG_TILE_IMAGES = false;
 	public final static boolean DEBUG_SWING = false;
 	public final static boolean DEBUG_WORLD = false;
-	public final static boolean DEBUG_CHUNKPROVIDER = true;
+	public final static boolean DEBUG_CHUNKPROVIDER = false;
 	public final static boolean DEBUG_MC_SCHEMATICS = false;
 	public final static boolean DEBUG_SCHEMATIC_DATA = false;
 	public final static boolean DEBUG_TAG_COMPOUND = false;
