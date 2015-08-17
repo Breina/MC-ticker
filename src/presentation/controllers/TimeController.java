@@ -7,11 +7,12 @@ import presentation.gui.time.TimeLine;
 import presentation.objects.ViewData;
 import utils.Tag;
 
-public class TimeController implements Runnable {
+public class TimeController {
 	
 	private final TimeLine<Tag> timeLine;
 
 	private int tickCounter = 0;
+    private int minCount = 0;
 	private int maxCount = 0;
 	
 	private final WorldController worldController;
@@ -23,8 +24,9 @@ public class TimeController implements Runnable {
 
 	private boolean goForward, isPaused, hasDelay;
 	private boolean go;
+    private Thread thready;
 
-	public TimeController(WorldController worldController) {
+    public TimeController(WorldController worldController) {
 
 		this.worldController = worldController;
 		this.simController = worldController.getSimController();
@@ -46,7 +48,7 @@ public class TimeController implements Runnable {
 
 		timeInfo.setStep(0);
 		go = true;
-		new Thread(this).start();
+        (thready = new Thready()).start();
 	}
 
 	private Tag tick() {
@@ -66,12 +68,11 @@ public class TimeController implements Runnable {
 				isPaused = true;
 				hasDelay = false;
 
-
 				simController.setSchematic(timeLine.first());
 				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
-				timeInfo.setStep(0);
+                setTickCounter(minCount);
 				break;
 
 			case RUSHBACK:
@@ -79,7 +80,7 @@ public class TimeController implements Runnable {
 				goForward = false;
 				hasDelay = false;
 
-				notify();
+                notifyThready();
 				break;
 
 			case PLAYBACK:
@@ -87,7 +88,7 @@ public class TimeController implements Runnable {
 				goForward = false;
 				hasDelay = true;
 
-				notify();
+                notifyThready();
 				break;
 
 			case STEPBACK:
@@ -95,7 +96,7 @@ public class TimeController implements Runnable {
 				goForward = false;
 				hasDelay = false;
 
-				notify();
+                notifyThready();
 				break;
 
 			case PAUSED:
@@ -107,7 +108,7 @@ public class TimeController implements Runnable {
 				goForward = true;
 				hasDelay = false;
 
-				notify();
+                notifyThready();
 				break;
 
 			case PLAYFORWARD:
@@ -115,7 +116,7 @@ public class TimeController implements Runnable {
 				goForward = true;
 				hasDelay = true;
 
-				notify();
+                notifyThready();
 				break;
 
 			case RUSHFORWARD:
@@ -123,7 +124,7 @@ public class TimeController implements Runnable {
 				goForward = true;
 				hasDelay = false;
 
-				notify();
+                notifyThready();
 				break;
 
 			case END:
@@ -135,73 +136,28 @@ public class TimeController implements Runnable {
 				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
 
 				worldController.onSchematicUpdated();
-				timeInfo.setStep(maxCount);
-				timeInfo.setBackEnabled(true);
+                setTickCounter(maxCount);
+                timeInfo.setBackEnabled(true);
 		}
 	}
 
-	@Override
-	public synchronized void run() {
-		
-		// Hardcore thread never ends
-		
-		try {
-			
-			Tag schem;
-			
-			while (go) {
-				
-				if (isPaused)
-					wait();
-				
-				if (goForward) {
-					if (timeLine.atEnd())
-						schem = tick();
+    private synchronized void notifyThready() {
+        synchronized (thready) {
+            thready.notify();
+        }
+    }
 
-					else {
-						schem = timeLine.next();
-						simController.setSchematic(schem);
-					}
-					
-					tickCounter++;
-					if (tickCounter > maxCount)
-						maxCount = tickCounter;
+    private void setTickCounter(int tickCounter) {
+        timeInfo.setStep(tickCounter);
 
-					timeInfo.setBackEnabled(true);
-					
-				} else {
-					if (timeLine.atStart()) {
-						schem = timeLine.first();
-						setPlaystate(PlayState.PAUSED);
-						
-					} else {
-						schem = timeLine.prev();
-						
-						if (timeLine.atStart()) {
-							setPlaystate(PlayState.PAUSED);
-							timeInfo.setPaused(true);
-							timeInfo.setBackEnabled(false);
-						}
-						
-						tickCounter--;
-					}
+        if (tickCounter > maxCount)
+            this.maxCount = tickCounter;
 
-					simController.setSchematic(schem);
-				}
+        if (tickCounter - minCount > sim.constants.Constants.TIMELINE_LENGTH)
+            this.minCount = tickCounter - sim.constants.Constants.TIMELINE_LENGTH;
 
-				viewData.setState(simController.getBlocks(), simController.getEntityObjects());
-				worldController.onSchematicUpdated();
-
-				timeInfo.setStep(tickCounter);
-				
-				if (hasDelay)
-					wait(100l);
-			}
-		} catch (InterruptedException e) {
-			Log.e("The time controller's thread was rudely abrupted! :o");			
-			
-		}
-	}
+        this.tickCounter = tickCounter;
+    }
 
 	/**
 	 * Going back in time is only updated visually
@@ -232,11 +188,11 @@ public class TimeController implements Runnable {
 	}
 
     public int getTickStartRange() {
-        return tickCounter - timeLine.countPastTicks();
+        return minCount;
     }
 
     public int getTickEndRange() {
-        return tickCounter + timeLine.countFutureTicks();
+        return maxCount;
     }
 
     public void gotoTickCount(int count) {
@@ -248,5 +204,68 @@ public class TimeController implements Runnable {
 
         simController.setSchematic(timeLine.getRelative(count - tickCounter));
         viewData.setState(simController.getBlocks(), simController.getEntityObjects());
+    }
+
+    private class Thready extends Thread {
+
+        @Override
+        public synchronized void run() {
+            // Hardcore thread never ends
+
+            try {
+
+                Tag schem;
+
+                while (go) {
+
+                    if (isPaused)
+                        wait();
+
+                    if (goForward) {
+                        if (timeLine.atEnd())
+                            schem = tick();
+
+                        else {
+                            schem = timeLine.next();
+                            simController.setSchematic(schem);
+                        }
+
+                        setTickCounter(tickCounter + 1);
+                        timeInfo.setBackEnabled(true);
+
+                    } else {
+                        if (timeLine.atStart()) {
+                            schem = timeLine.first();
+                            setPlaystate(PlayState.PAUSED);
+
+                        } else {
+                            schem = timeLine.prev();
+
+                            if (timeLine.atStart()) {
+                                setPlaystate(PlayState.PAUSED);
+                                timeInfo.setPaused(true);
+                                timeInfo.setBackEnabled(false);
+                            }
+
+                            setTickCounter(tickCounter - 1);
+                        }
+
+                        simController.setSchematic(schem);
+                    }
+
+                    viewData.setState(simController.getBlocks(), simController.getEntityObjects());
+                    worldController.onSchematicUpdated();
+
+                    if (hasDelay)
+                        wait(100l);
+                    else
+                        // If we wouldn't give away our locks for at least a millisecond, shit will freeze.
+                        wait(1l);
+                }
+            } catch (InterruptedException e) {
+                Log.e("The time controller's thread was rudely abrupted! :o");
+
+            }
+        }
     }
 }

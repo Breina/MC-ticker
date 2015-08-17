@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * This class is an intermediate between the Simulator's high level logic and all of Block's reflection
@@ -20,7 +21,7 @@ class RBlock {
 
     private Method m_getBlockById, m_getIdFromBlock, m_hasTileEntity, m_onBlockActivated,
 		m_getStateFromMeta, m_getMetaFromState, m_getBlock, m_getBlockFromName, m_getValue, m_getProperties,
-		m_getNameForObject, m_onBlockEventReceived, m_isOpaque ,m_isFullCube;
+		m_getNameForObject, m_onBlockEventReceived, m_isOpaque ,m_isFullCube, m_updateTick, m_randomTick;
 	private Field f_unlocalizedName, f_blockRegistry, f_blockMaterial;
 
 	private final RBlockPos rBlockPos;
@@ -70,6 +71,8 @@ class RBlock {
 		m_onBlockEventReceived          = linker.method("onBlockEventReceived", Block, World, BlockPos, IBlockState, int.class, int.class);
         m_isOpaque                      = linker.method("isOpaque", Material);
         m_isFullCube                    = linker.method("isFullCube", Block);
+        m_updateTick                    = linker.method("updateTick", Block, World, BlockPos, IBlockState, Random.class);
+        m_randomTick                    = linker.method("randomTick", Block, World, BlockPos, IBlockState, Random.class);
 		m_onBlockActivated              = linker.method("onBlockActivated", Block, linker.getClass("World"),
                 linker.getClass("BlockPos"), IBlockState, EntityPlayer, linker.getClass("EnumFacing"), float.class,
                 float.class, float.class);
@@ -211,4 +214,14 @@ class RBlock {
 
 		return (Map) m_getProperties.invoke(blockState);
 	}
+
+    public void updateBlock(int x, int y, int z, Object world, Object blockState, Random random, boolean randomTick) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Object blockPos = rBlockPos.createInstance(x, y, z);
+        Object block = getBlockFromState(blockState);
+
+        if (randomTick)
+            m_randomTick.invoke(block, world, blockPos, blockState, random);
+        else
+            m_updateTick.invoke(block, world, blockPos, blockState, random);
+    }
 }

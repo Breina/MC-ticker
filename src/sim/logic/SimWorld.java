@@ -13,10 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class SimWorld {
 	
@@ -36,11 +33,14 @@ public class SimWorld {
 
 	private Tag cachedSchematic;
 	private boolean isSchematicUpToDate;
-	
-	public SimWorld(RBlock rBlock, RChunk rChunk, REntity rEntity,
+    private final Random random;
+
+    public SimWorld(RBlock rBlock, RChunk rChunk, REntity rEntity,
 			RNBTTags rNBTTags, RNextTickListEntry rNextTickListEntry, RProfiler rProfiler,
 			RTileEntity rTileEntity, RWorld rWorld, RChunkPrimer rChunkPrimer, RBlockPos rBlockPos) throws IllegalArgumentException {
-		
+
+        random = new Random();
+
 		this.rBlock = rBlock;
 		this.rChunk = rChunk;
 		this.rChunkProvider = new RChunkProvider(rBlockPos);
@@ -364,7 +364,7 @@ public class SimWorld {
 	
 	private Tag getTileEntities() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 
-		List<Object> tileEntities = rWorld.getLoadedTileEntities(world);
+        List<Object> tileEntities = rWorld.getLoadedTileEntities(world);
 
 		if (tileEntities.size() == 0)
 			return null;
@@ -513,6 +513,10 @@ public class SimWorld {
     public boolean isFullCube(Object block) throws InvocationTargetException, IllegalAccessException {
 
         return rBlock.isFullCube(block);
+    }
+
+    public void updateBlock(int x, int y, int z, boolean randomTick) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        rBlock.updateBlock(x, y, z, world.getWorld(), getBlockState(x, y, z), random, randomTick);
     }
 
 	public void debug(int x, int y, int z) throws IllegalAccessException, InvocationTargetException, InstantiationException {

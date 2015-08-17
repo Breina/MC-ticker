@@ -49,7 +49,7 @@ public class Constants {
 		{"getProperties", "Get all properties"}, {"getTileEntity"}, {"update", "Updates the JList"},
 		{"onUpdate", "Called to update the entity"}, {"clearMap"}, {"getNameForObject"},
 		{"getEntityString", "Returns the string that identifies"}, {"getEventID"}, {"getEventParameter"},
-		{"onBlockEventReceived"}, {"isOpaque"}, {"isFullCube"}, {"updateBlockTick"}};
+		{"onBlockEventReceived"}, {"isOpaque"}, {"isFullCube"}, {"updateBlockTick"}, {"updateTick"}, {"randomTick"}};
 
 	public final static String[][] REQUIREDFIELDS = {
 		{"provider"}, {"disableLevelSaving"}, {"pendingTickListEntriesTreeSet"}, {"pendingTickListEntriesHashSet"},
@@ -100,5 +100,5 @@ public class Constants {
     public final static boolean MAPFEATURESENABLED = false;
     public final static boolean HARDCOREENABLED = false;
     public final static int WORLDPROVIDER = 0;
-    public static final int TIMELINE_LENGTH = 1000;
+    public static final int TIMELINE_LENGTH = 100;
 }

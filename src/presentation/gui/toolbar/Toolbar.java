@@ -23,7 +23,8 @@ public class Toolbar extends JToolBar {
         this.mainController = mainController;
 
         Tool[] tools = new Tool[]{new ToolActivate(mainController), new ToolSelect(mainController),
-                new ToolPlace(mainController), new ToolRotate(mainController), new ToolDebug(mainController)};
+                new ToolPlace(mainController), new ToolRotate(mainController), new ToolUpdate(mainController),
+                new ToolDebug(mainController)};
 
         buttons = new JToggleButton[tools.length];
         setLayout(new FlowLayout());

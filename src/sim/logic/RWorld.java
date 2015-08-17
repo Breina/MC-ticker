@@ -313,7 +313,7 @@ class RWorld {
             Object blockEvents = f_serverBlockEvents.get(world.getWorld());
 
             int index = f_blockEventCacheIndex.getInt(world.getWorld());
-            List<Object[]> blockEventDataArray = (List<Object[]>) Array.get(blockEvents, index);
+            List<Object[]> blockEventDataArray = new ArrayList<>((Collection<? extends Object[]>) Array.get(blockEvents, index));
             index ^= 1;
             f_blockEventCacheIndex.set(world.getWorld(), index);
 
@@ -410,7 +410,7 @@ class RWorld {
 	
 	public List<Object> getLoadedTileEntities(WorldInstance world) throws IllegalArgumentException, IllegalAccessException {
 
-        return (List<Object>) f_loadedTileEntityList.get(world.getWorld());
+        return new ArrayList<>((Collection<?>) f_loadedTileEntityList.get(world.getWorld()));
 	}
 
 	public Object getTileEntity(WorldInstance world, Object blockPos) throws InvocationTargetException, IllegalAccessException {

@@ -37,6 +37,7 @@ is updated.
 dimensions. Shift will take the previous origin, if possible. Control or command will add to the previous selection, and
 when done on an already selected region, will make a negative selection inside the previous selection. Selecting blocks
 has currently no use, though. >.<
+* !{Update}(/img/tools/update.png) Updates the selected block. Holding shift will send it as a random block update.
 
 ## Extensibility
 MC ticker is able to handle modded clients, but currently has no graphics for any. Graphics are configured by XML files
