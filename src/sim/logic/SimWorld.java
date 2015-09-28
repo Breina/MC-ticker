@@ -456,8 +456,9 @@ public class SimWorld {
 	public boolean tickWorld() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		isSchematicUpToDate = false;
+        boolean result = !rWorld.tick(world, 1l);
 
-        return !rWorld.tick(world, 1l);
+        return result;
 	}
 
 	public void onBlockActivated(int x, int y, int z) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {

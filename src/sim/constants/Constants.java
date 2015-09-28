@@ -13,7 +13,7 @@ public class Constants {
 
 	public final static boolean LOG_IGNORE_WARNINGS = true;
 	
-	public final static int OUTPUT_INDENT = 90;
+	public final static int OUTPUT_INDENT = 160;
 	
 	// The name that will be returned should it ever be called
 	public final static String CHUNKPROVIDERSTRING = "SIM chunkprovider";
@@ -100,5 +100,5 @@ public class Constants {
     public final static boolean MAPFEATURESENABLED = false;
     public final static boolean HARDCOREENABLED = false;
     public final static int WORLDPROVIDER = 0;
-    public static final int TIMELINE_LENGTH = 100;
+    public static final int TIMELINE_LENGTH = 2;
 }

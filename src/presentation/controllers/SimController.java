@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Largely responsible for catching errors and giving meaningful messages back
@@ -276,7 +277,8 @@ public class SimController {
 
             else
                 msg = "Invocation failed with error: " + cause;
-        } else if (e instanceof UncheckedTimeoutException) {
+
+        } else if (e instanceof UncheckedTimeoutException || e instanceof TimeoutException) {
 
             msg = "A call took too long (> " + SUF + " sec): " + e.getStackTrace()[1].getMethodName();
 
@@ -287,5 +289,4 @@ public class SimController {
 
         return ":\n" + msg;
     }
-
 }

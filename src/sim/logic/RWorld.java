@@ -307,13 +307,13 @@ class RWorld {
     void tickBlockEvents(WorldInstance world) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
 
-        // Repeat until there are no more block events (meaning instantwire)
+        // Repeat until there are no more block events
         for (;;) {
 
             Object blockEvents = f_serverBlockEvents.get(world.getWorld());
 
             int index = f_blockEventCacheIndex.getInt(world.getWorld());
-            List<Object[]> blockEventDataArray = new ArrayList<>((Collection<? extends Object[]>) Array.get(blockEvents, index));
+            List<Object> blockEventDataArray = (List<Object>) Array.get(blockEvents, index);
             index ^= 1;
             f_blockEventCacheIndex.set(world.getWorld(), index);
 
