@@ -1,24 +1,30 @@
 package presentation.gui.editor.layer;
 
+import logging.Log;
+import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
 import presentation.gui.editor.EditorSubComponent;
+import presentation.gui.windows.main.options.IPreferenceChangedListener;
 import presentation.main.Constants;
 import presentation.objects.Orientation;
+import sim.constants.Prefs;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.prefs.Preferences;
 
-class LayerPanel extends EditorSubComponent {
+class LayerPanel extends EditorSubComponent implements IPreferenceChangedListener {
 
+    private MainController controller;
     private final boolean horizontal;
-    private final Color activeLayerColor;
+    private Color activeLayerColor;
 
-    public LayerPanel(Editor editor, Editor layerEditor) {
+    public LayerPanel(MainController controller, Editor editor, Editor layerEditor) {
         super(editor);
 
-        activeLayerColor = new Color(Preferences.userRoot().getInt("editor-color-layer", Constants.COLORACTIVELAYER.getRGB()), true);
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_LAYER, this);
+        activeLayerColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_LAYER, Constants.COLORACTIVELAYER.getRGB()), true);
 
         Orientation layerOrientation = layerEditor.getOrientation();
 
@@ -109,5 +115,11 @@ class LayerPanel extends EditorSubComponent {
 
         else
             setBounds(Editor.SIZE * layerHeight, 0, (Editor.SIZE + 1), editorHeight * Editor.SIZE);
+    }
+
+    @Override
+    public void preferenceChanged(String preference) {
+        Log.d(preference);
+        activeLayerColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_LAYER, Constants.COLORACTIVELAYER.getRGB()), true);
     }
 }

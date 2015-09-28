@@ -6,10 +6,11 @@ import presentation.gui.RSFrame;
 import presentation.gui.WorldListener;
 import presentation.gui.windows.main.ExportWindow;
 import presentation.gui.windows.main.NewWorldWindow;
+import presentation.gui.windows.main.options.OptionsController;
+import presentation.gui.windows.main.options.OptionsWindow;
 import presentation.main.Constants;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
-import presentation.objects.Block;
 import presentation.objects.ViewData;
 import presentation.tools.Tool;
 import sim.constants.Globals;
@@ -32,9 +33,10 @@ public class MainController {
 
 	private final TileController tileController;
 	private final BlockController blockController;
-	private final List<WorldController> worldControllers;
-	
-	private WorldController activeWorldController;
+    private final OptionsController optionsController;
+    private final List<WorldController> worldControllers;
+
+    private WorldController activeWorldController;
     private Cord2S selectionCord2D;
 	private Cord3S selectionCord3D;
 
@@ -61,6 +63,7 @@ public class MainController {
 		
 		tileController = new TileController(new File(presentation.main.Constants.TILEMAPSFILE));
 		blockController = new BlockController(new File(presentation.main.Constants.BLOCKSFILE));
+        optionsController = new OptionsController();
 
         mainframe = new RSFrame(this);
 
@@ -246,6 +249,10 @@ public class MainController {
 		for (WorldController worldController : worldControllers)
 			worldController.save();
 	}
+
+    public void showOptions() {
+        new OptionsWindow(this);
+    }
 	
 	public void export() {
 
@@ -275,8 +282,12 @@ public class MainController {
 	public BlockController getBlockController() {
 		return blockController;
 	}
-	
-	public WorldController getSelectedWorld() {
+
+    public OptionsController getOptionsController() {
+        return optionsController;
+    }
+
+    public WorldController getSelectedWorld() {
 		return activeWorldController;
 	}
 

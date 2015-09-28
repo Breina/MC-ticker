@@ -36,9 +36,12 @@ public class FileMenu extends JMenu {
 		add(saveItem);
 		
 		add(new JSeparator());
-		
+
+        JMenuItem optionsItem   = new JMenuItem("Options...", new ImageIcon("img/options/gear.png"));
 		JMenuItem exportItem	= new JMenuItem("Export...", new ImageIcon("img/export/export.png"));
+        optionsItem             .setMnemonic('O');
 		exportItem				.setMnemonic('E');
+        add(optionsItem);
 		add(exportItem);
 		
 		add(new JSeparator());
@@ -66,6 +69,7 @@ public class FileMenu extends JMenu {
 
         saveItem.addActionListener(e -> SwingUtilities.invokeLater(controller::saveAll));
 
+        optionsItem.addActionListener(e -> SwingUtilities.invokeLater(controller::showOptions));
         exportItem.addActionListener(e -> SwingUtilities.invokeLater(controller::export));
 
         exitItem.addActionListener(e -> controller.exit());

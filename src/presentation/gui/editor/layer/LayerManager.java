@@ -1,7 +1,7 @@
 package presentation.gui.editor.layer;
 
 import logging.Log;
-import presentation.controllers.WorldController;
+import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
 import presentation.objects.Orientation;
 
@@ -19,11 +19,11 @@ public class LayerManager {
      */
     private final HashMap<Editor, HashMap<Editor, LayerPanel>> layers;
 
-    private final WorldController worldController;
+    private final MainController mainController;
 
-    public LayerManager(WorldController worldController) {
+    public LayerManager(MainController mainController) {
 
-        this.worldController = worldController;
+        this.mainController = mainController;
 
         layers = new HashMap<>(3);
     }
@@ -55,7 +55,7 @@ public class LayerManager {
 
     private void addLayer(Editor editor, Editor newLayer) {
 
-        LayerPanel layer = new LayerPanel(editor, newLayer);
+        LayerPanel layer = new LayerPanel(mainController, editor, newLayer);
 
         layers.get(editor).put(newLayer, layer);
 
@@ -115,6 +115,7 @@ public class LayerManager {
         for (Map.Entry<Editor, HashMap<Editor, LayerPanel>> entry : layers.entrySet()) {
 
             LayerPanel layer = entry.getValue().get(layerEditor);
+            entry.getKey().remove(layer);
         }
     }
 }

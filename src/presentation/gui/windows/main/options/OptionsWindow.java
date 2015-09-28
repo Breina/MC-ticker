@@ -1,19 +1,25 @@
-package presentation.gui.windows.main;
+package presentation.gui.windows.main.options;
 
+import presentation.controllers.MainController;
+import presentation.gui.windows.InternalWindow;
 import presentation.main.Constants;
+import sim.constants.Prefs;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.util.prefs.Preferences;
 
-public class OptionsWindow extends JFrame {
+public class OptionsWindow extends InternalWindow {
 
     private Preferences prefs;
+    private OptionsController optionsController;
 
-    public OptionsWindow(JDesktopPane parent, String title) {
-//        super(parent, title, true);
-        super(title); // TODO
+    public OptionsWindow(MainController controller) {
+
+        super(controller.getFrame().getDesktop(), "Options", true);
+
+        this.optionsController = controller.getOptionsController();
 
         prefs = Preferences.userRoot();
 
@@ -22,7 +28,6 @@ public class OptionsWindow extends JFrame {
 
         buildGUI();
 
-        // TODO
         setVisible(true);
         setPreferredSize(new Dimension(250, 250));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,7 +35,7 @@ public class OptionsWindow extends JFrame {
 
     public void buildGUI() {
 
-//        setFrameIcon(new ImageIcon("img/options/gear.png"));
+        setFrameIcon(new ImageIcon("img/options/gear.png"));
 
         JTabbedPane tabs = new JTabbedPane();
         setContentPane(tabs);
@@ -56,9 +61,12 @@ public class OptionsWindow extends JFrame {
                 pnlEditor.add(pnlMaxFPS);
                 pnlMaxFPS.add(new JLabel("Max FPS"));
                 JSpinner spinnerMaxFPS = new JSpinner(new SpinnerNumberModel(
-                        prefs.getInt("editor-maxfps", Constants.MAX_FPS), 1, 1000, 1)
+                        prefs.getInt(Prefs.EDITOR_MAXFPS, Constants.MAX_FPS), 1, 1000, 1)
                 );
-                spinnerMaxFPS.addChangeListener(e -> prefs.putInt("editor-maxfps", (Integer) spinnerMaxFPS.getValue()));
+                spinnerMaxFPS.addChangeListener(e -> {
+                    prefs.putInt(Prefs.EDITOR_MAXFPS, (Integer) spinnerMaxFPS.getValue());
+                    optionsController.notifyListeners(Prefs.EDITOR_MAXFPS);
+                });
                 pnlMaxFPS.add(spinnerMaxFPS, BorderLayout.EAST);
 
                 pnlEditor.add(Box.createVerticalStrut(5));
@@ -72,10 +80,11 @@ public class OptionsWindow extends JFrame {
                     pnlColors.add(pnlColorLayer);
                     pnlColorLayer.add(new JLabel("Layer"), BorderLayout.WEST);
                     pnlColorLayer.add(new ColorPickerButton("Layer",
-                            prefs.getInt("editor-color-layer", Constants.COLORACTIVELAYER.getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_LAYER, Constants.COLORACTIVELAYER.getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-layer", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_LAYER, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_LAYER);
                         }
                     },  BorderLayout.EAST);
 
@@ -164,6 +173,6 @@ public class OptionsWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-        new OptionsWindow(null, "Options");
+        new OptionsWindow(new MainController());
     }
 }

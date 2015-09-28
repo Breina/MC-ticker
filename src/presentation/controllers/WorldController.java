@@ -7,6 +7,7 @@ import presentation.gui.editor.entity.EntityManager;
 import presentation.gui.editor.layer.LayerManager;
 import presentation.gui.editor.selection.SelectionManager;
 import presentation.gui.menu.WorldMenu;
+import presentation.gui.windows.main.options.IPreferenceChangedListener;
 import presentation.gui.windows.world.DrawingWindow;
 import presentation.gui.windows.world.NBTviewer;
 import presentation.main.Constants;
@@ -16,6 +17,7 @@ import presentation.objects.Block;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
 import presentation.tools.Tool;
+import sim.constants.Prefs;
 import sim.logic.SimWorld;
 import utils.Tag;
 
@@ -29,7 +31,7 @@ import java.util.prefs.Preferences;
 /**
  * Controlls everything about one world
  */
-public class WorldController {
+public class WorldController implements IPreferenceChangedListener {
 	
 	private ViewData viewData;
 	
@@ -53,14 +55,14 @@ public class WorldController {
     private boolean doUpdate;
     private TimerUpdater timerUpdater;
 
-    private final int minFrameDelay;
+    private int minFrameDelay;
 
     public WorldController(MainController mainController, SimWorld simWorld, String name, short xSize, short ySize, short zSize) {
 
-        minFrameDelay = 1000 / Preferences.userRoot().getInt("editor-maxfps", Constants.MAX_FPS);
-
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
+
+        initiliseMinFrameDelay();
 
 		viewData = new ViewData(name, xSize, ySize, zSize);
 		simController.createNewWorld(xSize, ySize, zSize);
@@ -70,11 +72,11 @@ public class WorldController {
 	
 	public WorldController(MainController mainController, SimWorld simWorld, File schematicFile) throws IOException, NoSuchAlgorithmException {
 
-        minFrameDelay = 1000 / Preferences.userRoot().getInt("editor-maxfps", Constants.MAX_FPS);
-
 		this.mainController = mainController;
 		this.simController = new SimController(simWorld);
 		this.lastSavedFile = schematicFile;
+
+        initiliseMinFrameDelay();
 		
 		Tag schematic = Tag.readFrom(new FileInputStream(schematicFile));
 		
@@ -89,6 +91,11 @@ public class WorldController {
 		loadSim();
 	}
 
+    private void initiliseMinFrameDelay() {
+        minFrameDelay = 1000 / Preferences.userRoot().getInt(Prefs.EDITOR_MAXFPS, Constants.MAX_FPS);
+        mainController.getOptionsController().registerPreferenceListener(Prefs.EDITOR_MAXFPS, this);
+    }
+
 	private void loadSim() {
 
         timerUpdater = new TimerUpdater();
@@ -101,7 +108,7 @@ public class WorldController {
 		nbtViewer = new NBTviewer(mainController.getFrame().getDesktop(), this);
 		nbtController = new NBTController(this, nbtViewer);
 
-        layerManager = new LayerManager(this);
+        layerManager = new LayerManager(mainController);
         entityManager = new EntityManager(this);
         selectionManager = new SelectionManager(this);
 
@@ -342,6 +349,11 @@ public class WorldController {
             timerUpdater.setTimeTarget(newTime + minFrameDelay);
 
         return result;
+    }
+
+    @Override
+    public void preferenceChanged(String preference) {
+        minFrameDelay = 1000 / Preferences.userRoot().getInt(Prefs.EDITOR_MAXFPS, Constants.MAX_FPS);
     }
 
     class TimerUpdater implements Runnable {
