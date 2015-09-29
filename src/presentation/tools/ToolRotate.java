@@ -30,7 +30,9 @@ public class ToolRotate extends Tool {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		dragButton = e.getButton();
-		rotate();
+
+        if (dragButton != MouseEvent.BUTTON2)
+		    rotate();
 	}
 
     static void rotateUntilValid(WorldController worldController, BlockController blockController, Cord3S c, boolean forward) {
@@ -125,7 +127,7 @@ public class ToolRotate extends Tool {
 
 	@Override
 	public void onSelectionChanged() {
-		if (dragButton != MouseEvent.NOBUTTON)
+		if (dragButton == MouseEvent.NOBUTTON && dragButton == MouseEvent.BUTTON2)
 			rotate();
 	}
 

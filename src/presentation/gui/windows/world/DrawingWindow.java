@@ -9,6 +9,7 @@ import presentation.objects.ViewData;
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import java.awt.*;
 import java.awt.event.*;
 
 public class DrawingWindow extends InternalWindow {
@@ -23,12 +24,18 @@ public class DrawingWindow extends InternalWindow {
 	
 	private JButton btnUp, btnDown, btnZoomIn, btnZoomOut;
 
+    private boolean dragging;
+    private int prevMouseX, prevMouseY;
+    private JScrollPane scrollPane;
+
 	public DrawingWindow(JDesktopPane parent, WorldController controller, Orientation orientation) {
 		super(parent, "Loading window...", true);
 		
 		this.worldController = controller;
 		
 		ViewData viewData = controller.getWorldData();
+
+        dragging = false;
 
         setFrameIcon(new ImageIcon("img/editor/frameIcon.png"));
 		JMenuBar menuBar = new JMenuBar();
@@ -88,10 +95,14 @@ public class DrawingWindow extends InternalWindow {
 		
 		Editor editor = new Editor(controller, this, orientation);
         this.editor = editor;
-		add(new JScrollPane(editor));
-		
-		addInternalFrameListener(new InternalFrameHandler());
+        add(scrollPane = new JScrollPane(editor));
+
+        addInternalFrameListener(new InternalFrameHandler());
         editor.addMouseWheelListener(new ScrollHandler());
+
+        DragHandler dragHandler = new DragHandler();
+        editor.addMouseListener(dragHandler);
+        editor.addMouseMotionListener(dragHandler);
 
 		pack();
 		
@@ -191,6 +202,40 @@ public class DrawingWindow extends InternalWindow {
                 moveLayer(up);
             else
                 zoom(up);
+        }
+    }
+
+    private class DragHandler extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON2) {
+                dragging = true;
+                prevMouseX = e.getX();
+                prevMouseY = e.getY();
+                editor.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (dragging) {
+                JViewport vp = scrollPane.getViewport();
+                Point p = vp.getViewPosition();
+                p.translate((prevMouseX - e.getX()) * 2, (prevMouseY - e.getY()) * 2);
+
+//                prevMouseX = e.getX();
+//                prevMouseY = e.getY();
+
+                editor.scrollRectToVisible(new Rectangle(p, vp.getSize()));
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON2) {
+                dragging = false;
+                editor.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
         }
     }
 

@@ -71,9 +71,6 @@ class CSVparser {
 							}
 						}
 				}
-					// if dealing with server, we can abort since the list is sorted client first
-//				} else
-//					break; // TODO commented this because the first line is commented
 			}
 			
 			// Check for what is not found

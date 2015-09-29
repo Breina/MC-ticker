@@ -32,6 +32,9 @@ public class ToolPlace extends Tool {
 			case MouseEvent.BUTTON3:
 				dragBlock = mainController.getBlock();
 				break;
+
+            case MouseEvent.BUTTON2:
+                return;
 				
 			default:
 			case MouseEvent.BUTTON1:

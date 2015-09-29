@@ -33,6 +33,10 @@ public class ToolSelect extends Tool implements MouseMotionListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+
+        if (e.getButton() == MouseEvent.BUTTON2)
+            return;
+
         int modifiers = e.getModifiersEx();
 
         boolean shift = (MouseEvent.SHIFT_DOWN_MASK & modifiers) == MouseEvent.SHIFT_DOWN_MASK;

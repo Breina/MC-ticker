@@ -24,7 +24,8 @@ public class ToolActivate extends Tool {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		dragButton = e.getButton();
-		activate();
+        if (dragButton == MouseEvent.BUTTON1 || dragButton == MouseEvent.BUTTON3)
+		    activate();
 	}
 	
 	private void activate() {
@@ -55,7 +56,7 @@ public class ToolActivate extends Tool {
 
 	@Override
 	public void onSelectionChanged() {
-		if (dragButton != MouseEvent.NOBUTTON)
+		if (dragButton == MouseEvent.BUTTON1 || dragButton == MouseEvent.BUTTON3)
 			activate();
 	}
 
