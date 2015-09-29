@@ -1,10 +1,13 @@
 package presentation.gui.editor.entity;
 
+import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
 import presentation.gui.editor.EditorSubComponent;
+import presentation.gui.windows.main.options.IPreferenceChangedListener;
 import presentation.main.Constants;
 import presentation.objects.Entity;
 import presentation.objects.Orientation;
+import sim.constants.Prefs;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -13,20 +16,23 @@ import java.util.prefs.Preferences;
 /**
  * The entity panel used by Editor
  */
-class EntityPanel extends EditorSubComponent {
+class EntityPanel extends EditorSubComponent implements IPreferenceChangedListener {
 
     /**
      * The entity object that is drawn
      */
     private Entity entity;
 
-    private final Color entityColor, entityVectorColor;
+    private Color entityColor, entityVectorColor;
 
-    public EntityPanel(Editor editor, Entity entity) {
+    public EntityPanel(MainController controller, Editor editor, Entity entity) {
         super(editor);
 
-        entityColor = new Color(Preferences.userRoot().getInt("editor-color-entity", Constants.COLORENTITY.getRGB()), true);
-        entityVectorColor = new Color(Preferences.userRoot().getInt("editor-color-entityspeed", Constants.COLORENTITYVECTOR.getRGB()), true);
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_ENTITY, this);
+        entityColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_ENTITY, Constants.COLORENTITY.getRGB()), true);
+
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_ENTITYSPEED, this);
+        entityVectorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_ENTITYSPEED, Constants.COLORENTITYVECTOR.getRGB()), true);
 
         setEntity(entity);
     }
@@ -159,6 +165,21 @@ class EntityPanel extends EditorSubComponent {
             g.setStroke(new BasicStroke(0.5f));
             g.draw(new Line2D.Float(width / 2, height / 2,
                                     x * width, y * height));
+        }
+    }
+
+    @Override
+    public void preferenceChanged(String preference) {
+
+        switch (preference) {
+
+            case Prefs.EDITOR_COLOR_ENTITY:
+                entityColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_ENTITY, Constants.COLORENTITY.getRGB()), true);
+                break;
+
+            case Prefs.EDITOR_COLOR_ENTITYSPEED:
+                entityVectorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_ENTITYSPEED, Constants.COLORENTITYVECTOR.getRGB()), true);
+                break;
         }
     }
 }

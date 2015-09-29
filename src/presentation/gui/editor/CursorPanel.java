@@ -1,26 +1,30 @@
 package presentation.gui.editor;
 
+import presentation.controllers.MainController;
+import presentation.gui.windows.main.options.IPreferenceChangedListener;
 import presentation.main.Constants;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
+import sim.constants.Prefs;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.prefs.Preferences;
 
-class CursorPanel extends EditorSubComponent {
+class CursorPanel extends EditorSubComponent implements IPreferenceChangedListener {
 
     /**
      * The last tile cords of the mouse pos.
      */
     private short mouseX, mouseY;
 
-    private final Color cursorColor;
+    private Color cursorColor;
 
-    public CursorPanel(Editor editor) {
+    public CursorPanel(MainController controller, Editor editor) {
         super(editor);
 
-        cursorColor = new Color(Preferences.userRoot().getInt("editor-color-cursor", Constants.COLORCURSOR.getRGB()), true);
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_CURSOR, this);
+        cursorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_CURSOR, Constants.COLORCURSOR.getRGB()), true);
 
         // When the first selected cord is (0,0), updating the selection wouldn't happen without this line
         mouseX = -1;
@@ -89,5 +93,10 @@ class CursorPanel extends EditorSubComponent {
 
         // TODO maybe not repaint everything, ever, but repaint the region around it orso
         worldController.repaintAllEditors();
+    }
+
+    @Override
+    public void preferenceChanged(String preference) {
+        cursorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_CURSOR, Constants.COLORCURSOR.getRGB()), true);
     }
 }

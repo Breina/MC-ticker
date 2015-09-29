@@ -1,10 +1,13 @@
 package presentation.gui.editor.selection;
 
+import presentation.controllers.MainController;
 import presentation.gui.editor.Editor;
 import presentation.gui.editor.EditorSubComponent;
+import presentation.gui.windows.main.options.IPreferenceChangedListener;
 import presentation.main.Constants;
 import presentation.main.Cord2S;
 import presentation.main.Cord3S;
+import sim.constants.Prefs;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -13,7 +16,7 @@ import java.util.prefs.Preferences;
 /**
  * The excel-style selection panel
  */
-public class SelectionPanel extends EditorSubComponent {
+public class SelectionPanel extends EditorSubComponent implements IPreferenceChangedListener {
 
     /**
      * Remembering the outline
@@ -21,15 +24,18 @@ public class SelectionPanel extends EditorSubComponent {
     private Cord2S start;
     private Cord2S end;
 
-    private final Color selectionBorderColor, selectionInteriorColor;
+    private Color selectionBorderColor, selectionInteriorColor;
 
     private final SelectionManager selectionManager;
 
-    public SelectionPanel(Editor editor) {
+    public SelectionPanel(MainController controller, Editor editor) {
         super(editor);
 
-        selectionBorderColor = new Color(Preferences.userRoot().getInt("editor-color-selectionborder", Constants.COLORSELECTIONBORDER.getRGB()), true);
-        selectionInteriorColor = new Color(Preferences.userRoot().getInt("editor-color-selectioninterior", Constants.COLORSELECTIONINTERIOR.getRGB()), true);
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_SELECTIONBORDER, this);
+        selectionBorderColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_SELECTIONBORDER, Constants.COLORSELECTIONBORDER.getRGB()), true);
+
+        controller.getOptionsController().registerPreferenceListener(Prefs.EDITOR_COLOR_SELECTIONINTERIOR, this);
+        selectionInteriorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_SELECTIONINTERIOR, Constants.COLORSELECTIONINTERIOR.getRGB()), true);
 
         selectionManager = editor.getWorldController().getSelectionManager();
     }
@@ -132,5 +138,18 @@ public class SelectionPanel extends EditorSubComponent {
                 throw new IllegalStateException("Badly defined layer :(");
         }
 
+    }
+
+    @Override
+    public void preferenceChanged(String preference) {
+        switch (preference) {
+            case Prefs.EDITOR_COLOR_SELECTIONBORDER:
+                selectionBorderColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_SELECTIONBORDER, Constants.COLORSELECTIONBORDER.getRGB()), true);
+                break;
+
+            case Prefs.EDITOR_COLOR_SELECTIONINTERIOR:
+                selectionInteriorColor = new Color(Preferences.userRoot().getInt(Prefs.EDITOR_COLOR_SELECTIONINTERIOR, Constants.COLORSELECTIONINTERIOR.getRGB()), true);
+                break;
+        }
     }
 }

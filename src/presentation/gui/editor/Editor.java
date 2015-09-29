@@ -7,6 +7,7 @@ import presentation.main.Constants;
 import presentation.main.Cord3S;
 import presentation.objects.Orientation;
 import presentation.objects.ViewData;
+import sim.constants.Prefs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +80,7 @@ public class Editor extends JLayeredPane {
 
     public Editor(WorldController worldController, JInternalFrame parent, Orientation orientation) {
         this(worldController, parent, (short) 0,
-                Preferences.userRoot().getFloat("editor-defaultzoom", Constants.DEFAULTZOOM), orientation);
+                Preferences.userRoot().getFloat(Prefs.EDITOR_DEFAULTZOOM, Constants.DEFAULTZOOM), orientation);
     }
 
     public Editor(WorldController worldController, JInternalFrame parent, short layer, float scale, Orientation orientation) {
@@ -98,11 +99,11 @@ public class Editor extends JLayeredPane {
         add(blockPanel);
 
         if (parent != null) {
-            cursorPanel = new CursorPanel(this);
+            cursorPanel = new CursorPanel(worldController.getMainController(), this);
             setLayer(cursorPanel, CURSOR_INDEX);
             add(cursorPanel);
 
-            selectionPanel = new SelectionPanel(this);
+            selectionPanel = new SelectionPanel(worldController.getMainController(), this);
             setLayer(selectionPanel, SELECTION_INDEX);
             add(selectionPanel);
 

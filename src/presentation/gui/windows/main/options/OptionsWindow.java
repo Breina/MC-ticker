@@ -24,13 +24,12 @@ public class OptionsWindow extends InternalWindow {
         prefs = Preferences.userRoot();
 
         setLocation(200, 200);
-        setSize(250, 250);
+        setSize(250, 300);
 
         buildGUI();
 
-        setVisible(true);
-        setPreferredSize(new Dimension(250, 250));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setPreferredSize(new Dimension(250, 250));
+        pack();
     }
 
     public void buildGUI() {
@@ -48,10 +47,10 @@ public class OptionsWindow extends InternalWindow {
                 pnlEditor.add(pnlDefaultZoom);
                 pnlDefaultZoom.add(new JLabel("Default zoom"));
                 JSpinner spinnerDefaultZoom = new JSpinner(new SpinnerNumberModel(
-                        prefs.getFloat("editor-defaultzoom", Constants.DEFAULTZOOM), 0f, 100f, 0.1f)
+                        prefs.getFloat(Prefs.EDITOR_DEFAULTZOOM, Constants.DEFAULTZOOM), 0f, 100f, 0.1f)
                 );
                 spinnerDefaultZoom.addChangeListener(e -> {     // Java you moron -.-
-                            prefs.putFloat("editor-defaultzoom", (float) ((double) spinnerDefaultZoom.getValue()));
+                            prefs.putFloat(Prefs.EDITOR_DEFAULTZOOM, (float) ((double) spinnerDefaultZoom.getValue()));
                         });
                 pnlDefaultZoom.add(spinnerDefaultZoom, BorderLayout.EAST);
 
@@ -92,10 +91,11 @@ public class OptionsWindow extends InternalWindow {
                     pnlColors.add(pnlColorCursor);
                     pnlColorCursor.add(new JLabel("Cursor"), BorderLayout.WEST);
                     pnlColorCursor.add(new ColorPickerButton("Cursor",
-                            prefs.getInt("editor-color-cursor", Constants.COLORCURSOR.getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_CURSOR, Constants.COLORCURSOR.getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-cursor", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_CURSOR, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_CURSOR);
                         }
                     },  BorderLayout.EAST);
 
@@ -103,10 +103,11 @@ public class OptionsWindow extends InternalWindow {
                     pnlColors.add(pnlColorEntity);
                     pnlColorEntity.add(new JLabel("Entity"), BorderLayout.WEST);
                     pnlColorEntity.add(new ColorPickerButton("Entity",
-                            prefs.getInt("editor-color-entity", Color.RED.getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_ENTITY, Color.RED.getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-entity", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_ENTITY, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_ENTITY);
                         }
                     },  BorderLayout.EAST);
 
@@ -114,10 +115,11 @@ public class OptionsWindow extends InternalWindow {
                     pnlColors.add(pnlColorEntitySpeed);
                     pnlColorEntitySpeed.add(new JLabel("Entity speed"), BorderLayout.WEST);
                     pnlColorEntitySpeed.add(new ColorPickerButton("Entity speed",
-                            prefs.getInt("editor-color-entityspeed", Color.ORANGE.getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_ENTITYSPEED, Color.ORANGE.getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-entityspeed", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_ENTITYSPEED, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_ENTITYSPEED);
                         }
                     },  BorderLayout.EAST);
 
@@ -125,10 +127,11 @@ public class OptionsWindow extends InternalWindow {
                     pnlColors.add(pnlColorSelectionBorder);
                     pnlColorSelectionBorder.add(new JLabel("Selection border"), BorderLayout.WEST);
                     pnlColorSelectionBorder.add(new ColorPickerButton("Selection border",
-                            prefs.getInt("editor-color-selectionborder", Color.BLACK.getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_SELECTIONBORDER, Color.BLACK.getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-selectionborder", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_SELECTIONBORDER, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_SELECTIONBORDER);
                         }
                     }, BorderLayout.EAST);
 
@@ -136,10 +139,11 @@ public class OptionsWindow extends InternalWindow {
                     pnlColors.add(pnlColorSelectionInterior);
                     pnlColorSelectionInterior.add(new JLabel("Selection interior"), BorderLayout.WEST);
                     pnlColorSelectionInterior.add(new ColorPickerButton("Selection interior",
-                            prefs.getInt("editor-color-selectioninterior", new Color(0, 0, 0, 64).getRGB())) {
+                            prefs.getInt(Prefs.EDITOR_COLOR_SELECTIONINTERIOR, new Color(0, 0, 0, 64).getRGB())) {
                         @Override
                         public void colorUpdated(Color color) {
-                            prefs.putInt("editor-color-selectioninterior", color.getRGB());
+                            prefs.putInt(Prefs.EDITOR_COLOR_SELECTIONINTERIOR, color.getRGB());
+                            optionsController.notifyListeners(Prefs.EDITOR_COLOR_SELECTIONINTERIOR);
                         }
                     },  BorderLayout.EAST);
 

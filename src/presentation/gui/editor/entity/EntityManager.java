@@ -1,5 +1,6 @@
 package presentation.gui.editor.entity;
 
+import presentation.controllers.MainController;
 import presentation.controllers.WorldController;
 import presentation.gui.editor.Editor;
 import presentation.objects.Entity;
@@ -16,6 +17,7 @@ public class EntityManager {
      */
     private Map<Entity, HashMap<Editor, EntityPanel>> entities;
 
+    private final MainController mainController;
     private final WorldController worldController;
 
     private List<Editor> editors;
@@ -23,6 +25,7 @@ public class EntityManager {
     public EntityManager(WorldController worldController) {
 
         this.worldController = worldController;
+        this.mainController = worldController.getMainController();
 
         entities = new HashMap<>(0);
         editors = new ArrayList<>(0);
@@ -85,7 +88,7 @@ public class EntityManager {
 
         for (Editor editor : editors) {
 
-            EntityPanel panel = new EntityPanel(editor, entity);
+            EntityPanel panel = new EntityPanel(mainController, editor, entity);
             editor.setLayer(panel, Editor.ENTITY_INDEX);
             editor.add(panel);
 
@@ -123,7 +126,7 @@ public class EntityManager {
 
             Entity entity = entityIterator.next();
 
-            EntityPanel panel = new EntityPanel(editor, entity);
+            EntityPanel panel = new EntityPanel(mainController, editor, entity);
             editor.setLayer(panel, Editor.ENTITY_INDEX);
             editor.add(panel);
 
